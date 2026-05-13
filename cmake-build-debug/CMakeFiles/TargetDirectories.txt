@@ -1,0 +1,3 @@
+/mnt/c/Users/User/Desktop/FootballChampionshipFMI/cmake-build-debug/CMakeFiles/FootballChampionshipFMI.dir
+/mnt/c/Users/User/Desktop/FootballChampionshipFMI/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/User/Desktop/FootballChampionshipFMI/cmake-build-debug/CMakeFiles/rebuild_cache.dir
