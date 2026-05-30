@@ -3,7 +3,7 @@
 
 class MatchResultApplier {
 public:
-    static void apply(const MatchResult& result)
+    static void apply(const Match::MatchResult& result)
     {
         applyTeam(result.home, result.homeGoals, result.guestGoals);
         applyTeam(result.guest, result.guestGoals, result.homeGoals);
@@ -29,12 +29,12 @@ private:
             stats.increaseDrawsCount(1);
     }
 
-    static void applyPlayers(const MatchResult& result)
+    static void applyPlayers(const Match::MatchResult& result)
     {
-        for (Player* p : result.home->getLineup().getPlayers())
+        for (Player* p : result.home->getPlayers())
             p->getStats().increaseMatchesCount();
 
-        for (Player* p : result.guest->getLineup().getPlayers())
+        for (Player* p : result.guest->getPlayers())
             p->getStats().increaseMatchesCount();
 
         for (const auto& g : result.goals)

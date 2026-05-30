@@ -5,6 +5,8 @@
 #include "AttackingTeam.h"
 
 #include <stdexcept>
+
+#include "ExceptionMessages.h"
 #include "PlayerValidator.h"
 #include "TeamManager.h"
 #include "TeamValidator.h"
@@ -62,15 +64,15 @@ void AttackingTeam::addPlayer(Player* player, bool isTransfer) {
 
     switch (playerPosition) {
         case Player::Position::FORWARD:
-            args = {missingGK, missingDF, missingMF, missingWG}; errorMessage = "Too many forwarders."; break;
+            args = {missingGK, missingDF, missingMF, missingWG}; errorMessage = toString(ExceptionMessages::TOO_MANY_FORWARDERS); break;
         case Player::Position::WINGER:
-            args = {missingGK, missingFW, missingDF, missingMF}; errorMessage = "Too many wingers."; break;
+            args = {missingGK, missingFW, missingDF, missingMF}; errorMessage = toString(ExceptionMessages::TOO_MANY_WINGERS); break;
         case Player::Position::DEFENDER:
-            args = {missingGK, missingFW, missingMF, missingWG}; errorMessage = "Too many defenders."; break;
+            args = {missingGK, missingFW, missingMF, missingWG}; errorMessage = toString(ExceptionMessages::TOO_MANY_DEFENDERS); break;
         case Player::Position::MIDFIELDER:
-            args = {missingGK, missingFW, missingDF, missingWG}; errorMessage = "Too many midfielders."; break;
+            args = {missingGK, missingFW, missingDF, missingWG}; errorMessage = toString(ExceptionMessages::TOO_MANY_MIDFIELDERS); break;
         case Player::Position::GOALKEEPER:
-            args = {missingFW, missingDF, missingMF, missingWG}; errorMessage = "Too many goalkeepers."; break;
+            args = {missingFW, missingDF, missingMF, missingWG}; errorMessage = toString(ExceptionMessages::TOO_MANY_GOALKEEPERS); break;
         default:
             break;
     }
