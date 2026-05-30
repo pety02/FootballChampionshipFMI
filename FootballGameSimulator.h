@@ -66,28 +66,14 @@ public:
      *
      * @param match
      */
-    void play(const Match& match);
-
-    /**
-     *
-     * @param lineup
-     * @param match
-     */
-    void assignHostLineup(const Lineup& lineup, const Match& match);
-
-    /**
-     *
-     * @param lineup
-     * @param match
-     */
-    void assignGuestLineup(const Lineup& lineup, const Match& match);
+    void play(Match* match);
 
     /**
      *
      * @param player
      * @param match
      */
-    void addScorer(const Player& player, const Match& match);
+    void addScorer(Player* player, Match& match);
 
     /**
      *

@@ -49,3 +49,18 @@ bool Championship::isFinished() const {
 unsigned Championship::getYear() const {
     return this->year;
 }
+
+void Championship::addMatch(const Match &match) {
+    if(this->matches.empty()) {
+        this->matches.push_back(match);
+        return;
+    }
+
+    unsigned teamsCount = this->teamManager.getTeams().size();
+    if(this->matches.size() >= teamsCount * (teamsCount - 1)) throw std::invalid_argument("Has enough matches. You cannot add the current match in the current championship.");
+    this->matches.push_back(match);
+}
+
+void Championship::finish() {
+    this->finished = true;
+}

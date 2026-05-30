@@ -31,12 +31,6 @@ public:
     /**
     *
     */
-    void removePlayerFromTeam(const std::string& firstTeamName, const std::string& firstPlayerName,
-        const std::string& secondTeamName, const std::string& secondPlayerName);
-
-    /**
-    *
-    */
     void registerMatchResult(Team* homeTeam, unsigned homeGoals, Team* guestTeam, unsigned guestGoals);
 
     /**

@@ -4,6 +4,9 @@
 
 #include "TeamManager.h"
 #include <stdexcept>
+
+#include "Match.h"
+#include "MatchResultApplier.h"
 #include "StringValidator.h"
 #include "TeamValidator.h"
 
@@ -61,51 +64,31 @@ void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
     secondTeam.addPlayer(firstPlayer, true);
 }
 
-// TODO: think how to represent a transfer of players between teams.
-void TeamManager::removePlayerFromTeam(const std::string& firstTeamName, const std::string& firstPlayerName,
-        const std::string& secondTeamName, const std::string& secondPlayerName) {
-
-}
-
 void TeamManager::registerMatchResult(Team *homeTeam, unsigned homeGoals, Team *guestTeam, unsigned guestGoals) {
     // TODO: export the validation in a helper validation method
-    int toBeDeletedIndex = 0;
-    bool isHomeTeamManagedByCurrentTeamManager = false, isGuestTeamManagedByCurrentTeamManager = false;
+    auto isManaged = [&](Team* t) {
+        bool isManaged = false;
 
-    for(const auto &currTeam : teams) {
-        if(isHomeTeamManagedByCurrentTeamManager && isGuestTeamManagedByCurrentTeamManager) {
-            break;
+        for (const auto& managed : teams) {
+            if (managed->getName() == t->getName()) {
+                isManaged = true;
+                break;
+            }
         }
+        return isManaged;
+    };
 
-        if(currTeam->getName() == homeTeam->getName()) {
-            isHomeTeamManagedByCurrentTeamManager = true;
-        } else if(currTeam->getName() == guestTeam->getName()) {
-            isGuestTeamManagedByCurrentTeamManager = true;
-        }
-        toBeDeletedIndex++;
-    }
-    if(!isHomeTeamManagedByCurrentTeamManager || !isGuestTeamManagedByCurrentTeamManager) {
-        throw std::invalid_argument("Any of the home and guest teams are not managed by the current team manager.");
+    if (!isManaged(homeTeam) || !isManaged(guestTeam)) {
+        throw std::invalid_argument("Team not managed by this manager.");
     }
 
+    Match::MatchResult result;
+    result.home = homeTeam;
+    result.guest = guestTeam;
+    result.homeGoals = homeGoals;
+    result.guestGoals = guestGoals;
 
-    Team::Statistics homeStats = homeTeam->getStats();
-    Team::Statistics guestStats = guestTeam->getStats();
-
-    homeStats.scoredGoals += homeGoals;
-    homeStats.concededGoals += guestGoals;
-
-    guestStats.scoredGoals += guestGoals;
-    guestStats.concededGoals += homeGoals;
-
-    if(homeGoals == guestGoals) {
-        homeStats.drawsCount += 1;
-        guestStats.drawsCount += 1;
-    } else if (homeGoals < guestGoals) {
-        homeStats.lossesCount += 1;
-    } else {
-        guestStats.lossesCount += 1;
-    }
+    MatchResultApplier::apply(result);
 }
 
 void TeamManager::addTeam(Team* team) {

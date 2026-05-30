@@ -53,6 +53,10 @@ public:
     [[nodiscard]] bool isFinished() const;
 
     [[nodiscard]] unsigned getYear() const;
+
+    void addMatch(const Match& match);
+
+    void finish();
 };
 
 #endif //CHAMPIONSHIP_H

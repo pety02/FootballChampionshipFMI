@@ -91,10 +91,15 @@ FootballGameSimulator::FootballGameSimulator() : championshipHistory(Championshi
 }
 
 void FootballGameSimulator::simulate() {
+    for(const auto& match : this->currentChampionship->getMatches()) {
+        this->play(new Match(match));
+    }
+
+    this->currentChampionship->finish();
 }
 
-// TODO: see the validation rules for lineups size in the Championship constructor and reuse them
 void FootballGameSimulator::addMatch(const Match &match) {
+    this->currentChampionship->addMatch(match);
 }
 
 void FootballGameSimulator::updateChampionshipRound() {
@@ -140,22 +145,35 @@ void FootballGameSimulator::finishChampionship() {
     this->championshipHistory.addChampionship(this->currentChampionship->getYear(), *this->currentChampionship);
 }
 
-void FootballGameSimulator::play(const Match &match) {
+void FootballGameSimulator::play(Match* match) {
+    this->validateMatchExists(*match);
+
+    match->play();
 }
 
-void FootballGameSimulator::assignHostLineup(const Lineup &lineup, const Match &match) {
-}
+void FootballGameSimulator::addScorer(Player* player, Match &match) {
+    this->validateMatchExists(match);
+    for(const auto& hostLineupPlayer : match.getHostLineup().getPlayers()) {
+        if(player->getName() == hostLineupPlayer->getName()) {
+            match.addGoal(player, true);
+            this->increaseHostGoals(match);
+        }
+    }
 
-void FootballGameSimulator::assignGuestLineup(const Lineup &lineup, const Match &match) {
-}
-
-void FootballGameSimulator::addScorer(const Player &player, const Match &match) {
+    for(const auto& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+        if(player->getName() == guestLineupPlayer->getName()) {
+            match.addGoal(player, false);
+            this->increaseGuestGoals(match);
+        }
+    }
 }
 
 void FootballGameSimulator::increaseHostGoals(const Match &match) {
+    ++match.getHost()->getStats().scoredGoals;
 }
 
 void FootballGameSimulator::increaseGuestGoals(const Match &match) {
+    ++match.getGuest()->getStats().scoredGoals;
 }
 
 void FootballGameSimulator::finishMatch(Match &match) {

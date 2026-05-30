@@ -12,9 +12,18 @@
 */
 class Match final {
 public:
-    struct Goal {
-        Player* scorer;
-        bool hostGoal;
+    struct MatchResult {
+        Team* home;
+        Team* guest;
+        unsigned homeGoals;
+        unsigned guestGoals;
+
+        struct Scorer {
+            Player* player;
+            bool isHome;
+        };
+
+        std::vector<Scorer> goals;
     };
 private:
     Team* host;
@@ -28,7 +37,8 @@ private:
 
     unsigned roundNumber;
 
-    std::vector<Goal> goals;
+    MatchResult matchResult;
+    bool finished;
 
 public:
     Match(const Lineup& hostLineup, const Lineup& guestLineup);
@@ -77,6 +87,18 @@ public:
     *
     */
     [[nodiscard]] const std::vector<Player*> getScorers() const;
+
+    void addGoal(Player* scorer, bool isHostPlayer);
+
+    [[nodiscard]] bool isFinished() const;
+
+    static unsigned calculateAttackStrength(const Lineup& lineup);
+
+    static unsigned calculateDefenseStrength(const Lineup& lineup);
+
+    static Player* chooseScorer(const std::vector<Player*>& players);
+
+    MatchResult play();
 };
 
 #endif //MATCH_H
