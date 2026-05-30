@@ -8,20 +8,14 @@
 
 #include "ChampionshipHistory.h"
 #include "ChampionshipValidator.h"
+#include "MatchValidator.h"
 
 Championship::Championship(const TeamManager& teamManager, const std::vector<Match> &matches)
     : teamManager(teamManager), currentRoundNumber(0), year(ChampionshipHistory::CURRENT_YEAR), matches(matches), finished(false) {
     unsigned teamsCount = teamManager.getTeams().size();
     if(matches.size() < teamsCount * (teamsCount - 1)) throw std::invalid_argument("Not enough matches.");
-    bool hasValidLineups = true;
-    for (const auto & match : matches) {
-        if(match.getHostLineup().getPlayers().size() < 11
-            || match.getGuestLineup().getPlayers().size() > 11) {
-            hasValidLineups = false;
-            break;
-        }
-    }
-    if(!hasValidLineups) throw std::invalid_argument("No valid lineups.");
+
+    MatchValidator::validateLineups(matches);
 }
 
 void Championship::increaseRoundNumber() {
@@ -57,7 +51,7 @@ void Championship::addMatch(const Match &match) {
     }
 
     unsigned teamsCount = this->teamManager.getTeams().size();
-    if(this->matches.size() >= teamsCount * (teamsCount - 1)) throw std::invalid_argument("Has enough matches. You cannot add the current match in the current championship.");
+    MatchValidator::validateMatchesCount(this->matches.size(), teamsCount * (teamsCount - 1));
     this->matches.push_back(match);
 }
 

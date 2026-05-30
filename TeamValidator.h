@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Player.h"
+#include "Team.h"
 
 /**
 *
@@ -40,6 +41,12 @@ public:
     *
     */
     static void validatePlayersCountByPosition(std::vector<unsigned>& args, unsigned remainingPlaces, const std::string& exceptionMessage);
+
+    static void validateTeamsCount(unsigned minTeamsCount, unsigned currentTeamsCount);
+
+    static void validateThatTeamsAreFound(const std::vector<Team*>& teams, const Team& firstTeam, const Team& secondTeam);
+
+    static void validateThatTeamsAreMangedByAManager(const std::vector<Team*>& teams, Team *homeTeam, Team *guestTeam);
 };
 
 #endif //TEAMVALIDATOR_H

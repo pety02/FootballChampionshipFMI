@@ -3,51 +3,11 @@
 //
 
 #include "FootballGameSimulator.h"
+
+#include <memory>
 #include <stdexcept>
 #include "ChampionshipValidator.h"
-
-void FootballGameSimulator::validateMatchExists(const Match &match) const {
-    bool matchExists = false;
-    for(const auto& currentChampionshipMatch : this->currentChampionship->getMatches()) {
-        if(match.getHost()->getName() == currentChampionshipMatch.getHost()->getName()
-            && match.getGuest()->getName() == currentChampionshipMatch.getGuest()->getName()) {
-            matchExists = true;
-            break;
-            }
-    }
-
-    if(!matchExists) throw std::invalid_argument("Match does not exist in the current championship.");
-}
-
-void FootballGameSimulator::validateLineupExists(const Lineup& lineup, const Match& match) const {
-    bool lineupExists = false;
-
-    const std::vector<Match>& currentMatches = currentChampionship->getMatches();
-
-    for (const auto & currentMatche : currentMatches) {
-
-        if (match.getHost()->getName() == currentMatche.getHost()->getName()
-                && match.getGuest()->getName() ==  match.getGuest()->getName()) {
-
-            const Lineup& host = currentMatche.getHostLineup();
-            const Lineup& guest = currentMatche.getGuestLineup();
-
-            if (
-                lineup.getTeam()->getName() == host.getTeam()->getName() ||
-                lineup.getTeam()->getName() == guest.getTeam()->getName()
-            ) {
-                lineupExists = true;
-                break;
-            }
-        }
-    }
-
-    if (!lineupExists) {
-        throw std::invalid_argument(
-            "Lineup does not exist in the current championship."
-        );
-    }
-}
+#include "FootballGameSimulatorValidator.h"
 
 std::vector<std::string> FootballGameSimulator::getChampions() const {
     Map<std::string, unsigned> champions;
@@ -146,13 +106,12 @@ void FootballGameSimulator::finishChampionship() {
 }
 
 void FootballGameSimulator::play(Match* match) {
-    this->validateMatchExists(*match);
-
+    FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, *match);
     match->play();
 }
 
 void FootballGameSimulator::addScorer(Player* player, Match &match) {
-    this->validateMatchExists(match);
+    FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, match);
     for(const auto& hostLineupPlayer : match.getHostLineup().getPlayers()) {
         if(player->getName() == hostLineupPlayer->getName()) {
             match.addGoal(player, true);
@@ -177,7 +136,7 @@ void FootballGameSimulator::increaseGuestGoals(const Match &match) {
 }
 
 void FootballGameSimulator::finishMatch(Match &match) {
-    this->validateMatchExists(match);
+    FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, match);
 
     // update the team statistics
     match.getHost()->getStats().scoredGoals += match.getHostGoals();

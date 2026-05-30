@@ -35,3 +35,54 @@ void TeamValidator::validatePlayersCountByPosition(std::vector<unsigned>& args, 
         throw std::invalid_argument(exceptionMessage);
     }
 }
+
+void TeamValidator::validateTeamsCount(unsigned minTeamsCount, unsigned currentTeamsCount) {
+    if(currentTeamsCount < minTeamsCount || currentTeamsCount % 2 != 0)
+        throw std::invalid_argument("Invalid number of teams. Teams should be minimum 4 and their count should be an even number.");
+}
+
+void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, const Team &firstTeam, const Team &secondTeam) {
+    bool firstTeamNameFound = false, secondTeamNameFound = false;
+    for(const auto &currTeam : teams) {
+        if(firstTeamNameFound && secondTeamNameFound) {
+            break;
+        }
+        if(currTeam->getName() == firstTeam.getName()) {
+            firstTeamNameFound = true;
+            continue;
+        }
+        if(currTeam->getName() == secondTeam.getName()) {
+            secondTeamNameFound = true;
+        }
+    }
+
+    if(!firstTeamNameFound && !secondTeamNameFound) {
+        throw std::invalid_argument("Both teams " + firstTeam.getName() + " and " + secondTeam.getName() + " cannot be found.");
+    }
+    if(!firstTeamNameFound && secondTeamNameFound) {
+        throw std::invalid_argument("A team with a name " + firstTeam.getName() + " cannot be found.");
+    }
+    if(firstTeamNameFound && !secondTeamNameFound) {
+        throw std::invalid_argument("A team with a name " + secondTeam.getName() + " cannot be found.");
+    }
+}
+
+void TeamValidator::validateThatTeamsAreMangedByAManager(const std::vector<Team *> &teams,
+    Team *homeTeam, Team *guestTeam) {
+
+    auto isManaged = [&](Team* t) {
+        bool isManaged = false;
+
+        for (const auto& managed : teams) {
+            if (managed->getName() == t->getName()) {
+                isManaged = true;
+                break;
+            }
+        }
+        return isManaged;
+    };
+
+    if (!isManaged(homeTeam) || !isManaged(guestTeam)) {
+        throw std::invalid_argument("Team not managed by this manager.");
+    }
+}

@@ -4,6 +4,7 @@
 
 #ifndef MATCHVALIDATOR_H
 #define MATCHVALIDATOR_H
+#include "Match.h"
 
 /**
 *
@@ -17,6 +18,10 @@ public:
     *
     */
     static void validateRoundNumber(unsigned roundNumber);
+
+    static void validateLineups(const std::vector<Match>& matches);
+
+    static void validateMatchesCount(unsigned currentSize, unsigned targetSize);
 };
 
 #endif //MATCHVALIDATOR_H

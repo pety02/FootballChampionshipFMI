@@ -12,10 +12,10 @@
 
 TeamManager::TeamManager(const std::string &name, const std::vector<Team>& teams) : name(name) {
     StringValidator::validate(name, "Coach name cannot be empty.", "Coach name cannot be blank.");
-    if(teams.size() < 4 || teams.size() % 2 != 0) throw std::invalid_argument("Invalid number of teams. Teams should be minimum 4 and their count should be an even number.");
+    TeamValidator::validateTeamsCount(4, teams.size());
 
-    for (int i = 0; i < teams.size(); ++i) {
-        this->teams.push_back(teams[i].clone());
+    for (const auto & team : teams) {
+        this->teams.push_back(team.clone());
     }
 }
 
@@ -36,51 +36,14 @@ void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) {
 void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
         Player* secondPlayer, Team& secondTeam) {
 
-    bool firstTeamNameFound = false, secondTeamNameFound = false;
-    for(const auto &currTeam : teams) {
-        if(firstTeamNameFound && secondTeamNameFound) {
-            break;
-        }
-        if(currTeam->getName() == firstTeam.getName()) {
-            firstTeamNameFound = true;
-            continue;
-        }
-        if(currTeam->getName() == secondTeam.getName()) {
-            secondTeamNameFound = true;
-        }
-    }
-
-    if(!firstTeamNameFound && !secondTeamNameFound) {
-        throw std::invalid_argument("Both teams " + firstTeam.getName() + " and " + secondTeam.getName() + " cannot be found.");
-    }
-    if(!firstTeamNameFound && secondTeamNameFound) {
-        throw std::invalid_argument("A team with a name " + firstTeam.getName() + " cannot be found.");
-    }
-    if(firstTeamNameFound && !secondTeamNameFound) {
-        throw std::invalid_argument("A team with a name " + secondTeam.getName() + " cannot be found.");
-    }
+    TeamValidator::validateThatTeamsAreFound(this->teams, firstTeam, secondTeam);
 
     firstTeam.addPlayer(secondPlayer, true);
     secondTeam.addPlayer(firstPlayer, true);
 }
 
 void TeamManager::registerMatchResult(Team *homeTeam, unsigned homeGoals, Team *guestTeam, unsigned guestGoals) {
-    // TODO: export the validation in a helper validation method
-    auto isManaged = [&](Team* t) {
-        bool isManaged = false;
-
-        for (const auto& managed : teams) {
-            if (managed->getName() == t->getName()) {
-                isManaged = true;
-                break;
-            }
-        }
-        return isManaged;
-    };
-
-    if (!isManaged(homeTeam) || !isManaged(guestTeam)) {
-        throw std::invalid_argument("Team not managed by this manager.");
-    }
+    TeamValidator::validateThatTeamsAreMangedByAManager(this->teams, homeTeam, guestTeam);
 
     Match::MatchResult result;
     result.home = homeTeam;

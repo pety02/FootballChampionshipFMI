@@ -31,4 +31,6 @@ add_executable(FootballChampionshipFMI main.cpp
         AccountingManager.h
         AccountingManager.cpp
         MatchResultApplier.h
+        FootballGameSimulatorValidator.h
+        FootballGameSimulatorValidator.cpp
 )

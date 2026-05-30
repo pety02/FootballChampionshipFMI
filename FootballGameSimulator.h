@@ -21,22 +21,6 @@ private:
 
     std::string findGoalMaster();
 
-    // TODO: to set these validation methods in a separate class with throwing exceptions
-    /**
-     *
-     * @param match
-     * @return
-     */
-    void validateMatchExists(const Match& match) const;
-
-    /**
-     *
-     * @param lineup
-     * @param match
-     * @return
-     */
-    void validateLineupExists(const Lineup& lineup, const Match& match) const;
-
     [[nodiscard]] std::vector<std::string> getChampions() const;
 public:
     FootballGameSimulator();

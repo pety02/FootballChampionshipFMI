@@ -6,6 +6,8 @@
 
 #include <stdexcept>
 
+#include "PlayerValidator.h"
+
 std::vector<Player*> Lineup::generateRandomLineup() {
     // TODO: add validational rules for generating random lineup
     return std::vector<Player*>();
@@ -54,11 +56,8 @@ void Lineup::setTeam(Team* team) {
 }
 
 void Lineup::addPlayer(Player* player) {
-    for (int i = 0; i < this->players.size(); ++i) {
-        // TODO: think about separattion of this validation in a validation method.
-        if(this->players[i]->getName() == player->getName()) {
-            throw std::invalid_argument("Player with this name already exists.");
-        }
+    for (auto & currentPlayer : this->players) {
+        PlayerValidator::validateName(currentPlayer->getName(), player->getName());
     }
 
     this->players.push_back(player);

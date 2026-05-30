@@ -22,3 +22,9 @@ void PlayerValidator::validateSalary(double salary) {
 void PlayerValidator::validateTransferSum(double transferSum) {
   if(transferSum < 0.0) throw std::invalid_argument("TransferSum must be non-negative.");
 }
+
+void PlayerValidator::validateName(const std::string &firstPlayerName, std::string secondPlayerName) {
+  if(firstPlayerName == secondPlayerName) {
+    throw std::invalid_argument("Player with this name already exists.");
+  }
+}
