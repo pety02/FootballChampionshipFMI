@@ -1,0 +1,68 @@
+//
+// Created by User on 5/16/2026.
+//
+
+#ifndef TEAMMANAGER_H
+#define TEAMMANAGER_H
+#include <vector>
+
+#include "Team.h"
+
+/**
+*
+*/
+class TeamManager final {
+private:
+    std::string name;
+    std::vector<Team*> teams;
+
+public:
+    TeamManager(const std::string& name, const std::vector<Team>& teams);
+    ~TeamManager() = default;
+
+    /**
+    *
+    */
+    void addPlayerToTeam(const std::string& teamName, Player* player);
+
+    void transfer(Player* firstPlayer, Team& firstTeam,
+        Player* secondPlayer, Team& secondTeam);
+
+    /**
+    *
+    */
+    void removePlayerFromTeam(const std::string& firstTeamName, const std::string& firstPlayerName,
+        const std::string& secondTeamName, const std::string& secondPlayerName);
+
+    /**
+    *
+    */
+    void registerMatchResult(Team* homeTeam, unsigned homeGoals, Team* guestTeam, unsigned guestGoals);
+
+    /**
+    *
+    */
+    void addTeam(Team* team);
+
+    /**
+    *
+    */
+    void removeTeam(const std::string& teamName);
+
+    /**
+    *
+    */
+    void setName(const std::string& name);
+
+    /**
+    *
+    */
+    [[nodiscard]] const std::string& getName() const;
+
+    /**
+    *
+    */
+    [[nodiscard]] const std::vector<Team>& getTeams() const;
+};
+
+#endif //TEAMMANAGER_H
