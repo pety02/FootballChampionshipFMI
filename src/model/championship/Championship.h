@@ -12,7 +12,7 @@
 #include "../../championship/accountingManager/AccountingManager.h"
 
 /**
- *
+ * A class that describes a championship.
  */
 class Championship final {
 private:
@@ -24,38 +24,64 @@ private:
     bool finished;
 
 public:
-    explicit Championship(const TeamManager& teamManager, const std::vector<Match> &matches);
+    /**
+    * A constructor with parameters of the Championship class.
+    * Before to create the championship it validates the passed parameters' values.
+    * @param teamManager the team manager of the championship
+    * @param matches the matches of the championship
+    */
+    explicit Championship(const TeamManager &teamManager, const std::vector<Match> &matches);
+
+    /**
+    * The default destructor of the championship.
+    */
     ~Championship() = default;
 
+    /**
+    * Validates the next round number and if it is valid, the methods increases the
+    * current round number. If not - the method throws an exception.
+    */
     void increaseRoundNumber();
-    /**
-     *
-     * @return
-     */
-    [[nodiscard]] const TeamManager& getTeamManager() const;
 
     /**
-     *
-     * @return
+     * Returns the team manager.
+     * @return a const reference to the current championship's team manager.
      */
-    [[nodiscard]] const std::vector<Match>& getMatches() const;
+    [[nodiscard]] const TeamManager &getTeamManager() const;
 
     /**
-     *
-     * @return
+     * Returns a vector of the matches.
+     * @return a const reference to the current championship's matches' vector.
+     */
+    [[nodiscard]] const std::vector<Match> &getMatches() const;
+
+    /**
+     * @return the current round number.
      */
     [[nodiscard]] unsigned getCurrentRoundNumber() const;
 
     /**
-     *
-     * @return
+     * @return if the current championship is finished or not on the basis of
+     * if all its matches are finished.
      */
     [[nodiscard]] bool isFinished() const;
 
+    /**
+    * @return the year of the current championship - a number between 1900
+    * and the current year.
+    */
     [[nodiscard]] unsigned getYear() const;
 
-    void addMatch(const Match& match);
+    /**
+     * Adds the passed match to the matches' vector if this will not break the rules
+     * for the matches count in a definite championship.
+     * @param match - the passed match that should be added in the vector.
+     */
+    void addMatch(const Match &match);
 
+    /**
+    * Sets `finished` status to the current championship when all its matches are finished.
+    */
     void finish();
 };
 

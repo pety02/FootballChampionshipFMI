@@ -24,5 +24,7 @@ Championship& ChampionshipHistory::operator[](unsigned year) {
 }
 
 void ChampionshipHistory::setCurrentYear(unsigned year) {
+    ChampionshipValidator::validateYear(year);
+
     ChampionshipHistory::CURRENT_YEAR = year;
 }

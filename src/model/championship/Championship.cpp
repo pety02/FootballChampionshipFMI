@@ -20,9 +20,9 @@ Championship::Championship(const TeamManager& teamManager, const std::vector<Mat
 }
 
 void Championship::increaseRoundNumber() {
-    ChampionshipValidator::validateCurrentRoundNumber(this->currentRoundNumber);
+    ChampionshipValidator::validateCurrentRoundNumber(this->currentRoundNumber + 1);
 
-    this->currentRoundNumber++;
+    ++this->currentRoundNumber;
 }
 
 const TeamManager & Championship::getTeamManager() const {
