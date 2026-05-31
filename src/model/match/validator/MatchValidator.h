@@ -4,7 +4,11 @@
 
 #ifndef MATCHVALIDATOR_H
 #define MATCHVALIDATOR_H
-#include "Match.h"
+
+#include <vector>
+#include "../../match/Match.h"
+
+enum class ExceptionMessage;
 
 /**
 *

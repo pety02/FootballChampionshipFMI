@@ -4,8 +4,9 @@
 
 #ifndef FOOTBALLGAMESIMULATORVALIDATOR_H
 #define FOOTBALLGAMESIMULATORVALIDATOR_H
-#include "Championship.h"
-#include "Match.h"
+#include "../../model/championship/Championship.h"
+#include "../../model/match/Match.h"
+#include "../../model/match/lineup/Lineup.h""
 
 class FootballGameSimulatorValidator {
 public:

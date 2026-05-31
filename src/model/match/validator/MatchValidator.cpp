@@ -2,12 +2,14 @@
 // Created by User on 5/16/2026.
 //
 
-#include "MatchValidator.h"
+#include "../../match/validator/MatchValidator.h"
 #include <stdexcept>
+
+#include "../../../utils/ExceptionMessages.h"
 
 void MatchValidator::validateRoundNumber(const unsigned roundNumber) {
     if(MatchValidator::MAX_ROUND_NUMBER < roundNumber)
-        throw std::invalid_argument("Match round number must be at most " + std::to_string(MatchValidator::MAX_ROUND_NUMBER) + ".");
+        throw std::invalid_argument(toString(ExceptionMessages::MATCH_ROUND_NUMBER_MUST_BE_AT_MOST));
 }
 
 void MatchValidator::validateLineups(const std::vector<Match>& matches) {
@@ -20,10 +22,10 @@ void MatchValidator::validateLineups(const std::vector<Match>& matches) {
             break;
             }
     }
-    if(!hasValidLineups) throw std::invalid_argument("No valid lineups.");
+    if(!hasValidLineups) throw std::invalid_argument(toString(ExceptionMessages::NO_VALID_LINEUPS));
 }
 
 void MatchValidator::validateMatchesCount(unsigned currentSize, unsigned targetSize) {
     if(currentSize >= targetSize)
-        throw std::invalid_argument("Has enough matches. You cannot add the current match in the current championship.");
+        throw std::invalid_argument(toString(ExceptionMessages::ENOUGH_MATCHES));
 }

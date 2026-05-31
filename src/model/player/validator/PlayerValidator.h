@@ -5,7 +5,7 @@
 #ifndef PLAYERVALIDATOR_H
 #define PLAYERVALIDATOR_H
 
-#include "Player.h"
+#include "../../player/Player.h"
 
 /**
 *

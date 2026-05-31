@@ -3,8 +3,9 @@
 //
 
 #include "FootballGameSimulatorValidator.h"
-
 #include <stdexcept>
+
+#include "../../utils/ExceptionMessages.h"
 
 void FootballGameSimulatorValidator::validateMatchExists(Championship* currentChampionship, Match& match) {
     bool matchExists = false;
@@ -16,7 +17,7 @@ void FootballGameSimulatorValidator::validateMatchExists(Championship* currentCh
             }
     }
 
-    if(!matchExists) throw std::invalid_argument("Match does not exist in the current championship.");
+    if(!matchExists) throw std::invalid_argument(toString(ExceptionMessages::MATCH_DOES_NOT_EXIST_IN_THE_CURRENT_CHAMPIONSHIP));
 }
 
 void FootballGameSimulatorValidator::validateLineupExists(Championship* currentChampionship, const Lineup& lineup, Match* match) {
@@ -26,8 +27,8 @@ void FootballGameSimulatorValidator::validateLineupExists(Championship* currentC
 
     for (const auto & currentMatche : currentMatches) {
 
-        if (match.getHost()->getName() == currentMatche.getHost()->getName()
-                && match.getGuest()->getName() ==  match.getGuest()->getName()) {
+        if (match->getHost()->getName() == currentMatche.getHost()->getName()
+                && match->getGuest()->getName() ==  match->getGuest()->getName()) {
 
             const Lineup& host = currentMatche.getHostLineup();
             const Lineup& guest = currentMatche.getGuestLineup();
@@ -44,7 +45,7 @@ void FootballGameSimulatorValidator::validateLineupExists(Championship* currentC
 
     if (!lineupExists) {
         throw std::invalid_argument(
-            "Lineup does not exist in the current championship."
+            toString(ExceptionMessages::LINEUP_DOES_NOT_EXIST_IN_THE_CURRENT_CHAMPIONSHIP)
         );
     }
 }

@@ -5,6 +5,8 @@
 #ifndef CHAMPIONSHIPVALIDATOR_H
 #define CHAMPIONSHIPVALIDATOR_H
 
+enum class ExceptionMessage;
+
 /**
 *
 */
@@ -22,7 +24,7 @@ public:
     /**
     *
     */
-    static void validateYear(unsigned year, unsigned currentYear);
+    static void validateYear(unsigned year);
 };
 
 #endif //CHAMPIONSHIPVALIDATOR_H
