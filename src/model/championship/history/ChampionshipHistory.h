@@ -5,8 +5,10 @@
 #ifndef CHAMPIONSHIPCOLLECTION_H
 #define CHAMPIONSHIPCOLLECTION_H
 
-#include "Championship.h"
-#include "Map.h"
+#include "../../championship/Championship.h"
+#include "../../../utils/Map.h"
+
+enum class ExceptionMessage;
 
 /**
  *

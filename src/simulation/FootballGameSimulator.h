@@ -5,7 +5,8 @@
 #ifndef FOOTBALLGAMESIMULATOR_H
 #define FOOTBALLGAMESIMULATOR_H
 
-#include "ChampionshipHistory.h"
+#include <string>
+#include "../../model/championship/history/ChampionshipHistory.h"
 
 /**
  *

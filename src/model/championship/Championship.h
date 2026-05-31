@@ -5,11 +5,11 @@
 #ifndef CHAMPIONSHIP_H
 #define CHAMPIONSHIP_H
 
-#include "Match.h"
-#include "TeamManager.h"
+#include "../match/Match.h"
+#include "../team/manager/TeamManager.h"
 #include <vector>
 
-#include "AccountingManager.h"
+#include "../../championship/accountingManager/AccountingManager.h"
 
 /**
  *

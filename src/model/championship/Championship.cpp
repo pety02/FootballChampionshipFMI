@@ -6,14 +6,15 @@
 
 #include <stdexcept>
 
-#include "ChampionshipHistory.h"
-#include "ChampionshipValidator.h"
-#include "MatchValidator.h"
+#include "../../championship/history/ChampionshipHistory.h"
+#include "../../championship/validator/ChampionshipValidator.h"
+#include "../../match/validator/MatchValidator.h"
+#include "../../utils/ExceptionMessages.h"
 
 Championship::Championship(const TeamManager& teamManager, const std::vector<Match> &matches)
     : teamManager(teamManager), currentRoundNumber(0), year(ChampionshipHistory::CURRENT_YEAR), matches(matches), finished(false) {
     unsigned teamsCount = teamManager.getTeams().size();
-    if(matches.size() < teamsCount * (teamsCount - 1)) throw std::invalid_argument("Not enough matches.");
+    if(matches.size() < teamsCount * (teamsCount - 1)) throw std::invalid_argument(toString(ExceptionMessages::NOT_ENOUGH_MATCHES));
 
     MatchValidator::validateLineups(matches);
 }

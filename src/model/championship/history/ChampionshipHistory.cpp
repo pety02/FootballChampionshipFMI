@@ -4,13 +4,13 @@
 
 #include "ChampionshipHistory.h"
 
-#include "ChampionshipValidator.h"
+#include "../validator/ChampionshipValidator.h"
 
 ChampionshipHistory::ChampionshipHistory() : championships(Map<unsigned, Championship>()) {
 }
 
 void ChampionshipHistory::addChampionship(unsigned year, const Championship &championship) {
-    ChampionshipValidator::validateYear(year, ChampionshipHistory::CURRENT_YEAR);
+    ChampionshipValidator::validateYear(year);
 
     this->championships[year] = championship;
 }

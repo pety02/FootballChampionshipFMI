@@ -6,10 +6,10 @@
 
 #include <stdexcept>
 
-#include "ExceptionMessages.h"
-#include "PlayerValidator.h"
-#include "TeamManager.h"
-#include "TeamValidator.h"
+#include "../../utils/ExceptionMessages.h"
+#include "../../player/validator/PlayerValidator.h"
+#include "../../team/manager/TeamManager.h"
+#include "../../team/validator/TeamValidator.h"
 
 AttackingTeam::AttackingTeam() : Team() {
 }

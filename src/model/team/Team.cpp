@@ -7,9 +7,10 @@
 #include <stdexcept>
 #include <utility>
 
-#include "TeamValidator.h"
-#include "StringValidator.h"
-#include "TeamManager.h"
+#include "../../team/validator/TeamValidator.h"
+#include "../../utils/StringValidator.h"
+#include "../../team/manager/TeamManager.h"
+#include "../../utils/ExceptionMessages.h"
 
 Team::Statistics::Statistics()
 : winsCount(0), drawsCount(0), lossesCount(0), scoredGoals(0), concededGoals(0) {
@@ -36,7 +37,7 @@ void Team::Statistics::increaseConcededGoals(unsigned concededGoals) {
 }
 
 void Team::buyPlayer(Player* player, Player::Position playerPos, double remainingBudget, bool isTransfer) {
-    if(player == nullptr) throw std::invalid_argument("Player cannot be null.");
+    if(player == nullptr) throw std::invalid_argument(toString(ExceptionMessages::PLAYER_CANNOT_BE_NULL));
 
     this->players.push_back(player);
     if(isTransfer) {
@@ -92,8 +93,8 @@ Team::Team(const std::string& name, const std::string& coachName, std::string  s
         budget(budget), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 
-    StringValidator::validate(name, "Team name cannot be empty.", "Team name cannot be blank.");
-    StringValidator::validate(name, "Stadium name cannot be empty.", "Stadium name cannot be blank.");
+    StringValidator::validate(name, toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK));
+    StringValidator::validate(name, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
     TeamValidator::validateBudget(budget);
 }
 

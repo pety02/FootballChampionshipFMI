@@ -6,6 +6,7 @@
 #define BALANCEDTEAM_H
 
 #include "Team.h"
+#include <string>
 
 /**
  *

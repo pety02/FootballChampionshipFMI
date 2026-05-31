@@ -5,7 +5,7 @@
 #ifndef MATCH_H
 #define MATCH_H
 
-#include "Lineup.h"
+#include "../lineup/Lineup.h"
 
 /**
 *

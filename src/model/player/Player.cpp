@@ -3,8 +3,9 @@
 //
 
 #include "Player.h"
-#include "PlayerValidator.h"
-#include "StringValidator.h"
+#include "../../player/validator/PlayerValidator.h"
+#include "../../utils/ExceptionMessages.h"
+#include "../../utils/StringValidator.h"
 
 Player::Statistics::Statistics() : matchesCount(0), scoredGoals(0) {
 }
@@ -21,7 +22,7 @@ Player::Player(const std::string &name, const unsigned number,
     const Position position, const double salary, const double transferSum)
     : name(name), number(number), position(position), salary(salary), transferSum(transferSum) {
 
-    StringValidator::validate(name, "Player name cannot be empty.", "Player name cannot be blank.");
+    StringValidator::validate(name, toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_BLANK));
     PlayerValidator::validateNumber(number);
     PlayerValidator::validatePosition(position);
     PlayerValidator::validateSalary(salary);

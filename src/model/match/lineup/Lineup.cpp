@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-#include "PlayerValidator.h"
+#include "../../player/validator/PlayerValidator.h"
 
 std::vector<Player*> Lineup::generateRandomLineup() {
     // TODO: add validational rules for generating random lineup

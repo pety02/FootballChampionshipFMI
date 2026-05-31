@@ -4,8 +4,9 @@
 
 #ifndef ACCOUNTINGMANAGER_H
 #define ACCOUNTINGMANAGER_H
-#include "Player.h"
-#include "Team.h"
+
+#include "../../player/Player.h"
+#include "../../team/Team.h"
 
 class AccountingManager final {
 public:

@@ -5,13 +5,14 @@
 #include "TeamManager.h"
 #include <stdexcept>
 
-#include "Match.h"
-#include "MatchResultApplier.h"
-#include "StringValidator.h"
-#include "TeamValidator.h"
+#include "../../match/Match.h"
+#include "../../../simulation/MatchResultApplier.h"
+#include "../../../utils/ExceptionMessages.h"
+#include "../../../utils/StringValidator.h"
+#include "../../team/validator/TeamValidator.h"
 
 TeamManager::TeamManager(const std::string &name, const std::vector<Team>& teams) : name(name) {
-    StringValidator::validate(name, "Coach name cannot be empty.", "Coach name cannot be blank.");
+    StringValidator::validate(name, toString(ExceptionMessages::COACH_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK));
     TeamValidator::validateTeamsCount(4, teams.size());
 
     for (const auto & team : teams) {
@@ -29,8 +30,7 @@ void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) {
         teamIndex++;
     }
 
-    throw std::invalid_argument("The player with the name " + player->getName() + " cannot be added to a team with name "
-        + teamName + " because the current manager does not manages such a team.");
+    throw std::invalid_argument(toString(ExceptionMessages::THE_PLAYER_CANNOT_BE_ADDED_TO_THE_TEAM));
 }
 
 void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
@@ -68,7 +68,7 @@ void TeamManager::removeTeam(const std::string& teamName) {
         toBeDeletedIndex++;
     }
 
-    throw std::invalid_argument("Team with a name " + teamName + " is not found.");
+    throw std::invalid_argument(toString(ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND));
 }
 
 void TeamManager::setName(const std::string &name) {

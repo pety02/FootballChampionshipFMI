@@ -4,7 +4,8 @@
 
 #ifndef LINEUP_H
 #define LINEUP_H
-#include "Team.h"
+#include "../../team/Team.h"
+#include "../../player/Player.h"
 
 /**
 *

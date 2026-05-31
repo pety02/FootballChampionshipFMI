@@ -5,28 +5,29 @@
 #include "TeamValidator.h"
 #include <stdexcept>
 
+#include "../../../utils/ExceptionMessages.h"
+
 void TeamValidator::validateBudget(double budget) {
     if(budget < 0.0)
-        throw std::invalid_argument("Budget should be non-negative.");
+        throw std::invalid_argument(toString(ExceptionMessages::BUDGET_SHOULD_BE_NON_NEGATIVE));
 }
 
 void TeamValidator::validateTeamSize(unsigned teamSize, unsigned maxTeamSize) {
     if (teamSize >= maxTeamSize) {
-        throw std::invalid_argument("Max team size is " + std::to_string(maxTeamSize) + ".");
+        throw std::invalid_argument(toString(ExceptionMessages::MAX_TEAM_SIZE_IS));
     }
 }
 
 void TeamValidator::validateRemainingBudget(double remainingBudget, const std::string& playerName) {
     if (remainingBudget < 0.0) {
-        throw std::invalid_argument("Not enough budget for player " + playerName + "' transfer.");
+        throw std::invalid_argument(toString(ExceptionMessages::NOT_ENOUGH_BUDGET_FOR_PLAYER_TRANSFER));
     }
 }
 
 void TeamValidator::validatePlayerScoredGoals(Player::Position playerPosition, Player::Position targetPosition,
     unsigned scoredGoals, unsigned targetGoals, const std::string& playerName, const std::string& teamName) {
     if (playerPosition == targetPosition && scoredGoals < targetGoals) {
-        throw std::invalid_argument("Player " + playerName + " cannot be added in the " + teamName +
-                                    " team because he/she has less than " + std::to_string(targetGoals) + " scored goals.");
+        throw std::invalid_argument(toString(ExceptionMessages::THE_PLAYER_CANNOT_BE_ADDED_TO_THE_TEAM));
     }
 }
 
@@ -38,7 +39,7 @@ void TeamValidator::validatePlayersCountByPosition(std::vector<unsigned>& args, 
 
 void TeamValidator::validateTeamsCount(unsigned minTeamsCount, unsigned currentTeamsCount) {
     if(currentTeamsCount < minTeamsCount || currentTeamsCount % 2 != 0)
-        throw std::invalid_argument("Invalid number of teams. Teams should be minimum 4 and their count should be an even number.");
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
 }
 
 void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, const Team &firstTeam, const Team &secondTeam) {
@@ -57,13 +58,13 @@ void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, c
     }
 
     if(!firstTeamNameFound && !secondTeamNameFound) {
-        throw std::invalid_argument("Both teams " + firstTeam.getName() + " and " + secondTeam.getName() + " cannot be found.");
+        throw std::invalid_argument(toString(ExceptionMessages::BOTH_TEAMS_CANNOT_BE_FOUND));
     }
     if(!firstTeamNameFound && secondTeamNameFound) {
-        throw std::invalid_argument("A team with a name " + firstTeam.getName() + " cannot be found.");
+        throw std::invalid_argument(toString(ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND));
     }
     if(firstTeamNameFound && !secondTeamNameFound) {
-        throw std::invalid_argument("A team with a name " + secondTeam.getName() + " cannot be found.");
+        throw std::invalid_argument(toString(ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND));
     }
 }
 
@@ -83,6 +84,6 @@ void TeamValidator::validateThatTeamsAreMangedByAManager(const std::vector<Team 
     };
 
     if (!isManaged(homeTeam) || !isManaged(guestTeam)) {
-        throw std::invalid_argument("Team not managed by this manager.");
+        throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_MANAGED_BY_THIS_MANAGER));
     }
 }

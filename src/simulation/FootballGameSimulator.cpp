@@ -5,9 +5,8 @@
 #include "FootballGameSimulator.h"
 
 #include <memory>
-#include <stdexcept>
-#include "ChampionshipValidator.h"
-#include "FootballGameSimulatorValidator.h"
+#include "../../model/championship/validator/ChampionshipValidator.h"
+#include "../../simulation/validator/FootballGameSimulatorValidator.h"
 
 std::vector<std::string> FootballGameSimulator::getChampions() const {
     Map<std::string, unsigned> champions;

@@ -6,8 +6,8 @@
 #define TEAMVALIDATOR_H
 
 #include <vector>
-#include "Player.h"
-#include "Team.h"
+#include "../../player/Player.h"
+#include "../../team/Team.h"
 
 /**
 *

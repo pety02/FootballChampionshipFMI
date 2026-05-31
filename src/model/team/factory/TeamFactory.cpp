@@ -5,9 +5,11 @@
 #include "TeamFactory.h"
 
 #include <stdexcept>
-#include "AttackingTeam.h"
-#include "BalancedTeam.h"
-#include "DefensiveTeam.h"
+
+#include "../../../utils/ExceptionMessages.h"
+#include "../../team/AttackingTeam.h"
+#include "../../team/BalancedTeam.h"
+#include "../../team/DefensiveTeam.h"
 
 Team* TeamFactory::createTeam(TeamType type, const std::string& name, const std::string& coachName, const std::string& stadiumName, const double budget) {
     switch(type) {
@@ -15,6 +17,6 @@ Team* TeamFactory::createTeam(TeamType type, const std::string& name, const std:
         case TeamType::DEFENSIVE: return new DefensiveTeam(name, coachName, stadiumName, budget);
         case TeamType::BALANCED: return new BalancedTeam(name, coachName, stadiumName, budget);
         default:
-            throw std::invalid_argument("The team type should be ATTACKING, DEFENSIVE or BALANCED.");
+            throw std::invalid_argument(toString(ExceptionMessages::THE_TEAM_TYPE_SHOULD_BE_ONE_OF_THE_GIVEN));
     }
 }
