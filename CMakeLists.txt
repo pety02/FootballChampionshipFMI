@@ -75,8 +75,9 @@ target_include_directories(simulation PUBLIC
 
 # Library utils
 add_library(utils
-        src/utils/Map.cpp
         src/utils/StringValidator.cpp
+        src/utils/CommandLineInterpreter.cpp
+        src/utils/Command.h
 )
 
 target_include_directories(utils PUBLIC
@@ -85,7 +86,10 @@ target_include_directories(utils PUBLIC
 
 # Add executable main.cpp
 add_executable(FootballChampionshipFMI src/main.cpp
-        src/simulation/MatchResultApplier.h)
+        src/simulation/MatchResultApplier.h
+        src/utils/CommandLineInterpreter.h
+        src/utils/CommandLineInterpreter.cpp
+        src/utils/Command.h)
 
 # Link the libraries
 target_link_libraries(FootballChampionshipFMI PRIVATE
