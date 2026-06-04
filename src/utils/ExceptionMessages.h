@@ -57,6 +57,9 @@ enum class ExceptionMessages {
     BOTH_TEAMS_CANNOT_BE_FOUND,
     TEAM_WITH_A_NAME_CANNOT_BE_FOUND,
     TEAM_NOT_MANAGED_BY_THIS_MANAGER
+
+    // Map validation messages
+    KEY_NOT_FOUND
 };
 
 unsigned CURRENT_YEAR = ChampionshipHistory::CURRENT_YEAR;
@@ -109,6 +112,8 @@ static const std::string& toString(ExceptionMessages message) {
         case ExceptionMessages::BOTH_TEAMS_CANNOT_BE_FOUND: return "Both teams cannot be found.";
         case ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND: return "Team with a name cannot be found.";
         case ExceptionMessages::TEAM_NOT_MANAGED_BY_THIS_MANAGER: return "Team is not managed by this manager.";
+
+        case ExceptionMessages::KEY_NOT_FOUND: return "Map key not found.";
 
         default: return "Unknown exception.";
     }
