@@ -9,40 +9,40 @@
 #include "../../model/championship/validator/ChampionshipValidator.h"
 #include "../../simulation/validator/FootballGameSimulatorValidator.h"
 
-// TODO: refactor the code not champion be represented as an unsigned
-// std::vector<std::string> FootballGameSimulator::getChampions() const {
-//     Map<std::string, unsigned> champions;
-//
-//     for (const auto& match : this->currentChampionship->getMatches()) {
-//         champions[match.getHost()->getName()] +=
-//             match.getHost()->getStats().scoredGoals;
-//
-//         champions[match.getGuest()->getName()] +=
-//             match.getGuest()->getStats().scoredGoals;
-//     }
-//
-//     // copy Map → vector
-//     std::vector<std::pair<std::string, unsigned>> sortedTeams;
-//
-//     for (auto champion : champions) {
-//         sortedTeams.push_back(champion);
-//     }
-//
-//     // sort by goals descending
-//     std::sort(sortedTeams.begin(), sortedTeams.end(),
-//         [](const auto& a, const auto& b) {
-//             return a.second > b.second;
-//         }
-//     );
-//
-//     std::vector<std::string> result;
-//
-//     for (const auto& [name, goals] : sortedTeams) {
-//         result.push_back(name);
-//     }
-//
-//     return result;
-// }
+std::vector<std::string> FootballGameSimulator::getChampions() const {
+    Map<std::string, unsigned> champions;
+
+    for (const auto& match : this->currentChampionship->getMatches()) {
+        champions[match.getHost()->getName()] +=
+            match.getHost()->getStats().scoredGoals;
+
+        champions[match.getGuest()->getName()] +=
+            match.getGuest()->getStats().scoredGoals;
+    }
+
+    // Convert Map → vector
+    std::vector<std::pair<std::string, unsigned>> sortedTeams;
+
+    for (const auto& [k, v] : champions) {
+        sortedTeams.push_back(std::pair<std::string, unsigned>(k, v));
+    }
+
+    // sort by goals descending
+    std::sort(sortedTeams.begin(), sortedTeams.end(),
+        [](const auto& a, const auto& b) {
+            return a.second > b.second;
+        }
+    );
+
+    // extract names
+    std::vector<std::string> result;
+
+    for (const auto& [name, goals] : sortedTeams) {
+        result.push_back(name);
+    }
+
+    return result;
+}
 
 FootballGameSimulator::FootballGameSimulator() : championshipHistory(ChampionshipHistory()), currentChampionship(nullptr),
                                                  champion(std::string()), viceChampion(std::string()), bronzeTeam(std::string()), goalMaster(std::string()) {
@@ -64,35 +64,35 @@ void FootballGameSimulator::updateChampionshipRound() {
     this->currentChampionship->increaseRoundNumber();
 }
 
-// std::string FootballGameSimulator::findGoalMaster() {
-//     std::string goalMasterName;
-//     Map<std::string, unsigned> scorers;
-//
-//     for (const auto& match : this->currentChampionship->getMatches()) {
-//
-//         // every occurrence in getScorers() = one scored goal
-//         for (const auto& scorer : match.getScorers()) {
-//
-//             // unique player identification by name
-//             scorers[scorer->getName()]++;
-//         }
-//     }
-//
-//     unsigned maxGoals = 0;
-//
-//     for (const auto& scorer : scorers) {
-//
-//         const std::string& scorerName = scorer.first;
-//         unsigned goals = scorer.second;
-//
-//         if (goals > maxGoals) {
-//             maxGoals = goals;
-//             goalMasterName = scorerName;
-//         }
-//     }
-//
-//     return goalMasterName;
-// }
+std::string FootballGameSimulator::findGoalMaster() {
+    std::string goalMasterName;
+    Map<std::string, unsigned> scorers;
+
+    for (const auto& match : this->currentChampionship->getMatches()) {
+
+        // every occurrence in getScorers() = one scored goal
+        for (const auto& scorer : match.getScorers()) {
+
+            // unique player identification by name
+            scorers[scorer->getName()]++;
+        }
+    }
+
+    unsigned maxGoals = 0;
+
+    for (const auto& scorer : scorers) {
+
+        const std::string& scorerName = scorer.first;
+        unsigned goals = scorer.second;
+
+        if (goals > maxGoals) {
+            maxGoals = goals;
+            goalMasterName = scorerName;
+        }
+    }
+
+    return goalMasterName;
+}
 
 void FootballGameSimulator::finishChampionship() {
     this->champion = this->getChampions()[0];
