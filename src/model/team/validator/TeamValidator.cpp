@@ -2,9 +2,8 @@
 // Created by User on 5/16/2026.
 //
 
-#include "TeamValidator.h"
+#include "../team/validator/TeamValidator.h"
 #include <stdexcept>
-
 #include "../../../utils/ExceptionMessages.h"
 
 void TeamValidator::validateBudget(double budget) {

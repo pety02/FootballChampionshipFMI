@@ -2,7 +2,7 @@
 // Created by User on 5/14/2026.
 //
 
-#include "ChampionshipHistory.h"
+#include "../championship/history/ChampionshipHistory.h"
 
 #include "../validator/ChampionshipValidator.h"
 

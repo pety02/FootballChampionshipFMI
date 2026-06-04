@@ -12,10 +12,10 @@ add_library(model_championship
 )
 
 target_include_directories(model_championship PUBLIC
-        src/model/championship/accountingManager/AccountingManager.h
-        src/model/championship/history/ChampionshipHistory.h
-        src/model/championship/validator/ChampionshipValidator.h
-        src/model/championship/Championship.h
+        src/model/championship
+        src/model/championship/accountingManager
+        src/model/championship/history
+        src/model/championship/validator
 )
 
 # Library model_match
@@ -26,9 +26,9 @@ add_library(model_match
 )
 
 target_include_directories(model_match PUBLIC
-        src/model/match/lineup/Lineup.h
-        src/model/match/validator/MatchValidator.h
-        src/model/match/Match.h
+        src/model/match
+        src/model/match/lineup
+        src/model/match/validator
 )
 
 # Library model_player
@@ -38,8 +38,8 @@ add_library(model_player
 )
 
 target_include_directories(model_player PUBLIC
-        src/model/player/validator/PlayerValidator.h
-        src/model/player/Player.h
+        src/model/player
+        src/model/player/validator
 )
 
 # Library model_team
@@ -54,13 +54,10 @@ add_library(model_team
 )
 
 target_include_directories(model_team PUBLIC
-        src/model/team/factory/TeamFactory.h
-        src/model/team/manager/TeamManager.h
-        src/model/team/validator/TeamValidator.h
-        src/model/team/AttackingTeam.h
-        src/model/team/BalancedTeam.h
-        src/model/team/DefensiveTeam.h
-        src/model/team/Team.h
+        src/model/team
+        src/model/team/factory
+        src/model/team/manager
+        src/model/team/validator
 )
 
 # Library simulation
@@ -72,9 +69,8 @@ add_library(simulation
 )
 
 target_include_directories(simulation PUBLIC
-        src/simulation/validator/FootballGameSimulatorValidator.h
-        src/simulation/FootballGameSimulator.h
-        src/simulation/MatchResultApplier.h
+        src/simulation
+        src/simulation/validator
 )
 
 # Library utils
@@ -84,8 +80,7 @@ add_library(utils
 )
 
 target_include_directories(utils PUBLIC
-        src/utils/Map.h
-        src/utils/StringValidator.h
+        src/utils
 )
 
 # Add executable main.cpp

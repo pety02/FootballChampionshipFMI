@@ -5,7 +5,7 @@
 #include "BalancedTeam.h"
 
 #include <stdexcept>
-#include "PlayerValidator.h"
+#include "../player/validator/PlayerValidator.h"
 #include "TeamValidator.h"
 
 BalancedTeam::BalancedTeam() : Team() {

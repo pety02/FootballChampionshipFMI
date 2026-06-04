@@ -2,9 +2,8 @@
 // Created by User on 5/16/2026.
 //
 
-#include "PlayerValidator.h"
+#include "../player/validator/PlayerValidator.h"
 #include <stdexcept>
-
 #include "../../../utils/ExceptionMessages.h"
 
 void PlayerValidator::validateNumber(unsigned number) {

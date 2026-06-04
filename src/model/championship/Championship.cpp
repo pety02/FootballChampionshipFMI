@@ -2,7 +2,7 @@
 // Created by User on 5/14/2026.
 //
 
-#include "Championship.h"
+#include "../championship/Championship.h"
 
 #include <stdexcept>
 

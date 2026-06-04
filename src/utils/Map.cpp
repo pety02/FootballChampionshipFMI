@@ -52,22 +52,22 @@ bool Map<K, V>::empty() const {
     return data.empty();
 }
 
-template <typename K, typename V>
-auto Map<K, V>::begin() {
+template<typename K, typename V>
+Map<K, V>::iterator Map<K, V>::begin() {
     return data.begin();
 }
 
-template <typename K, typename V>
-auto Map<K, V>::end() {
+template<typename K, typename V>
+Map<K, V>::iterator Map<K, V>::end() {
     return data.end();
 }
 
-template <typename K, typename V>
-auto Map<K, V>::begin() const {
+template<typename K, typename V>
+Map<K, V>::const_iterator Map<K, V>::begin() const {
     return data.begin();
 }
 
-template <typename K, typename V>
-auto Map<K, V>::end() const {
+template<typename K, typename V>
+Map<K, V>::const_iterator Map<K, V>::end() const {
     return data.end();
 }

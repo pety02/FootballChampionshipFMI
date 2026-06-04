@@ -6,7 +6,7 @@
 #define ATTACKINGTEAM_H
 
 #include "Team.h"
-#include "../../player/Player.h"
+#include "../player/Player.h"
 
 /**
  *

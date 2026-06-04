@@ -4,7 +4,7 @@
 
 #include "Match.h"
 
-#include "AttackingTeam.h"
+#include "../team/AttackingTeam.h"
 #include "MatchValidator.h"
 #include <cstdlib>
 #include <ctime>

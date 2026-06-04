@@ -6,7 +6,7 @@
 #define TEAM_H
 
 #include <vector>
-#include "../../player/Player.h"
+#include "../player/Player.h"
 
 class TeamManager;
 

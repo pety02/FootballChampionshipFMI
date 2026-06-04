@@ -8,8 +8,7 @@
 #include "../match/Match.h"
 #include "../team/manager/TeamManager.h"
 #include <vector>
-
-#include "../../championship/accountingManager/AccountingManager.h"
+#include "accountingManager/AccountingManager.h"
 
 /**
  * A class that describes a championship.

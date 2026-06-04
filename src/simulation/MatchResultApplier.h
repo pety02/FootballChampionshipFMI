@@ -1,7 +1,7 @@
 #ifndef MATCHRESULTAPPLIER_H
 #define MATCHRESULTAPPLIER_H
 
-#include "../../../model/match/Match.h"
+#include "../model/match/Match.h"
 
 class MatchResultApplier {
 public:

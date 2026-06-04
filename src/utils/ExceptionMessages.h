@@ -4,8 +4,8 @@
 
 #ifndef EXCEPTIONMESSAGES_H
 #define EXCEPTIONMESSAGES_H
-#include <string>
 
+#include <string>
 #include "../model/championship/history/ChampionshipHistory.h"
 #include "../model/championship/validator/ChampionshipValidator.h"
 #include "../model/match/validator/MatchValidator.h"
@@ -59,10 +59,10 @@ enum class ExceptionMessages {
     TEAM_NOT_MANAGED_BY_THIS_MANAGER
 };
 
-constexpr unsigned CURRENT_YEAR = ChampionshipHistory::CURRENT_YEAR;
-constexpr unsigned MAX_TEAM_SIZE = Team::MAX_TEAM_SIZE;
-constexpr unsigned MAX_MATCH_ROUND_NUMBER = MatchValidator::MAX_ROUND_NUMBER;
-constexpr unsigned MAX_CHAMPIONSHIP_ROUND_NUMBER = ChampionshipValidator::MAX_ROUND_NUMBER;
+unsigned CURRENT_YEAR = ChampionshipHistory::CURRENT_YEAR;
+unsigned MAX_TEAM_SIZE = Team::MAX_TEAM_SIZE;
+unsigned MAX_MATCH_ROUND_NUMBER = MatchValidator::MAX_ROUND_NUMBER;
+unsigned MAX_CHAMPIONSHIP_ROUND_NUMBER = ChampionshipValidator::MAX_ROUND_NUMBER;
 
 static const std::string& toString(ExceptionMessages message) {
 

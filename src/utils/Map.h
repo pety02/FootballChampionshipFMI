@@ -7,6 +7,8 @@ template <typename K, typename V>
 class Map {
 private:
     std::vector<std::pair<K, V>> data;
+    using iterator = typename std::vector<V>::iterator;
+    using const_iterator = typename std::vector<V>::const_iterator;
 
     int findIndex(const K& key) const;
 
@@ -23,11 +25,11 @@ public:
 
     bool empty() const;
 
-    auto begin();
-    auto end();
+    iterator begin();
+    iterator end();
 
-    auto begin() const;
-    auto end() const;
+    const_iterator begin() const;
+    const_iterator end() const;
 };
 
 #endif
