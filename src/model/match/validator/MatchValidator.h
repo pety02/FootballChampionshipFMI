@@ -7,8 +7,7 @@
 
 #include <vector>
 #include "../../match/Match.h"
-
-enum class ExceptionMessage;
+#include "../../utils/ExceptionMessages.h"
 
 /**
 *

@@ -8,8 +8,6 @@
 #include "../../championship/Championship.h"
 #include "../../../utils/Map.h"
 
-enum class ExceptionMessage;
-
 /**
  * A class that represents the history of the championships as a map of key-value pairs where:
  * - The key is the year of the championship.
