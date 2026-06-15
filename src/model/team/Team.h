@@ -141,6 +141,8 @@ public:
     *
     */
     void buyPlayer(Player* player, Player::Position playerPos, double remainingBudget, bool isTransfer);
+
+    void removePlayer(const std::string& playerName);
 };
 
 #endif //TEAM_H

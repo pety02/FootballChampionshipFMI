@@ -25,6 +25,10 @@ void Championship::increaseRoundNumber() {
     ++this->currentRoundNumber;
 }
 
+TeamManager & Championship::getTeamManager() {
+    return this->teamManager;
+}
+
 const TeamManager & Championship::getTeamManager() const {
     return this->teamManager;
 }
@@ -35,6 +39,14 @@ const std::vector<Match> & Championship::getMatches() const {
 
 unsigned Championship::getCurrentRoundNumber() const {
     return this->currentRoundNumber;
+}
+
+AccountingManager &Championship::getAccountingManager() {
+    return this->accountingManager;
+}
+
+const AccountingManager &Championship::getAccountingManager() const {
+    return this->accountingManager;
 }
 
 bool Championship::isFinished() const {

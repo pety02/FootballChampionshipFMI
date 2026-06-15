@@ -4,121 +4,269 @@
 
 #include "CommandLineInterpreter.h"
 
-void CommandLineInterpreter::startSeason(Championship &championship) {
+#include "MatchResultApplier.h"
+
+const Map<unsigned, Championship>& CommandLineInterpreter::listSeasons(const ChampionshipHistory &championshipHistory) {
+    return championshipHistory.getChampionships();
 }
 
-const std::vector<Championship> CommandLineInterpreter::listSeasons(const ChampionshipHistory &championshipHistory) {
-}
-
-void CommandLineInterpreter::playRound(Championship &championship, Match &match) {
-}
-
-void CommandLineInterpreter::playAllRounds(Championship &championship) {
+void CommandLineInterpreter::playAllMatches(Championship &championship) {
+    for (auto match : championship.getMatches()) {
+        CommandLineInterpreter::playMatch(match);
+    }
 }
 
 void CommandLineInterpreter::showPodium(const Championship &championship) {
+    std::cout << "The champion is: " << CommandLineInterpreter::getChampion(championship).getName() << "." << std::endl;
+    std::cout << "The vice-champion is: " << CommandLineInterpreter::getRunnerUp(championship).getName() << "." << std::endl;
+    std::cout << "The third champion is: " << CommandLineInterpreter::getTopScorer(championship).getName() << "." << std::endl;
 }
 
-void CommandLineInterpreter::finishSeason(Championship &championship) {
+void CommandLineInterpreter::finishSeason(ChampionshipHistory& history, Championship &championship) {
+    for (const auto& match : championship.getMatches()) {
+        if (!match.isFinished()) {
+            throw std::invalid_argument(toString(ExceptionMessages::NOT_ALL_MATCHES_FINISHED_YET));
+        } else {
+            Match finishedMatch(match);
+            enterMatchResult(finishedMatch);
+        }
+    }
+    std::string filename;
+    std:: cout << "Enter filename for championship data's export: ";
+    std::cin >> filename;
+    history.addChampionship(championship.getYear(), championship);
+    championship.finish();
+
+    exportData(history, filename);
 }
 
 void CommandLineInterpreter::playMatch(Match &match) {
+    // TODO: maka a simulation of a real football game
 }
 
 void CommandLineInterpreter::viewMatches(const Championship &championship) {
+    for (const auto& match : championship.getMatches()) {
+        std::cout << "The host in the match is: " << match.getHost() << " with goals:" << match.getHostGoals() << "." << std::endl;
+        std::cout << "The guest in the match is: " << match.getGuest() << " with goals:" << match.getGuestGoals() << "." << std::endl;
+        std::cout << "The top scorers are: " << getTopScorer(championship).getName() << "." << std::endl;
+    }
 }
 
 void CommandLineInterpreter::enterMatchResult(Match &match) {
+    Match::MatchResult result;
+    result.home = match.getHost();
+    result.guest = match.getGuest();
+
+    std::vector<Match::MatchResult::Scorer*> goals;
+    int totalGoalsCount;
+    std::cout << "Enter total goals count: ";
+    std::cin >> totalGoalsCount;
+
+    std::string playerName;
+    unsigned scoredGals;
+    while (totalGoalsCount > 0) {
+        std::cout << "Enter player name: ";
+        std::cin >> playerName;
+
+        std::cout << "Enter goals: ";
+        std::cin >> scoredGals;
+
+        if (validGoalsCount(scoredGals)) {
+            // TODO: check these warnings below
+            if (isHomePlayer(playerName, match.getHost())) {
+                result.homeGoals += scoredGals;
+            } else if (isGuestPlayer(playerName, match.getGuest())) {
+                result.guestGoals += scoredGals;
+            } else {
+              throw std::invalid_argument(toString(ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH));
+            }
+
+            totalGoalsCount--;
+        } else {
+            throw std::invalid_argument(toString(ExceptionMessages::GOALS_COUNT_CANNOT_BE_NEGATIVE));
+        }
+    }
+
+    MatchResultApplier::apply(result);
 }
 
-const std::vector<Team> CommandLineInterpreter::listTeams(const Championship &championship) {
+const std::vector<Team*>& CommandLineInterpreter::listTeams(Championship &championship) {
+    return championship.getTeamManager().getTeams();
 }
 
-void CommandLineInterpreter::addTeam(const Team &team, Championship &championship) {
+void CommandLineInterpreter::addTeam(Team* team, Championship &championship) {
+    for (int i = 0; i < championship.getTeamManager().getTeams().size(); i++) {
+        Team* currentTeam = championship.getTeamManager().getTeams()[i];
+        if (std::strcmp(currentTeam->getName().c_str(), team->getName().c_str()) == 0)
+            throw std::invalid_argument(toString(ExceptionMessages::TEAM_ALREADY_EXSISTS));
+    }
+
+    championship.getTeamManager().addTeam(team);
 }
 
 void CommandLineInterpreter::removeTeam(const std::string &teamName, Championship &championship) {
+    for (int i = 0; i < championship.getTeamManager().getTeams().size(); i++) {
+        Team* currentTeam = championship.getTeamManager().getTeams()[i];
+        if (std::strcmp(currentTeam->getName().c_str(), teamName.c_str()) != 0)
+            throw std::invalid_argument(toString(ExceptionMessages::TEAM_DOES_NOT_EXSIST));
+    }
+
+    championship.getTeamManager().removeTeam(teamName);
 }
 
-void CommandLineInterpreter::addPlayer(const Player &player, Team &team) {
+void CommandLineInterpreter::addPlayer(Player* player, Team &team) {
+    if (hasPlayerWithName(team, player->getName())) {
+        throw std::invalid_argument(toString(ExceptionMessages::THERE_IS_PLAYER_WITH_SAME_NAME));
+    }
+
+    team.addPlayer(player, false);
 }
 
 void CommandLineInterpreter::removePlayer(const std::string &playerName, Team &team) {
+    team.removePlayer(playerName);
 }
 
 void CommandLineInterpreter::transferPlayers(Team &firstTeam, Team &secondTeam) {
+    // TODO:
+    // 1. Get randomly two players from the given teams
+    // 2.1. Validates that team A does not have a player with the same name as the transferred player from the team B
+    // 2.2. Add a player from team A to a team B with a isTransfer = true flag
+    // 3.1. Validates that team B does not have a player with the same name as the transferred player from the team A
+    // 3.2. Add a player from team B to a team A with a isTransfer = true flag
 }
 
 void CommandLineInterpreter::viewPlayer(const Player &player) {
+    // TODO: prints the data of the player
 }
 
-const std::vector<Player> CommandLineInterpreter::listPlayers(const Team &team) {
+const std::vector<Player*>& CommandLineInterpreter::listPlayers(Team &team) {
+    return team.getPlayers();
 }
 
-void CommandLineInterpreter::updateSalary(Player &player, double newSalary) {
-}
-
-void CommandLineInterpreter::validateLineup(const Lineup &lineup) {
+void CommandLineInterpreter::updateSalary(Championship& championship, Player &player) {
+    Team* t = nullptr;
+    for (auto currTeam : championship.getTeamManager().getTeams()) {
+        for (auto currPlayer : currTeam->getPlayers()) {
+            if (std::strcmp(currPlayer->getName().c_str(), player.getName().c_str()) != 0) {
+                throw std::invalid_argument(toString(ExceptionMessages::NO_PLAYER_WITH_THIS_NAME));
+            } else {
+                t = currTeam;
+                break;
+            }
+        }
+    }
+    championship.getAccountingManager().regulateSalary(player, *t);
 }
 
 const Lineup & CommandLineInterpreter::autoSelectLineup(const Team &team) {
+    // TODO: maka a simulation of selecting lineups
 }
 
 void CommandLineInterpreter::deleteLineup(Match &match, const Lineup &lineup) {
+    if (std::strcmp(match.getGuest()->getName().c_str(), lineup.getTeam()->getName().c_str()) == 0) {
+        match.setGuest(nullptr);
+    } else if (std::strcmp(match.getHost()->getName().c_str(), lineup.getTeam()->getName().c_str()) == 0) {
+        match.setHost(nullptr);
+    } else {
+        throw std::invalid_argument(toString(ExceptionMessages::NO_LINEUP_WITH_THIS_TEAM_NAME));
+    }
 }
 
-const std::vector<Player> CommandLineInterpreter::listTopScorers(const Team &team) {
+const Map<Player*, unsigned>& CommandLineInterpreter::listTopScorers(Team &team) {
+    Map<Player*, unsigned> champs;
+    for (const auto player : team.getPlayers()) {
+        champs.add(player, player->getStats().scoredGoals);
+    }
+    // TODO: sort them by goals
+    for (const auto& pair : champs.getData()) {
+        // TODO: traverse them and find the top three biggest goals' value and return the players
+    }
 }
 
-const Team::Statistics & CommandLineInterpreter::listTeamStats(const Team &team) {
+const Team::Statistics& CommandLineInterpreter::listTeamStats(Team &team){
+    return team.getStats();
 }
 
-void CommandLineInterpreter::viewPlayerRanking(const Team &team) {
+void CommandLineInterpreter::viewPlayerRanking(Championship &championship) {
+    for (auto team : championship.getTeamManager().getTeams()) {
+        auto champs = listTopScorers(*team);
+        for (auto player : champs.getData()) {
+
+        }
+    }
 }
 
-const Map<Team, std::vector<Team::Statistics>> CommandLineInterpreter::
-listSeasonStats(const Championship &championship) {
+const Map<Team*, Team::Statistics>& CommandLineInterpreter::listSeasonStats(Championship &championship) {
+    Map<Team*, Team::Statistics> stats;
+    for ( const auto& team: championship.getTeamManager().getTeams()) {
+        stats.add(team, team->getStats());
+    }
+    // TODO: check this warning
+    return stats;
 }
 
-const Map<Player, std::vector<Team::Statistics>> CommandLineInterpreter::listPlayerStats(const Team &team) {
+const Map<Player*, Player::Statistics>& CommandLineInterpreter::listPlayerStats(Team &team) {
+    Map<Player*, Player::Statistics> stats;
+    for ( const auto& player: team.getPlayers()) {
+        stats.add(player, player->getStats());
+    }
+    // TODO: check this warning
+    return stats;
 }
 
-const Team & CommandLineInterpreter::getChampion(const Championship &championship) {
+const Team& CommandLineInterpreter::getChampion(const Championship &championship) {
+    std::pair<Team*, int> champ = {};
+    for (const auto team : championship.getTeamManager().getTeams()) {
+        if (team->getStats().winsCount > champ.second) {
+            champ = {team, team->getStats().winsCount};
+        }
+    }
+
+    return *champ.first;
 }
 
-const Team & CommandLineInterpreter::getRunnerUp(const Championship &championship) {
+const Team& CommandLineInterpreter::getRunnerUp(const Championship &championship) {
+    Map<Team*, int> champs;
+    for (const auto team : championship.getTeamManager().getTeams()) {
+        champs.add(team, team->getStats().winsCount);
+    }
+    // TODO: sort them by goals
+    for (const auto pair: champs.getData()) {
+        // TODO: traverse them and find the second biggest goals' value and return the team
+    }
 }
 
-const Team & CommandLineInterpreter::gtThirdPlace(const Championship &championship) {
+const Team& CommandLineInterpreter::gtThirdPlace(const Championship &championship) {
+    Map<Team*, int> champs;
+    for (const auto team : championship.getTeamManager().getTeams()) {
+        champs.add(team, team->getStats().winsCount);
+    }
+    // TODO: sort them by goals
+    for (const auto pair: champs.getData()) {
+        // TODO: traverse them and find the third biggest goals' value and return the team
+    }
 }
 
-const Player & CommandLineInterpreter::getTopScorer(const Championship &championship) {
+const Player& CommandLineInterpreter::getTopScorer(const Championship &championship) {
+    // TODO: implement similar logic to this with top teams
 }
 
 void CommandLineInterpreter::exportData(const ChampionshipHistory &championshipHistory, const std::string &filename) {
+    // TODO: save data for a real game simulation in a file
 }
 
-ChampionshipHistory & CommandLineInterpreter::importData(const std::string &filename) {
+ChampionshipHistory& CommandLineInterpreter::importData(const std::string &filename) {
+    // TODO: read a file and init a game from data saved in this file
 }
 
 void CommandLineInterpreter::simulateGoal(Match &match) {
-}
-
-void CommandLineInterpreter::simulateMatch(Championship &championship) {
-}
-
-void CommandLineInterpreter::forceResult(Match &match) {
+    // TODO: simulate real match scoring a goal
 }
 
 void CommandLineInterpreter::help(const std::string& command) {
     Command cmd = parseCommand(command);
 
     switch (cmd) {
-        case Command::START_SEASON:
-            std::cout << "start_season <year>\n"
-                      << "Starts a new championship season.\n"
-                      << "Example: start_season 2026\n";
-            break;
 
         case Command::LIST_SEASONS:
             std::cout << "list_seasons\n"
@@ -128,11 +276,6 @@ void CommandLineInterpreter::help(const std::string& command) {
         case Command::PLAY_ROUND:
             std::cout << "play_round\n"
                       << "Plays all matches from the current round.\n";
-            break;
-
-        case Command::PLAY_ALL_ROUNDS:
-            std::cout << "play_all_rounds\n"
-                      << "Simulates the remainder of the championship.\n";
             break;
 
         case Command::SHOW_PODIUM:
@@ -212,11 +355,6 @@ void CommandLineInterpreter::help(const std::string& command) {
                       << "Changes a player's salary manually.\n";
             break;
 
-        case Command::VALIDATE_LINEUP:
-            std::cout << "validate_lineup <team>\n"
-                      << "Checks whether the current lineup is valid.\n";
-            break;
-
         case Command::AUTO_SELECT_LINEUP:
             std::cout << "auto_select_lineup <team>\n"
                       << "Automatically generates a valid lineup.\n";
@@ -288,17 +426,6 @@ void CommandLineInterpreter::help(const std::string& command) {
                       << "Simulates a random goal in a match.\n";
             break;
 
-        case Command::SIMULATE_MATCH:
-            std::cout << "simulate_match\n"
-                      << "Simulates an entire match automatically.\n";
-            break;
-
-        case Command::FORCE_RESULT:
-            std::cout << "force_result <host_team> <guest_team> "
-                         "<host_goals> <guest_goals>\n"
-                      << "Forces a specific match result.\n";
-            break;
-
         case Command::HELP:
             std::cout << "help <command>\n"
                       << "Displays detailed information about a command.\n";
@@ -318,6 +445,7 @@ void CommandLineInterpreter::help(const std::string& command) {
 }
 
 int CommandLineInterpreter::exit() {
+    // TODO: clear all used resource in order to prevent from memory leaks
     return 0;
 }
 
@@ -331,10 +459,8 @@ void CommandLineInterpreter::menu() {
     std::cout << "======================== AVAILABLE COMMANDS ========================\n\n";
 
     std::cout << "[Season Management]\n";
-    std::cout << "  start_season\n";
     std::cout << "  list_seasons\n";
     std::cout << "  play_round\n";
-    std::cout << "  play_all_rounds\n";
     std::cout << "  show_podium\n";
     std::cout << "  finish_season\n\n";
 
@@ -357,7 +483,6 @@ void CommandLineInterpreter::menu() {
     std::cout << "  update_salary\n\n";
 
     std::cout << "[Lineup Management]\n";
-    std::cout << "  validate_lineup\n";
     std::cout << "  auto_select_lineup\n";
     std::cout << "  delete_lineup\n\n";
 
@@ -380,8 +505,6 @@ void CommandLineInterpreter::menu() {
 
     std::cout << "[Simulation Tools]\n";
     std::cout << "  simulate_goal\n";
-    std::cout << "  simulate_match\n";
-    std::cout << "  force_result\n\n";
 
     std::cout << "[System]\n";
     std::cout << "  help\n";

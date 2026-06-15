@@ -58,7 +58,12 @@ public:
     /**
     *
     */
-    [[nodiscard]] const std::vector<Team>& getTeams() const;
+    [[nodiscard]] std::vector<Team*>& getTeams();
+
+    /**
+    *
+    */
+    [[nodiscard]] const std::vector<Team*>& getTeams() const;
 };
 
 #endif //TEAMMANAGER_H

@@ -51,6 +51,16 @@ void Team::buyPlayer(Player* player, Player::Position playerPos, double remainin
     else if (playerPos == Player::Position::GOALKEEPER) this->goalkeepersCount++;
 }
 
+void Team::removePlayer(const std::string& playerName) {
+    int i = 0;
+    for (auto& player : this->players) {
+        if (player->getName() == playerName) {
+            this->players.erase(this->players.begin() + i);
+        }
+        i++;
+    }
+}
+
 void Team::copy(const Team& other) {
     this->name = other.name;
     this->stadiumName = other.stadiumName;

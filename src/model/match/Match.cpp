@@ -85,13 +85,21 @@ unsigned Match::getRoundNumber() const {
 const std::vector<Player*> Match::getScorers() const {
     std::vector<Player*> scorers = std::vector<Player*>();
     for (int i = 0; i < this->matchResult.goals.size(); ++i) {
-        scorers.push_back(this->matchResult.goals[i].player);
+        scorers.push_back(this->matchResult.goals[i]->player);
     }
     return scorers;
 }
 
+void Match::setHost(Team* host) {
+    this->host = host;
+}
+
+void Match::setGuest(Team* guest) {
+    this->guest = guest;
+}
+
 void Match::addGoal(Player *scorer, bool isHostPlayer) {
-    this->matchResult.goals.push_back(MatchResult::Scorer(scorer, isHostPlayer));
+    this->matchResult.goals.push_back(new MatchResult::Scorer(scorer, isHostPlayer));
 }
 
 bool Match::isFinished() const {
@@ -160,7 +168,7 @@ unsigned Match::calculateDefenseStrength(const Lineup& lineup) {
     return strength;
 }
 
-Player* Match::chooseScorer(const std::vector<Player*>& players) {
+Player *Match::chooseScorer(const std::vector<Player *> &players) {
     std::vector<Player*> weightedPool;
 
     for (Player* p : players) {
@@ -231,7 +239,7 @@ Match::MatchResult Match::play() {
     unsigned hostGoals = 0;
     unsigned guestGoals = 0;
 
-    std::vector<MatchResult::Scorer> goals;
+    std::vector<MatchResult::Scorer*> goals;
 
     // HOME ATTACKS
     for (int i = 0; i < 10; i++) {
@@ -244,7 +252,7 @@ Match::MatchResult Match::play() {
             ++hostGoals;
 
             Player* scorer = chooseScorer(this->hostLineup.getPlayers());
-            goals.push_back({scorer, true});
+            goals.push_back(new Match::MatchResult::Scorer(scorer, true));
         }
     }
 
@@ -259,7 +267,7 @@ Match::MatchResult Match::play() {
             ++guestGoals;
 
             Player* scorer = chooseScorer(this->guestLineup.getPlayers());
-            goals.push_back({scorer, false});
+            goals.push_back(new MatchResult::Scorer(scorer, false));
         }
     }
 

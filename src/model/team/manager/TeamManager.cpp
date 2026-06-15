@@ -78,3 +78,11 @@ void TeamManager::setName(const std::string &name) {
 const std::string & TeamManager::getName() const {
     return this->name;
 }
+
+std::vector<Team*>& TeamManager::getTeams() {
+    return this->teams;
+}
+
+const std::vector<Team*>& TeamManager::getTeams() const {
+    return this->teams;
+}

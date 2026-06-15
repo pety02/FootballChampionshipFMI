@@ -23,7 +23,7 @@ public:
             bool isHome;
         };
 
-        std::vector<Scorer> goals;
+        std::vector<Scorer*> goals;
     };
 private:
     Team* host;
@@ -88,6 +88,10 @@ public:
     */
     [[nodiscard]] const std::vector<Player*> getScorers() const;
 
+    void setHost(Team* host);
+
+    void setGuest(Team* guest);
+
     void addGoal(Player* scorer, bool isHostPlayer);
 
     [[nodiscard]] bool isFinished() const;
@@ -96,7 +100,7 @@ public:
 
     static unsigned calculateDefenseStrength(const Lineup& lineup);
 
-    static Player* chooseScorer(const std::vector<Player*>& players);
+    static Player *chooseScorer(const std::vector<Player *> &players);
 
     MatchResult play();
 };

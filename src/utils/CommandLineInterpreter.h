@@ -13,11 +13,9 @@
  *
  */
 enum class Command {
-    START_SEASON,
     LIST_SEASONS,
 
     PLAY_ROUND,
-    PLAY_ALL_ROUNDS,
     SHOW_PODIUM,
     FINISH_SEASON,
 
@@ -37,7 +35,6 @@ enum class Command {
     LIST_PLAYERS,
     UPDATE_SALARY,
 
-    VALIDATE_LINEUP,
     AUTO_SELECT_LINEUP,
     DELETE_LINEUP,
     LIST_TOP_SCORERS,
@@ -49,8 +46,6 @@ enum class Command {
     EXPORT_DATA,
     IMPORT_DATA,
     SIMULATE_GOAL,
-    SIMULATE_MATCH,
-    FORCE_RESULT,
     HELP,
     EDIT,
     MENU,
@@ -63,11 +58,9 @@ enum class Command {
  * @return
  */
 inline Command parseCommand(const std::string& cmd) {
-    if (cmd == "start_season") return Command::START_SEASON;
     if (cmd == "list_seasons") return Command::LIST_SEASONS;
 
     if (cmd == "play_round") return Command::PLAY_ROUND;
-    if (cmd == "play_all_rounds") return Command::PLAY_ALL_ROUNDS;
     if (cmd == "show_podium") return Command::SHOW_PODIUM;
     if (cmd == "finish_season") return Command::FINISH_SEASON;
 
@@ -87,7 +80,6 @@ inline Command parseCommand(const std::string& cmd) {
     if (cmd == "list_players") return Command::LIST_PLAYERS;
     if (cmd == "update_salary") return Command::UPDATE_SALARY;
 
-    if (cmd == "validate_lineup") return Command::VALIDATE_LINEUP;
     if (cmd == "auto_select_lineup") return Command::AUTO_SELECT_LINEUP;
     if (cmd == "delete_lineup") return Command::DELETE_LINEUP;
 
@@ -106,8 +98,6 @@ inline Command parseCommand(const std::string& cmd) {
     if (cmd == "import_data") return Command::IMPORT_DATA;
 
     if (cmd == "simulate_goal") return Command::SIMULATE_GOAL;
-    if (cmd == "simulate_match") return Command::SIMULATE_MATCH;
-    if (cmd == "force_result") return Command::FORCE_RESULT;
 
     if (cmd == "help") return Command::HELP;
     if (cmd == "edit") return Command::EDIT;
@@ -121,31 +111,19 @@ inline Command parseCommand(const std::string& cmd) {
  */
 class CommandLineInterpreter {
 private:
-    /**
-     *
-     * @param championship
-     */
-    static void startSeason(Championship& championship);
 
     /**
      *
      * @param championshipHistory
      * @return
      */
-    static const std::vector<Championship> listSeasons(const ChampionshipHistory& championshipHistory);
-
-    /**
-     *
-     * @param championship
-     * @param match
-     */
-    static void playRound(Championship& championship, Match& match);
+    static const Map<unsigned, Championship>& listSeasons(const ChampionshipHistory& championshipHistory);
 
     /**
      *
      * @param championship
      */
-    static void playAllRounds(Championship& championship);
+    static void playAllMatches(Championship& championship);
 
     /**
      *
@@ -157,7 +135,7 @@ private:
      *
      * @param championship
      */
-    static void finishSeason(Championship& championship);
+    static void finishSeason(ChampionshipHistory& history, Championship& championship);
 
     /**
      *
@@ -182,14 +160,14 @@ private:
      * @param championship
      * @return
      */
-    static const std::vector<Team> listTeams(const Championship& championship);
+    static const std::vector<Team*>& listTeams(Championship& championship);
 
     /**
      *
      * @param team
      * @param championship
      */
-    static void addTeam(const Team& team, Championship& championship);
+    static void addTeam(Team* team, Championship& championship);
 
     /**
      *
@@ -203,7 +181,7 @@ private:
      * @param player
      * @param team
      */
-    static void addPlayer(const Player& player, Team& team);
+    static void addPlayer(Player* player, Team& team);
 
     /**
      *
@@ -230,20 +208,14 @@ private:
      * @param team
      * @return
      */
-    static const std::vector<Player> listPlayers(const Team& team);
+    static const std::vector<Player*>& listPlayers(Team& team);
 
     /**
      *
      * @param player
      * @param newSalary
      */
-    static void updateSalary(Player& player, double newSalary);
-
-    /**
-     *
-     * @param lineup
-     */
-    static void validateLineup(const Lineup& lineup);
+    static void updateSalary(Championship& championship, Player& player);
 
     /**
      *
@@ -264,34 +236,34 @@ private:
      * @param team
      * @return
      */
-    static const std::vector<Player> listTopScorers(const Team& team);
+    static const Map<Player*, unsigned>& listTopScorers(Team& team);
 
     /**
      *
      * @param team
      * @return
      */
-    static const Team::Statistics& listTeamStats(const Team& team);
+    static const Team::Statistics& listTeamStats(Team& team);
 
     /**
      *
      * @param team
      */
-    static void viewPlayerRanking(const Team& team);
+    static void viewPlayerRanking(Championship &championship);
 
     /**
      *
      * @param championship
      * @return
      */
-    static const Map<Team, std::vector<Team::Statistics>> listSeasonStats(const Championship& championship);
+    static const Map<Team*, Team::Statistics>& listSeasonStats(Championship& championship);
 
     /**
      *
      * @param team
      * @return
      */
-    static const Map<Player, std::vector<Team::Statistics>> listPlayerStats(const Team& team);
+    static const Map<Player*, Player::Statistics>& listPlayerStats(Team& team);
 
     /**
      *
@@ -340,18 +312,6 @@ private:
      * @param match
      */
     static void simulateGoal(Match& match);
-
-    /**
-     *
-     * @param championship
-     */
-    static void simulateMatch(Championship& championship);
-
-    /**
-     *
-     * @param match
-     */
-    static void forceResult(Match& match);
 
     /**
      *

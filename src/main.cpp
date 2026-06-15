@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Map.h>
+#include "Map.h"
 
 int main() {
     Map<std::string, unsigned> wins = Map<std::string, unsigned>();

@@ -42,6 +42,8 @@ public:
     */
     void increaseRoundNumber();
 
+    [[nodiscard]] TeamManager& getTeamManager();
+
     /**
      * Returns the team manager.
      * @return a const reference to the current championship's team manager.
@@ -58,6 +60,10 @@ public:
      * @return the current round number.
      */
     [[nodiscard]] unsigned getCurrentRoundNumber() const;
+
+    [[nodiscard]] AccountingManager &getAccountingManager();
+
+    [[nodiscard]] const AccountingManager &getAccountingManager() const;
 
     /**
      * @return if the current championship is finished or not on the basis of

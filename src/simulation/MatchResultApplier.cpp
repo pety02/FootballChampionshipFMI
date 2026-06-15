@@ -29,14 +29,20 @@ void MatchResultApplier::applyTeam(Team* team,
         stats.increaseDrawsCount(1);
 }
 
-void MatchResultApplier::applyPlayers(const Match::MatchResult& result)
-{
-    for (Player* p : result.home->getPlayers())
+void MatchResultApplier::applyPlayers(const Match::MatchResult& result) {
+    bool isHome = false;
+    for (Player* p : result.home->getPlayers()) {
         p->getStats().increaseMatchesCount();
+        isHome = true;
+    }
 
-    for (Player* p : result.guest->getPlayers())
+    for (Player* p : result.guest->getPlayers()) {
         p->getStats().increaseMatchesCount();
+        isHome = false;
+    }
 
-    for (const auto& g : result.goals)
-        g.player->getStats().increaseScoredGoals();
+    for (auto& g : result.goals) {
+        g->player->getStats().increaseScoredGoals();
+        g->isHome = isHome;
+    }
 }
