@@ -3,6 +3,8 @@
 //
 
 #include "ChampionshipValidator.h"
+
+#include <ChampionshipHistory.h>
 #include <stdexcept>
 
 #include "../../../utils/ExceptionMessages.h"

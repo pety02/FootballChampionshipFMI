@@ -3,7 +3,6 @@
 //
 
 #include "TeamFactory.h"
-
 #include <stdexcept>
 #include "../../../utils/ExceptionMessages.h"
 #include "../../team/AttackingTeam.h"

@@ -6,9 +6,6 @@
 #define EXCEPTIONMESSAGES_H
 
 #include <string>
-#include "../model/championship/history/ChampionshipHistory.h"
-#include "../model/championship/validator/ChampionshipValidator.h"
-#include "../model/match/validator/MatchValidator.h"
 
 enum class ExceptionMessages {
     // Player type validation messages
@@ -62,15 +59,25 @@ enum class ExceptionMessages {
     KEY_NOT_FOUND,
 
     // Other validation rules
-    INVALID_COMMAND
+    INVALID_COMMAND,
+    INVALID_ARGUMENT,
+
+    // Command line interpreter messages
+    NOT_ALL_MATCHES_FINISHED_YET,
+    DOES_NOT_PLAY_IN_THIS_MATCH,
+    TEAM_ALREADY_EXISTS,
+    TEAM_DOES_NOT_EXIST,
+    NO_LINEUP_WITH_THIS_TEAM_NAME,
+    SCORED_GOALS_CANNOT_BE_MORE_THAN_TOTAL_SCORED_GOALS,
+    THERE_IS_PLAYER_WITH_SAME_NAME
 };
 
-unsigned CURRENT_YEAR = ChampionshipHistory::CURRENT_YEAR;
-unsigned MAX_TEAM_SIZE = Team::MAX_TEAM_SIZE;
-unsigned MAX_MATCH_ROUND_NUMBER = MatchValidator::MAX_ROUND_NUMBER;
-unsigned MAX_CHAMPIONSHIP_ROUND_NUMBER = ChampionshipValidator::MAX_ROUND_NUMBER;
+inline constexpr unsigned CURRENT_YEAR = 2026;
+inline constexpr unsigned MAX_TEAM_SIZE = 20;
+inline constexpr unsigned MAX_MATCH_ROUND_NUMBER = 2;
+inline constexpr unsigned MAX_CHAMPIONSHIP_ROUND_NUMBER = 38;
 
-static const std::string& toString(ExceptionMessages message) {
+static std::string toString(ExceptionMessages message) {
 
     switch (message) {
         case ExceptionMessages::TOO_MANY_FORWARDERS: return "Too many forwarders.";
@@ -119,6 +126,15 @@ static const std::string& toString(ExceptionMessages message) {
         case ExceptionMessages::KEY_NOT_FOUND: return "Map key not found.";
 
         case ExceptionMessages::INVALID_COMMAND: return "Invalid command.";
+        case ExceptionMessages::INVALID_ARGUMENT: return "Invalid argument.";
+
+        case ExceptionMessages::NOT_ALL_MATCHES_FINISHED_YET: return "Not all matches finished.";
+        case ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH: return "Does not play in the other match.";
+        case ExceptionMessages::TEAM_ALREADY_EXISTS: return "Team already exists.";
+        case ExceptionMessages::TEAM_DOES_NOT_EXIST: return "Team does not exist.";
+        case ExceptionMessages::NO_LINEUP_WITH_THIS_TEAM_NAME: return "No line up with the team.";
+        case ExceptionMessages::SCORED_GOALS_CANNOT_BE_MORE_THAN_TOTAL_SCORED_GOALS: return "Scored goals cannot be more than total.";
+        case ExceptionMessages::THERE_IS_PLAYER_WITH_SAME_NAME: return "There is a player with the name that is already exists.";
 
         default: return "Unknown exception.";
     }

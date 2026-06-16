@@ -56,17 +56,17 @@ public:
     static constexpr unsigned MAX_TEAM_SIZE = 20;
 
 protected:
-    std::string name;
-    std::string stadiumName;
-    std::vector<Player*> players;
+    std::string name = std::string();
+    std::string stadiumName = std::string();
+    std::vector<Player*> players = std::vector<Player*>();
     double budget = 0.0;
-    Statistics stats;
-    TeamManager* teamManager;
-    unsigned forwardersCount;
-    unsigned midfieldersCount;
-    unsigned goalkeepersCount;
-    unsigned defendersCount;
-    unsigned wingersCount;
+    Statistics stats = Statistics();
+    TeamManager* teamManager = nullptr;
+    unsigned forwardersCount = 0;
+    unsigned midfieldersCount = 0;
+    unsigned goalkeepersCount = 0;
+    unsigned defendersCount = 0;
+    unsigned wingersCount = 0;
 
     /**
     *
@@ -135,12 +135,12 @@ public:
     */
     [[nodiscard]] Statistics& getStats();
 
-    virtual void addPlayer(Player* player, bool isTransfer) = 0;
+    virtual void addPlayer(Player& player, bool isTransfer) = 0;
 
     /**
     *
     */
-    void buyPlayer(Player* player, Player::Position playerPos, double remainingBudget, bool isTransfer);
+    void buyPlayer(Player& player, Player::Position playerPos, double remainingBudget, bool isTransfer);
 
     void removePlayer(const std::string& playerName);
 };

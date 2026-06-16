@@ -36,10 +36,8 @@ void Team::Statistics::increaseConcededGoals(unsigned concededGoals) {
     this->concededGoals += concededGoals;
 }
 
-void Team::buyPlayer(Player* player, Player::Position playerPos, double remainingBudget, bool isTransfer) {
-    if(player == nullptr) throw std::invalid_argument(toString(ExceptionMessages::PLAYER_CANNOT_BE_NULL));
-
-    this->players.push_back(player);
+void Team::buyPlayer(Player& player, Player::Position playerPos, double remainingBudget, bool isTransfer) {
+    this->players.push_back(new Player(player));
     if(isTransfer) {
         this->budget = remainingBudget;
     }

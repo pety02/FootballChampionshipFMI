@@ -78,6 +78,8 @@ add_library(utils
         src/utils/StringValidator.cpp
         src/utils/CommandLineInterpreter.cpp
         src/utils/Command.h
+        src/utils/CommandLineInterpreterValidator.h
+        src/utils/CommandLineInterpreterValidator.cpp
 )
 
 target_include_directories(utils PUBLIC
@@ -89,7 +91,9 @@ add_executable(FootballChampionshipFMI src/main.cpp
         src/simulation/MatchResultApplier.h
         src/utils/CommandLineInterpreter.h
         src/utils/CommandLineInterpreter.cpp
-        src/utils/Command.h)
+        src/utils/Command.h
+        src/utils/CommandLineInterpreterValidator.h
+        src/utils/CommandLineInterpreterValidator.cpp)
 
 # Link the libraries
 target_link_libraries(FootballChampionshipFMI PRIVATE

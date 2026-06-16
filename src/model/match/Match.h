@@ -13,32 +13,38 @@
 class Match final {
 public:
     struct MatchResult {
-        Team* home;
-        Team* guest;
-        unsigned homeGoals;
-        unsigned guestGoals;
+        Team* home = nullptr;
+        Team* guest = nullptr;
+        unsigned homeGoals = 0;
+        unsigned guestGoals = 0;
 
         struct Scorer {
-            Player* player;
-            bool isHome;
+            Player* player = nullptr;
+            bool isHome = false;
+
+            explicit Scorer(Player* player = nullptr, bool isHome = false) : player(player), isHome(isHome) {}
         };
 
-        std::vector<Scorer*> goals;
+        std::vector<Scorer*> goals = std::vector<Scorer*>();
+
+        explicit MatchResult(Team* home = nullptr, Team* guest = nullptr, unsigned homeGoals = 0,
+            unsigned guestGoals = 0, const std::vector<Scorer*>& goals = std::vector<Scorer*>())
+        : home(home), guest(guest), homeGoals(homeGoals), guestGoals(guestGoals), goals(goals) {};
     };
 private:
-    Team* host;
-    Team* guest;
+    Team* host = nullptr;
+    Team* guest = nullptr;
 
-    Lineup hostLineup;
-    Lineup guestLineup;
+    Lineup hostLineup = Lineup(nullptr);
+    Lineup guestLineup = Lineup(nullptr);
 
-    unsigned hostGoals;
-    unsigned guestGoals;
+    unsigned hostGoals = 0;
+    unsigned guestGoals = 0;
 
-    unsigned roundNumber;
+    unsigned roundNumber = 0;
 
-    MatchResult matchResult;
-    bool finished;
+    MatchResult matchResult = MatchResult();
+    bool finished = false;
 
 public:
     Match(const Lineup& hostLineup, const Lineup& guestLineup);
@@ -86,15 +92,21 @@ public:
     /**
     *
     */
-    [[nodiscard]] const std::vector<Player*> getScorers() const;
+    [[nodiscard]] std::vector<Player*> getScorers() const;
 
     void setHost(Team* host);
 
     void setGuest(Team* guest);
 
+    void setHostLineup(const Lineup& hostLineup);
+
+    void setGuestLineup(const Lineup& guestLineup);
+
     void addGoal(Player* scorer, bool isHostPlayer);
 
     [[nodiscard]] bool isFinished() const;
+
+    void clearLineups();
 
     static unsigned calculateAttackStrength(const Lineup& lineup);
 
@@ -102,7 +114,7 @@ public:
 
     static Player *chooseScorer(const std::vector<Player *> &players);
 
-    MatchResult play();
+    [[nodiscard]] MatchResult play() const;
 };
 
 #endif //MATCH_H

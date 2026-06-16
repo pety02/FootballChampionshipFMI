@@ -40,16 +40,16 @@ public:
     };
 
 private:
-    std::string name;
-    unsigned number;
-    Position position;
-    double salary;
-    double transferSum;
-    Statistics stats;
+    std::string name = std::string();
+    unsigned number = 0;
+    Position position = Position::UNKNOWN;
+    double salary = 0.0;
+    double transferSum = 0.0;
+    Statistics stats = Statistics();
 
 public:
     Player(const std::string& name, unsigned number, Position position, double salary, double transferSum);
-    Player(const Player& other) = delete;
+    Player(const Player& other);
     Player& operator=(const Player& other) = delete;
     Player(Player&& other) = delete;
     Player& operator=(Player&& other) = delete;
@@ -103,6 +103,7 @@ public:
     /**
     *
     */
+    [[nodiscard]] const Statistics& getStats() const;
     [[nodiscard]] Statistics& getStats();
 };
 #endif //PLAYER_H

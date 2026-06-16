@@ -12,19 +12,13 @@ ChampionshipHistory::ChampionshipHistory() : championships(Map<unsigned, Champio
 void ChampionshipHistory::addChampionship(unsigned year, const Championship &championship) {
     ChampionshipValidator::validateYear(year);
 
-    this->championships[year] = championship;
+    this->championships[year].push_back(championship);
 }
 
 const Map<unsigned, Championship>& ChampionshipHistory::getChampionships() const {
     return this->championships;
 }
 
-Championship& ChampionshipHistory::operator[](unsigned year) {
+std::vector<Championship>& ChampionshipHistory::operator[](unsigned year) {
     return championships[year];
-}
-
-void ChampionshipHistory::setCurrentYear(unsigned year) {
-    ChampionshipValidator::validateYear(year);
-
-    ChampionshipHistory::CURRENT_YEAR = year;
 }

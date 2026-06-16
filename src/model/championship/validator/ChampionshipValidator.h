@@ -5,8 +5,6 @@
 #ifndef CHAMPIONSHIPVALIDATOR_H
 #define CHAMPIONSHIPVALIDATOR_H
 
-#include "../../utils/ExceptionMessages.h"
-
 /**
 * A class that validates the championship fields.
 */

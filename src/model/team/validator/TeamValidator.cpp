@@ -17,7 +17,7 @@ void TeamValidator::validateTeamSize(unsigned teamSize, unsigned maxTeamSize) {
     }
 }
 
-void TeamValidator::validateRemainingBudget(double remainingBudget, const std::string& playerName) {
+void TeamValidator::validateRemainingBudget(double remainingBudget) {
     if (remainingBudget < 0.0) {
         throw std::invalid_argument(toString(ExceptionMessages::NOT_ENOUGH_BUDGET_FOR_PLAYER_TRANSFER));
     }
@@ -30,7 +30,7 @@ void TeamValidator::validatePlayerScoredGoals(Player::Position playerPosition, P
     }
 }
 
-void TeamValidator::validatePlayersCountByPosition(std::vector<unsigned>& args, unsigned remainingPlaces, const std::string& exceptionMessage) {
+void TeamValidator::validatePlayersCountByPosition(const std::vector<unsigned>& args, unsigned remainingPlaces, const std::string& exceptionMessage) {
     if (args[0] + args[1] + args[2] + args[3] > remainingPlaces) {
         throw std::invalid_argument(exceptionMessage);
     }
@@ -68,18 +68,18 @@ void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, c
 }
 
 void TeamValidator::validateThatTeamsAreMangedByAManager(const std::vector<Team *> &teams,
-    Team *homeTeam, Team *guestTeam) {
+                                                         const Team *homeTeam, const Team *guestTeam) {
 
-    auto isManaged = [&](Team* t) {
-        bool isManaged = false;
+    auto isManaged = [&](const Team* t) {
+        bool managed = false;
 
-        for (const auto& managed : teams) {
-            if (managed->getName() == t->getName()) {
-                isManaged = true;
+        for (const auto& team : teams) {
+            if (team->getName() == t->getName()) {
+                managed = true;
                 break;
             }
         }
-        return isManaged;
+        return managed;
     };
 
     if (!isManaged(homeTeam) || !isManaged(guestTeam)) {

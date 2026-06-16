@@ -15,10 +15,10 @@
  */
 class ChampionshipHistory final {
 private:
-    Map<unsigned, Championship> championships; // key: year, value: championship
+    Map<unsigned, Championship> championships = Map<unsigned, Championship>(); // key: year, value: championship
 
 public:
-   static unsigned CURRENT_YEAR;
+   static constexpr unsigned CURRENT_YEAR = 2026;
 
    /**
    * The default constructor of ChampionshipHistory class.
@@ -49,15 +49,7 @@ public:
     * @param year - the held year of the championship
     * @return a reference to the definite championship
     */
-   Championship& operator[](unsigned year);
-
-   /**
-   * Sets a year as a current year after a validation of it.
-   * The passed year should be at least 1900 and at most the current year.
-   */
-   static void setCurrentYear(unsigned year);
+   std::vector<Championship>& operator[](unsigned year);
 };
-
-unsigned ChampionshipHistory::CURRENT_YEAR = 2026;
 
 #endif //CHAMPIONSHIPCOLLECTION_H

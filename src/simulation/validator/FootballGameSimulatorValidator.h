@@ -12,18 +12,20 @@ class FootballGameSimulatorValidator {
 public:
     /**
      *
+     * @param currentChampionship
      * @param match
      * @return
      */
-    static void validateMatchExists(Championship* currentChampionship, Match& match);
+    static void validateMatchExists(Championship* currentChampionship, const Match& match);
 
     /**
      *
+     * @param currentChampionship
      * @param lineup
      * @param match
      * @return
      */
-    static void validateLineupExists(Championship* currentChampionship, const Lineup& lineup, Match* match);
+    static void validateLineupExists(Championship* currentChampionship, const Lineup& lineup, const Match* match);
 };
 
 #endif //FOOTBALLGAMESIMULATORVALIDATOR_H

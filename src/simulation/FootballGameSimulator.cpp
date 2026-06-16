@@ -12,19 +12,19 @@
 std::vector<std::string> FootballGameSimulator::getChampions() const {
     Map<std::string, unsigned> champions;
 
-    for (const auto& match : this->currentChampionship->getMatches()) {
-        champions[match.getHost()->getName()] +=
-            match.getHost()->getStats().scoredGoals;
+    for (auto& match : this->currentChampionship->getMatches()) {
+        champions[match.getHost()->getName()].push_back(
+            match.getHost()->getStats().scoredGoals);
 
-        champions[match.getGuest()->getName()] +=
-            match.getGuest()->getStats().scoredGoals;
+        champions[match.getGuest()->getName()].push_back(
+            match.getGuest()->getStats().scoredGoals);
     }
 
     // Convert Map → vector
-    std::vector<std::pair<std::string, unsigned>> sortedTeams;
+    std::vector<std::pair<std::string, std::vector<unsigned>>> sortedTeams;
 
     for (const auto& [k, v] : champions) {
-        sortedTeams.push_back(std::pair<std::string, unsigned>(k, v));
+        sortedTeams.push_back(std::pair<std::string, std::vector<unsigned>>(k, v));
     }
 
     // sort by goals descending
@@ -74,7 +74,7 @@ std::string FootballGameSimulator::findGoalMaster() {
         for (const auto& scorer : match.getScorers()) {
 
             // unique player identification by name
-            scorers[scorer->getName()]++;
+            scorers[scorer->getName()].push_back(1);
         }
     }
 
@@ -83,7 +83,7 @@ std::string FootballGameSimulator::findGoalMaster() {
     for (const auto& scorer : scorers) {
 
         const std::string& scorerName = scorer.first;
-        unsigned goals = scorer.second;
+        unsigned goals = scorer.second.size();
 
         if (goals > maxGoals) {
             maxGoals = goals;
@@ -163,7 +163,7 @@ void FootballGameSimulator::finishMatch(Match &match) {
             }
         }
     }
-    for (auto guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+    for (auto& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
         guestLineupPlayer->getStats().matchesCount++;
         for (auto guestPlayer : match.getGuest()->getPlayers()) {
             if(guestLineupPlayer->getName() == guestPlayer->getName()) {
@@ -180,4 +180,8 @@ void FootballGameSimulator::finishMatch(Match &match) {
     if(this->currentChampionship->getCurrentRoundNumber() == ChampionshipValidator::MAX_ROUND_NUMBER) {
         this->finishChampionship();
     }
+}
+
+const Championship& FootballGameSimulator::getCurrentChampionship() const {
+    return *this->currentChampionship;
 }

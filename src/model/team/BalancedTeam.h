@@ -35,7 +35,7 @@ public:
      *
      * @param player
      */
-    void addPlayer(Player* player, bool isTransfer) override;
+    void addPlayer(Player& player, bool isTransfer) override;
 };
 
 #endif //BALANCEDTEAM_H

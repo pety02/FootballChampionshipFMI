@@ -13,12 +13,12 @@
  */
 class FootballGameSimulator {
 private:
-    ChampionshipHistory championshipHistory;
-    Championship* currentChampionship;
-    std::string champion;
-    std::string viceChampion;
-    std::string bronzeTeam;
-    std::string goalMaster;
+    ChampionshipHistory championshipHistory = ChampionshipHistory();
+    Championship* currentChampionship = nullptr;
+    std::string champion = std::string();
+    std::string viceChampion = std::string();
+    std::string bronzeTeam = std::string();
+    std::string goalMaster = std::string();
 
     std::string findGoalMaster();
 
@@ -77,6 +77,8 @@ public:
      * @param match
      */
     void finishMatch(Match& match);
+
+    [[nodiscard]] const Championship& getCurrentChampionship() const;
 
  // записване в и зареждане от файл на данни за първенствата
 };

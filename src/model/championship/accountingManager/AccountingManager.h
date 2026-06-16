@@ -40,7 +40,7 @@ public:
     * @param player Reference to the player whose salary will be adjusted.
     * @param team Reference to the team used to evaluate participation and performance.
     */
-    void regulateSalary(Player& player, Team& team);
+    static void regulateSalary(Player& player, Team& team);
 };
 
 #endif //ACCOUNTINGMANAGER_H

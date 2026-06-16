@@ -21,31 +21,26 @@ AttackingTeam::AttackingTeam(const std::string &name, const std::string &coachNa
 AttackingTeam::AttackingTeam(const AttackingTeam &other) : Team(other) {
 }
 
-AttackingTeam & AttackingTeam::operator=(const AttackingTeam &other) {
-    Team::operator=(other);
-    return *this;
-}
-
 Team * AttackingTeam::clone() const {
     return new AttackingTeam(*this);
 }
 
-void AttackingTeam::addPlayer(Player* player, bool isTransfer) {
+void AttackingTeam::addPlayer(Player& player, bool isTransfer) {
     // 1. Проверка за максимален размер на отбора
     TeamValidator::validateTeamSize(this->players.size(), Team::MAX_TEAM_SIZE);
 
     // 2. Валидация на бюджета (пресмятане на остатъка)
-    double remainingBudget = this->budget - player->getTransferSum();
-    TeamValidator::validateRemainingBudget(remainingBudget, player->getName());
+    double remainingBudget = this->budget - player.getTransferSum();
+    TeamValidator::validateRemainingBudget(remainingBudget);
 
     // 3. Валидация на игралната позиция
-    Player::Position playerPosition = player->getPosition();
+    Player::Position playerPosition = player.getPosition();
     PlayerValidator::validatePosition(playerPosition);
 
     // 4. Специфична валидация за нападатели (Минимум 6 отбелязани гола)
     // Забележка: по условие важи за ВСЕКИ нов нападател в AttackingTeam
-    TeamValidator::validatePlayerScoredGoals(playerPosition, Player::Position::FORWARD, player->getStats().scoredGoals,
-        AttackingTeam::FROWARD_MIN_SCORED_GOALS, player->getName(), this->name);
+    TeamValidator::validatePlayerScoredGoals(playerPosition, Player::Position::FORWARD, player.getStats().scoredGoals,
+        AttackingTeam::FROWARD_MIN_SCORED_GOALS, player.getName(), this->name);
 
     // 5. Изчисляване на оставащите места и нужния минимум по позиции
     // Взимаме броя места, които остават СЛЕД като добавим този играч

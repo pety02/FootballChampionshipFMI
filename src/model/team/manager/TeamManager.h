@@ -15,25 +15,28 @@
 */
 class TeamManager final {
 private:
-    std::string name;
-    std::vector<Team*> teams;
+    std::string name = std::string();
+    std::vector<Team*> teams = std::vector<Team*>();
 
 public:
+    TeamManager() = default;
     TeamManager(const std::string& name, const std::vector<Team>& teams);
-    ~TeamManager() = default;
+    TeamManager(const TeamManager& other);
+    TeamManager& operator=(const TeamManager& other);
+    ~TeamManager();
 
     /**
     *
     */
-    void addPlayerToTeam(const std::string& teamName, Player* player);
+    void addPlayerToTeam(const std::string& teamName, Player* player) const;
 
     void transfer(Player* firstPlayer, Team& firstTeam,
-        Player* secondPlayer, Team& secondTeam);
+        Player* secondPlayer, Team& secondTeam) const;
 
     /**
     *
     */
-    void registerMatchResult(Team* homeTeam, unsigned homeGoals, Team* guestTeam, unsigned guestGoals);
+    void registerMatchResult(Team* homeTeam, unsigned homeGoals, Team* guestTeam, unsigned guestGoals) const;
 
     /**
     *

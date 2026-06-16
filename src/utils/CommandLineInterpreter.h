@@ -6,13 +6,16 @@
 #define COMMANDLINEINTERPRETER_H
 
 #include "../model/championship/history/ChampionshipHistory.h"
-#include "../../utils/ExceptionMessages.h"
 #include <iostream>
+#include <cstring>
+#include "../model/team/factory/TeamFactory.h"
+
+#include "../simulation/FootballGameSimulator.h"
 
 /**
  *
  */
-enum class Command {
+enum Command {
     LIST_SEASONS,
 
     PLAY_ROUND,
@@ -47,7 +50,7 @@ enum class Command {
     IMPORT_DATA,
     SIMULATE_GOAL,
     HELP,
-    EDIT,
+    EXIT,
     MENU,
     UNKNOWN
 };
@@ -100,7 +103,7 @@ inline Command parseCommand(const std::string& cmd) {
     if (cmd == "simulate_goal") return Command::SIMULATE_GOAL;
 
     if (cmd == "help") return Command::HELP;
-    if (cmd == "edit") return Command::EDIT;
+    if (cmd == "exit") return Command::EXIT;
     if (cmd == "menu") return Command::MENU;
 
     return Command::UNKNOWN;
@@ -111,13 +114,24 @@ inline Command parseCommand(const std::string& cmd) {
  */
 class CommandLineInterpreter {
 private:
+ ChampionshipHistory* history = nullptr;
+ Championship* championship = nullptr;
+ FootballGameSimulator* simulator = nullptr;
 
+public:
+ CommandLineInterpreter(
+     ChampionshipHistory& h,
+     Championship& c,
+     FootballGameSimulator& s
+ ) : history(&h), championship(&c), simulator(&s) {}
+
+private:
     /**
      *
      * @param championshipHistory
      * @return
      */
-    static const Map<unsigned, Championship>& listSeasons(const ChampionshipHistory& championshipHistory);
+    static Map<unsigned, Championship> listSeasons(const ChampionshipHistory& championshipHistory);
 
     /**
      *
@@ -133,15 +147,17 @@ private:
 
     /**
      *
+     * @param history
      * @param championship
      */
     static void finishSeason(ChampionshipHistory& history, Championship& championship);
 
     /**
      *
-     * @param match
+     * @param simulator
+     * @param matchIndex
      */
-    static void playMatch(Match& match);
+    static void playMatch(FootballGameSimulator& simulator, int matchIndex);
 
     /**
      *
@@ -160,14 +176,16 @@ private:
      * @param championship
      * @return
      */
-    static const std::vector<Team*>& listTeams(Championship& championship);
+    static std::vector<Team*> listTeams(Championship& championship);
+
+    static TeamType parseTeamType(const std::string& type);
 
     /**
      *
-     * @param team
+     * @param args
      * @param championship
      */
-    static void addTeam(Team* team, Championship& championship);
+    static void addTeam(std::vector<std::string> args, Championship& championship);
 
     /**
      *
@@ -176,12 +194,14 @@ private:
      */
     static void removeTeam(const std::string& teamName, Championship& championship);
 
+    static Player::Position toPosition(const std::string& posValue);
+
     /**
      *
      * @param player
      * @param team
      */
-    static void addPlayer(Player* player, Team& team);
+    static void addPlayer(Player& player, Team& team);
 
     /**
      *
@@ -199,30 +219,31 @@ private:
 
     /**
      *
-     * @param player
+     * @param playerName
+     * @param championship
      */
-    static void viewPlayer(const Player& player);
+    static void viewPlayer(const std::string &playerName, const Championship& championship);
 
     /**
      *
      * @param team
      * @return
      */
-    static const std::vector<Player*>& listPlayers(Team& team);
+    static std::vector<Player*> listPlayers(const Team& team);
 
     /**
      *
+     * @param championship
      * @param player
-     * @param newSalary
      */
     static void updateSalary(Championship& championship, Player& player);
 
     /**
      *
-     * @param team
+     * @param match
      * @return
      */
-    static const Lineup& autoSelectLineup(const Team& team);
+    static void autoSelectLineup(Match& match);
 
     /**
      *
@@ -236,18 +257,18 @@ private:
      * @param team
      * @return
      */
-    static const Map<Player*, unsigned>& listTopScorers(Team& team);
+    static Map<Player*, unsigned> listTopScorers(Team& team);
 
     /**
      *
      * @param team
      * @return
      */
-    static const Team::Statistics& listTeamStats(Team& team);
+    static Team::Statistics listTeamStats(Team& team);
 
     /**
      *
-     * @param team
+     * @param championship
      */
     static void viewPlayerRanking(Championship &championship);
 
@@ -256,14 +277,14 @@ private:
      * @param championship
      * @return
      */
-    static const Map<Team*, Team::Statistics>& listSeasonStats(Championship& championship);
+    static Map<Team*, Team::Statistics> listSeasonStats(Championship &championship);
 
     /**
      *
      * @param team
      * @return
      */
-    static const Map<Player*, Player::Statistics>& listPlayerStats(Team& team);
+    static Map<Player*, Player::Statistics> listPlayerStats(const Team& team);
 
     /**
      *
@@ -284,7 +305,7 @@ private:
      * @param championship
      * @return
      */
-    static const Team& gtThirdPlace(const Championship& championship);
+    static const Team& getThirdPlace(const Championship& championship);
 
     /**
      *
@@ -320,21 +341,21 @@ private:
 
     /**
      *
-     * @return
      */
-    static int exit();
+    static void menu();
 
     /**
      *
-     */
-    static void menu();
+    */
+    void cleanup();
 public:
 
     /**
      *
      * @param command
+     * @param args
      */
-    static void execute(Command command);
+    void execute(Command command, std::vector<std::string> args);
 };
 
 #endif //COMMANDLINEINTERPRETER_H

@@ -23,7 +23,7 @@ public:
     AttackingTeam();
     AttackingTeam(const std::string& name, const std::string& coachName, const std::string& stadiumName, double budget);
     AttackingTeam(const AttackingTeam& other);
-    AttackingTeam& operator=(const AttackingTeam& other);
+    AttackingTeam& operator=(const AttackingTeam& other) = default;
     ~AttackingTeam() noexcept override = default;
 
     /**
@@ -35,8 +35,9 @@ public:
     /**
      *
      * @param player
+     * @param isTransfer
      */
-    void addPlayer(Player* player, bool isTransfer) override;
+    void addPlayer(Player& player, bool isTransfer) override;
 };
 
 #endif //ATTACKINGTEAM_H

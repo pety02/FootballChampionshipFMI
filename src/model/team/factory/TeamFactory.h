@@ -4,7 +4,7 @@
 
 #ifndef TEAMFACTORY_H
 #define TEAMFACTORY_H
-#include "../team/Team.h"
+#include "../Team.h"
 #include <string>
 
 /**

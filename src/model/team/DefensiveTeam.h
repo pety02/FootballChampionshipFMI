@@ -35,8 +35,9 @@ public:
     /**
      *
      * @param player
+     * @param isTransfer
      */
-    void addPlayer(Player* player, bool isTransfer) override;
+    void addPlayer(Player& player, bool isTransfer) override;
 };
 
 #endif //DEFENSIVETEAM_H

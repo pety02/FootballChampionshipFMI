@@ -12,10 +12,10 @@
 */
 class Lineup final {
 private:
-    Team* team;
-    std::vector<Player*> players;
+    Team* team = nullptr;
+    std::vector<Player*> players = std::vector<Player*>();
 
-    std::vector<Player*> generateRandomLineup();
+    static std::vector<Player*> generateRandomLineup(const Team& team);
 public:
     static constexpr unsigned LINEUP_SIZE = 11;
 
@@ -33,6 +33,8 @@ public:
     *
     */
     void addPlayer(Player* player);
+
+    [[nodiscard]] bool isValid() const;
 
     /**
     *

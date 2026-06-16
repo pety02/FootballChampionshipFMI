@@ -3,8 +3,6 @@
 //
 
 #include "BalancedTeam.h"
-
-#include <stdexcept>
 #include "../player/validator/PlayerValidator.h"
 #include "TeamValidator.h"
 
@@ -27,16 +25,16 @@ Team * BalancedTeam::clone() const {
     return new BalancedTeam(*this);
 }
 
-void BalancedTeam::addPlayer(Player* player, bool isTransfer) {
+void BalancedTeam::addPlayer(Player& player, bool isTransfer) {
     // 1. Проверка за максимален размер на отбора
     TeamValidator::validateTeamSize(this->players.size(), Team::MAX_TEAM_SIZE);
 
     // 2. Валидация на бюджета (пресмятане на остатъка)
-    double remainingBudget = this->budget - player->getTransferSum();
-    TeamValidator::validateRemainingBudget(remainingBudget, player->getName());
+    double remainingBudget = this->budget - player.getTransferSum();
+    TeamValidator::validateRemainingBudget(remainingBudget);
 
     // 3. Валидация на игралната позиция
-    Player::Position playerPosition = player->getPosition();
+    Player::Position playerPosition = player.getPosition();
     PlayerValidator::validatePosition(playerPosition);
 
     // 5. Изчисляване на оставащите места и нужния минимум по позиции

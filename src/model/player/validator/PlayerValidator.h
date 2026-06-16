@@ -34,7 +34,7 @@ public:
     */
     static void validateTransferSum(double transferSum);
 
-    static void validateName(const std::string& firstPlayerName, std::string secondPlayerName);
+    static void validateName(const std::string& firstPlayerName, const std::string &secondPlayerName);
 };
 
 #endif //PLAYERVALIDATOR_H

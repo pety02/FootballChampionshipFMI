@@ -24,7 +24,7 @@ void PlayerValidator::validateTransferSum(double transferSum) {
   if(transferSum < 0.0) throw std::invalid_argument(toString(ExceptionMessages::TRANSFER_SUM_MUST_BE_NON_NEGATIVE));
 }
 
-void PlayerValidator::validateName(const std::string &firstPlayerName, std::string secondPlayerName) {
+void PlayerValidator::validateName(const std::string &firstPlayerName, const std::string& secondPlayerName) {
   if(firstPlayerName == secondPlayerName) {
     throw std::invalid_argument(toString(ExceptionMessages::PLAYER_WITH_THIS_NAME_ALREADY_EXISTS));
   }

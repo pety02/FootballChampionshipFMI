@@ -4,63 +4,83 @@
 
 #include "CommandLineInterpreter.h"
 
-#include "MatchResultApplier.h"
+#include "../model/team/factory/TeamFactory.h"
 
-const Map<unsigned, Championship>& CommandLineInterpreter::listSeasons(const ChampionshipHistory &championshipHistory) {
-    return championshipHistory.getChampionships();
+#include "CommandLineInterpreterValidator.h"
+#include "../simulation/MatchResultApplier.h"
+
+Map<unsigned, Championship>
+CommandLineInterpreter::listSeasons(
+        const ChampionshipHistory& history) {
+
+    return history.getChampionships();
 }
 
-void CommandLineInterpreter::playAllMatches(Championship &championship) {
+void CommandLineInterpreter::playAllMatches(
+        Championship& championship) {
+
+    FootballGameSimulator simulator;
+
     for (auto match : championship.getMatches()) {
-        CommandLineInterpreter::playMatch(match);
+        simulator.play(&match);
     }
 }
 
-void CommandLineInterpreter::showPodium(const Championship &championship) {
-    std::cout << "The champion is: " << CommandLineInterpreter::getChampion(championship).getName() << "." << std::endl;
-    std::cout << "The vice-champion is: " << CommandLineInterpreter::getRunnerUp(championship).getName() << "." << std::endl;
-    std::cout << "The third champion is: " << CommandLineInterpreter::getTopScorer(championship).getName() << "." << std::endl;
+void CommandLineInterpreter::showPodium(
+        const Championship& championship) {
+
+    std::cout << "Champion: " << getChampion(championship).getName() << '\n';
 }
 
-void CommandLineInterpreter::finishSeason(ChampionshipHistory& history, Championship &championship) {
-    for (const auto& match : championship.getMatches()) {
-        if (!match.isFinished()) {
-            throw std::invalid_argument(toString(ExceptionMessages::NOT_ALL_MATCHES_FINISHED_YET));
-        } else {
-            Match finishedMatch(match);
-            enterMatchResult(finishedMatch);
-        }
-    }
-    std::string filename;
-    std:: cout << "Enter filename for championship data's export: ";
-    std::cin >> filename;
+void CommandLineInterpreter::finishSeason(
+        ChampionshipHistory& history,
+        Championship& championship) {
+
+    playAllMatches(championship);
+
     history.addChampionship(championship.getYear(), championship);
-    championship.finish();
 
-    exportData(history, filename);
+    std::cout << "Season finished.\n";
 }
 
-void CommandLineInterpreter::playMatch(Match &match) {
-    // TODO: maka a simulation of a real football game
+void CommandLineInterpreter::playMatch(
+        FootballGameSimulator& simulator,
+        int matchIndex) {
+
+    Championship championship = simulator.getCurrentChampionship();
+    Match match(championship.getMatches()[matchIndex]);
+    simulator.play(&match);
 }
 
-void CommandLineInterpreter::viewMatches(const Championship &championship) {
+void CommandLineInterpreter::viewMatches(
+        const Championship& championship) {
+
+    int index = 0;
+
     for (const auto& match : championship.getMatches()) {
-        std::cout << "The host in the match is: " << match.getHost() << " with goals:" << match.getHostGoals() << "." << std::endl;
-        std::cout << "The guest in the match is: " << match.getGuest() << " with goals:" << match.getGuestGoals() << "." << std::endl;
-        std::cout << "The top scorers are: " << getTopScorer(championship).getName() << "." << std::endl;
+
+        std::cout
+                << ++index << ". "
+                << match.getHost()->getName()
+                << " vs "
+                << match.getGuest()->getName()
+                << '\n';
     }
 }
 
 void CommandLineInterpreter::enterMatchResult(Match &match) {
-    Match::MatchResult result;
-    result.home = match.getHost();
-    result.guest = match.getGuest();
+    Match::MatchResult result(
+        match.getHost(),
+        match.getGuest());
 
     std::vector<Match::MatchResult::Scorer*> goals;
-    int totalGoalsCount;
-    std::cout << "Enter total goals count: ";
-    std::cin >> totalGoalsCount;
+
+    int totalGoalsCount = 0;
+
+    while(totalGoalsCount <= 0) {
+        std::cout << "Enter total goals count: ";
+        std::cin >> totalGoalsCount;
+    }
 
     std::string playerName;
     unsigned scoredGals;
@@ -71,53 +91,102 @@ void CommandLineInterpreter::enterMatchResult(Match &match) {
         std::cout << "Enter goals: ";
         std::cin >> scoredGals;
 
-        if (validGoalsCount(scoredGals)) {
-            // TODO: check these warnings below
-            if (isHomePlayer(playerName, match.getHost())) {
-                result.homeGoals += scoredGals;
-            } else if (isGuestPlayer(playerName, match.getGuest())) {
-                result.guestGoals += scoredGals;
-            } else {
-              throw std::invalid_argument(toString(ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH));
-            }
+        CommandLineInterpreterValidator::validGoalsCount(scoredGals, totalGoalsCount);
 
-            totalGoalsCount--;
+        if (CommandLineInterpreterValidator::validateIsHomePlayer(playerName, *match.getHost())) {
+            result.homeGoals += scoredGals;
+        } else if (CommandLineInterpreterValidator::validateIsGuestPlayer(playerName, *match.getGuest())) {
+            result.guestGoals += scoredGals;
         } else {
-            throw std::invalid_argument(toString(ExceptionMessages::GOALS_COUNT_CANNOT_BE_NEGATIVE));
+            throw std::invalid_argument(toString(ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH));
         }
+
+        totalGoalsCount--;
     }
 
     MatchResultApplier::apply(result);
 }
 
-const std::vector<Team*>& CommandLineInterpreter::listTeams(Championship &championship) {
+std::vector<Team*> CommandLineInterpreter::listTeams(Championship &championship) {
     return championship.getTeamManager().getTeams();
 }
 
-void CommandLineInterpreter::addTeam(Team* team, Championship &championship) {
-    for (int i = 0; i < championship.getTeamManager().getTeams().size(); i++) {
-        Team* currentTeam = championship.getTeamManager().getTeams()[i];
-        if (std::strcmp(currentTeam->getName().c_str(), team->getName().c_str()) == 0)
-            throw std::invalid_argument(toString(ExceptionMessages::TEAM_ALREADY_EXSISTS));
+TeamType CommandLineInterpreter::parseTeamType(const std::string& type)
+{
+    if (type == "attacking") return TeamType::ATTACKING;
+    if (type == "defensive") return TeamType::DEFENSIVE;
+    if (type == "balanced")  return TeamType::BALANCED;
+
+    throw std::invalid_argument(
+    toString(ExceptionMessages::THE_TEAM_TYPE_SHOULD_BE_ONE_OF_THE_GIVEN)
+    );
+}
+
+void CommandLineInterpreter::addTeam(std::vector<std::string> args, Championship& championship) {
+    if (args.empty())
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_ARGUMENT));
+
+    TeamType type = parseTeamType(args[0]);
+    std::string name = args[1];
+    std::string coach = args[2];
+    std::string stadium = args[3];
+    double budget = std::stod(args[4]);
+
+    // check duplicates
+    for (const auto& currentTeam : championship.getTeamManager().getTeams())
+    {
+        if (currentTeam->getName() == name)
+            throw std::invalid_argument(
+                toString(ExceptionMessages::TEAM_ALREADY_EXISTS)
+            );
     }
+
+    Team* team = TeamFactory::createTeam(
+        type,
+        name,
+        coach,
+        stadium,
+        budget
+    );
 
     championship.getTeamManager().addTeam(team);
 }
 
 void CommandLineInterpreter::removeTeam(const std::string &teamName, Championship &championship) {
-    for (int i = 0; i < championship.getTeamManager().getTeams().size(); i++) {
-        Team* currentTeam = championship.getTeamManager().getTeams()[i];
+    for (auto currentTeam : championship.getTeamManager().getTeams()) {
         if (std::strcmp(currentTeam->getName().c_str(), teamName.c_str()) != 0)
-            throw std::invalid_argument(toString(ExceptionMessages::TEAM_DOES_NOT_EXSIST));
+            throw std::invalid_argument(toString(ExceptionMessages::TEAM_DOES_NOT_EXIST));
     }
 
     championship.getTeamManager().removeTeam(teamName);
 }
 
-void CommandLineInterpreter::addPlayer(Player* player, Team &team) {
-    if (hasPlayerWithName(team, player->getName())) {
-        throw std::invalid_argument(toString(ExceptionMessages::THERE_IS_PLAYER_WITH_SAME_NAME));
+Player::Position CommandLineInterpreter::toPosition(const std::string& posValue) {
+    // to lowercase
+    for (int i = 0; i < posValue.length(); i++) {
+        char c = posValue[i];
+        if (c >= 'A' && c <= 'Z') {
+            c += 32;
+        }
     }
+
+    if(posValue == "goalkeeper") {
+        return Player::Position::GOALKEEPER;
+    } else if (posValue == "defender") {
+        return Player::Position::DEFENDER;
+    } else if (posValue == "midfielder") {
+        return Player::Position::MIDFIELDER;
+    } else if (posValue == "winger") {
+        return Player::Position::WINGER;
+    } else if (posValue == "forward") {
+        return Player::Position::FORWARD;
+    } else {
+        return Player::Position::UNKNOWN;
+    }
+}
+
+void CommandLineInterpreter::addPlayer(Player& player, Team &team) {
+    CommandLineInterpreterValidator::validateUniquePlayerName(player.getName(), team);
 
     team.addPlayer(player, false);
 }
@@ -126,125 +195,248 @@ void CommandLineInterpreter::removePlayer(const std::string &playerName, Team &t
     team.removePlayer(playerName);
 }
 
-void CommandLineInterpreter::transferPlayers(Team &firstTeam, Team &secondTeam) {
-    // TODO:
-    // 1. Get randomly two players from the given teams
-    // 2.1. Validates that team A does not have a player with the same name as the transferred player from the team B
-    // 2.2. Add a player from team A to a team B with a isTransfer = true flag
-    // 3.1. Validates that team B does not have a player with the same name as the transferred player from the team A
-    // 3.2. Add a player from team B to a team A with a isTransfer = true flag
+void CommandLineInterpreter::transferPlayers(
+        Team& firstTeam,
+        Team& secondTeam) {
+
+    std::string firstPlayer;
+    std::string secondPlayer;
+
+    std::cout << "Player from "
+              << firstTeam.getName()
+              << ": ";
+
+    std::cin >> firstPlayer;
+
+    std::cout << "Player from "
+              << secondTeam.getName()
+              << ": ";
+
+    std::cin >> secondPlayer;
+
+    Player* p1 = nullptr;
+    Player* p2 = nullptr;
+
+    for (auto p : firstTeam.getPlayers()) {
+
+        if (p->getName() == firstPlayer) {
+
+            p1 = p;
+            break;
+        }
+    }
+
+    for (auto p : secondTeam.getPlayers()) {
+
+        if (p->getName() == secondPlayer) {
+
+            p2 = p;
+            break;
+        }
+    }
+
+    if (!p1 || !p2)
+        throw std::invalid_argument(
+                toString(ExceptionMessages::
+                        BOTH_TEAMS_CANNOT_BE_FOUND));
+
+    firstTeam.removePlayer(firstPlayer);
+    secondTeam.removePlayer(secondPlayer);
+
+    firstTeam.addPlayer(*p2, true);
+    secondTeam.addPlayer(*p1, true);
 }
 
-void CommandLineInterpreter::viewPlayer(const Player &player) {
-    // TODO: prints the data of the player
-}
-
-const std::vector<Player*>& CommandLineInterpreter::listPlayers(Team &team) {
-    return team.getPlayers();
-}
-
-void CommandLineInterpreter::updateSalary(Championship& championship, Player &player) {
-    Team* t = nullptr;
-    for (auto currTeam : championship.getTeamManager().getTeams()) {
-        for (auto currPlayer : currTeam->getPlayers()) {
-            if (std::strcmp(currPlayer->getName().c_str(), player.getName().c_str()) != 0) {
-                throw std::invalid_argument(toString(ExceptionMessages::NO_PLAYER_WITH_THIS_NAME));
-            } else {
-                t = currTeam;
+void CommandLineInterpreter::viewPlayer(const std::string &playerName, const Championship& championship) {
+    Player* player = nullptr;
+    for(auto t : championship.getTeamManager().getTeams()) {
+        for(auto p : t->getPlayers()) {
+            if(p->getName() == playerName) {
+                player = p;
                 break;
             }
         }
     }
-    championship.getAccountingManager().regulateSalary(player, *t);
-}
-
-const Lineup & CommandLineInterpreter::autoSelectLineup(const Team &team) {
-    // TODO: maka a simulation of selecting lineups
-}
-
-void CommandLineInterpreter::deleteLineup(Match &match, const Lineup &lineup) {
-    if (std::strcmp(match.getGuest()->getName().c_str(), lineup.getTeam()->getName().c_str()) == 0) {
-        match.setGuest(nullptr);
-    } else if (std::strcmp(match.getHost()->getName().c_str(), lineup.getTeam()->getName().c_str()) == 0) {
-        match.setHost(nullptr);
-    } else {
-        throw std::invalid_argument(toString(ExceptionMessages::NO_LINEUP_WITH_THIS_TEAM_NAME));
+    if(player == nullptr) {
+        return; // TODO: can be thrown an exception
     }
+    std::cout << "Player: { name: " << player->getName() << ", number: " << player->getNumber() << ", position: ";
+
+    switch (player->getPosition()) {
+        case Player::Position::GOALKEEPER: std::cout << "Goalkeeper"; break;
+        case Player::Position::DEFENDER: std::cout << "Defender"; break;
+        case Player::Position::MIDFIELDER: std::cout << "Midfielder"; break;
+        case Player::Position::WINGER: std::cout << "Winger"; break;
+        case Player::Position::FORWARD: std::cout << "Forward"; break;
+        default: std::cout << "Unknown"; break;
+    }
+
+    std::cout << ", salary: " << player->getSalary() << ", transferSum: " << player->getTransferSum() << ", stats: { matchesCount: "
+    << player->getStats().matchesCount << ", scoredGoals:" << player->getStats().scoredGoals << " } }" << std::endl;
 }
 
-const Map<Player*, unsigned>& CommandLineInterpreter::listTopScorers(Team &team) {
-    Map<Player*, unsigned> champs;
-    for (const auto player : team.getPlayers()) {
-        champs.add(player, player->getStats().scoredGoals);
-    }
-    // TODO: sort them by goals
-    for (const auto& pair : champs.getData()) {
-        // TODO: traverse them and find the top three biggest goals' value and return the players
-    }
+std::vector<Player*> CommandLineInterpreter::listPlayers(const Team &team) {
+    return team.getPlayers();
 }
 
-const Team::Statistics& CommandLineInterpreter::listTeamStats(Team &team){
+void CommandLineInterpreter::updateSalary(Championship& championship, Player& player) {
+    Team* playsIn = nullptr;
+    for(const auto& currMatch : championship.getMatches()) {
+        Team* host = currMatch.getHost();
+        Team* guest = currMatch.getGuest();
+
+        try {
+            CommandLineInterpreterValidator::validateIsHomePlayer(player.getName(), *host);
+            playsIn = host;
+            break;
+        } catch (...) {
+            CommandLineInterpreterValidator::validateIsGuestPlayer(player.getName(), *guest);
+            playsIn = guest;
+            break;
+        }
+    }
+
+    if (playsIn == nullptr) {
+        return;
+    }
+    championship.getAccountingManager().regulateSalary(player, *playsIn);
+}
+
+void CommandLineInterpreter::autoSelectLineup(Match& match) {
+    match.setHostLineup(Lineup(match.getHost()));
+    match.setGuestLineup(Lineup(match.getGuest()));
+}
+
+void CommandLineInterpreter::deleteLineup(
+        Match& match,
+        const Lineup&) {
+
+    match.clearLineups();
+}
+
+Map<Player*, unsigned>
+CommandLineInterpreter::listTopScorers(
+        Team& team) {
+
+    static Map<Player*, unsigned> scorers;
+
+    for (auto player : team.getPlayers()) {
+
+        scorers.add(
+                player,
+                player->getStats().scoredGoals);
+    }
+
+    return scorers;
+}
+
+Team::Statistics CommandLineInterpreter::listTeamStats(Team &team){
     return team.getStats();
 }
 
-void CommandLineInterpreter::viewPlayerRanking(Championship &championship) {
-    for (auto team : championship.getTeamManager().getTeams()) {
-        auto champs = listTopScorers(*team);
-        for (auto player : champs.getData()) {
+void CommandLineInterpreter::viewPlayerRanking(
+        Championship& championship) {
 
+    for (auto team : championship.getTeamManager().getTeams()) {
+        for (auto player : team->getPlayers()) {
+
+            std::cout
+                    << player->getName()
+                    << " "
+                    << player->getStats().scoredGoals
+                    << '\n';
         }
     }
 }
 
-const Map<Team*, Team::Statistics>& CommandLineInterpreter::listSeasonStats(Championship &championship) {
+Map<Team*, Team::Statistics> CommandLineInterpreter::listSeasonStats(Championship &championship) {
     Map<Team*, Team::Statistics> stats;
-    for ( const auto& team: championship.getTeamManager().getTeams()) {
+    for (auto team :
+         championship.getTeamManager().getTeams()) {
+
         stats.add(team, team->getStats());
-    }
-    // TODO: check this warning
+         }
     return stats;
 }
 
-const Map<Player*, Player::Statistics>& CommandLineInterpreter::listPlayerStats(Team &team) {
-    Map<Player*, Player::Statistics> stats;
+Map<Player*, Player::Statistics> CommandLineInterpreter::listPlayerStats(const Team &team) {
+    auto stats = Map<Player*, Player::Statistics>();
     for ( const auto& player: team.getPlayers()) {
         stats.add(player, player->getStats());
     }
-    // TODO: check this warning
+
     return stats;
 }
 
-const Team& CommandLineInterpreter::getChampion(const Championship &championship) {
-    std::pair<Team*, int> champ = {};
-    for (const auto team : championship.getTeamManager().getTeams()) {
-        if (team->getStats().winsCount > champ.second) {
-            champ = {team, team->getStats().winsCount};
-        }
+const Team&
+CommandLineInterpreter::getChampion(
+        const Championship& championship) {
+
+    Map<Team*, unsigned> champs = Map<Team*, unsigned>();
+
+    for (const auto& team : championship.getTeamManager().getTeams())
+    {
+        champs.add(team, team->getStats().scoredGoals);
     }
 
-    return *champ.first;
+    // sort by goals (descending)
+    champs.sortBy([](Team* a, Team* b)
+    {
+        return a->getStats().scoredGoals > b->getStats().scoredGoals;
+    });
+
+    const auto& data = champs.getData();
+
+    if (data.size() < 3) {
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
+    }
+
+    return *data[0].first; // 1st place
 }
 
 const Team& CommandLineInterpreter::getRunnerUp(const Championship &championship) {
-    Map<Team*, int> champs;
-    for (const auto team : championship.getTeamManager().getTeams()) {
-        champs.add(team, team->getStats().winsCount);
+    Map<Team*, unsigned> champs;
+
+    for (const auto& team : championship.getTeamManager().getTeams())
+    {
+        champs.add(team, team->getStats().scoredGoals);
     }
-    // TODO: sort them by goals
-    for (const auto pair: champs.getData()) {
-        // TODO: traverse them and find the second biggest goals' value and return the team
-    }
+
+    // sort by goals (descending)
+    champs.sortBy([](Team* a, Team* b)
+    {
+        return a->getStats().scoredGoals > b->getStats().scoredGoals;
+    });
+
+    const auto& data = champs.getData();
+
+    if (data.size() < 3)
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
+
+    return *data[1].first; // 2nd place
 }
 
-const Team& CommandLineInterpreter::gtThirdPlace(const Championship &championship) {
-    Map<Team*, int> champs;
-    for (const auto team : championship.getTeamManager().getTeams()) {
-        champs.add(team, team->getStats().winsCount);
+const Team& CommandLineInterpreter::getThirdPlace(const Championship &championship)
+{
+    Map<Team*, unsigned> champs;
+
+    for (const auto& team : championship.getTeamManager().getTeams())
+    {
+        champs.add(team, team->getStats().scoredGoals);
     }
-    // TODO: sort them by goals
-    for (const auto pair: champs.getData()) {
-        // TODO: traverse them and find the third biggest goals' value and return the team
-    }
+
+    // sort by goals (descending)
+    champs.sortBy([](Team* a, Team* b)
+    {
+        return a->getStats().scoredGoals > b->getStats().scoredGoals;
+    });
+
+    const auto& data = champs.getData();
+
+    if (data.size() < 3)
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
+
+    return *data[2].first; // 3rd place
 }
 
 const Player& CommandLineInterpreter::getTopScorer(const Championship &championship) {
@@ -260,7 +452,19 @@ ChampionshipHistory& CommandLineInterpreter::importData(const std::string &filen
 }
 
 void CommandLineInterpreter::simulateGoal(Match &match) {
-    // TODO: simulate real match scoring a goal
+    std::cout << "Select host or guest lineup as typing 'host' or 'guest': ";
+    std::string lineup;
+    while(lineup != "host" && lineup != "guest") {
+        std::cin >> lineup;
+    }
+
+    if (lineup == "host") {
+        match.getHost()->getStats().scoredGoals += 1;
+        match.getGuest()->getStats().concededGoals += 1;
+    } else {
+        match.getGuest()->getStats().scoredGoals += 1;
+        match.getHost()->getStats().concededGoals += 1;
+    }
 }
 
 void CommandLineInterpreter::help(const std::string& command) {
@@ -341,7 +545,7 @@ void CommandLineInterpreter::help(const std::string& command) {
             break;
 
         case Command::VIEW_PLAYER:
-            std::cout << "view_player <team> <player_name>\n"
+            std::cout << "view_player <player_name>\n"
                       << "Displays detailed information about a player.\n";
             break;
 
@@ -444,11 +648,6 @@ void CommandLineInterpreter::help(const std::string& command) {
     }
 }
 
-int CommandLineInterpreter::exit() {
-    // TODO: clear all used resource in order to prevent from memory leaks
-    return 0;
-}
-
 void CommandLineInterpreter::menu() {
     std::cout
         << "Current application is a game simulator called FootballChampionshipFMI.\n"
@@ -504,11 +703,11 @@ void CommandLineInterpreter::menu() {
     std::cout << "  import_data\n\n";
 
     std::cout << "[Simulation Tools]\n";
-    std::cout << "  simulate_goal\n";
+    std::cout << "  simulate_goal\n\n";
 
     std::cout << "[System]\n";
     std::cout << "  help\n";
-    std::cout << "  edit\n";
+    std::cout << "  exit\n";
     std::cout << "  menu\n\n";
 
     std::cout << "====================================================================\n";
@@ -517,9 +716,297 @@ void CommandLineInterpreter::menu() {
     std::cout << "====================================================================\n";
 }
 
-void CommandLineInterpreter::execute(Command command) {
-    switch (command) {
-        case Command::MENU: menu(); break;
-        default: throw std::invalid_argument(toString(ExceptionMessages::INVALID_COMMAND));
+void CommandLineInterpreter::cleanup()
+{
+    delete championship;
+    championship = nullptr;
+
+    delete history;
+    history = nullptr;
+
+    delete simulator;
+    simulator = nullptr;
+}
+
+void CommandLineInterpreter::execute(Command command, std::vector<std::string> args) {
+    switch (command)
+    {
+        case Command::MENU: {
+            menu();
+            break;
+        }
+
+        case Command::HELP: {
+            if (args.empty()) throw std::invalid_argument("Invalid argument");
+            help(args[0]);
+            break;
+        }
+
+        case Command::EXIT: {
+            cleanup();
+            std::cout << "Exiting program...\n";
+            break;
+        }
+
+        // =====================
+        // SEASONS
+        // =====================
+        case Command::LIST_SEASONS: {
+            std::cout << "Seasons:\n";
+            listSeasons(*history);
+            break;
+        }
+
+        case Command::SHOW_PODIUM: {
+            if(championship == nullptr) {
+                std::cout << "The current championship is not started yet.\n";
+                return;
+            }
+
+            try {
+                showPodium(*championship);
+            } catch (...) {
+                delete championship;
+                delete history;
+                delete simulator;
+                throw;
+            }
+            break;
+        }
+
+        case Command::FINISH_SEASON: {
+            finishSeason(*history, *championship);
+            break;
+        }
+
+        case Command::GET_CHAMPION: {
+            try {
+                std::cout << getChampion(*championship).getName() << "\n";
+            } catch(...) {
+                delete championship;
+                delete history;
+                delete simulator;
+                throw;
+            }
+            break;
+        }
+
+        case Command::GET_RUNNER_UP: {
+            std::cout << getRunnerUp(*championship).getName() << "\n";
+            break;
+        }
+
+        case Command::GET_THIRD_PLACE: {
+            std::cout << getThirdPlace(*championship).getName() << "\n";
+            break;
+        }
+
+        // =====================
+        // MATCHES
+        // =====================
+        case Command::PLAY_MATCH: {
+            playMatch(*simulator, 0); // placeholder index
+            break;
+        }
+
+        case Command::VIEW_MATCHES: {
+            viewMatches(*championship);
+            break;
+        }
+
+        case Command::ENTER_MATCH_RESULT: {
+            // you must select match properly
+            enterMatchResult(championship->getMatches()[0]);
+            break;
+        }
+
+        case Command::SIMULATE_GOAL: {
+            simulateGoal(championship->getMatches()[0]);
+            break;
+        }
+
+        // =====================
+        // TEAMS
+        // =====================
+        case Command::LIST_TEAMS: {
+            listTeams(*championship);
+            break;
+        }
+
+        case Command::ADD_TEAM: {
+            if (args.empty()) throw std::invalid_argument("Missing args");
+            addTeam(args, *championship);
+            break;
+        }
+
+        case Command::REMOVE_TEAM: {
+            if (args.empty()) throw std::invalid_argument("Missing args");
+            removeTeam(args[0], *championship);
+            break;
+        }
+
+        case Command::LIST_TEAM_STATS: {
+            for (auto t : championship->getTeamManager().getTeams()) {
+                listTeamStats(*t);
+            }
+            break;
+        }
+
+        // =====================
+        // PLAYERS
+        // =====================
+        case Command::ADD_PLAYER: {
+            if (args.empty()) throw std::invalid_argument("Missing args.");
+            if(args.size() != 6) throw std::invalid_argument("Invalid args count.");
+
+            std::string teamName = args[0];
+            Team* team = nullptr;
+            for(auto currTeam : championship->getTeamManager().getTeams()) {
+                if(currTeam->getName() == teamName) {
+                    team = currTeam;
+                    break;
+                }
+            }
+            if(team == nullptr) {
+                throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_FOUND));
+            }
+            // const std::string& name, unsigned number, Position position, double salary, double transferSum
+            Player player = Player(args[1], std::atoi(args[2].c_str()), toPosition(args[3]),
+                std::atof(args[4].c_str()), std::atof(args[5].c_str()));
+            addPlayer(player, *team);
+            break;
+        }
+
+        case Command::REMOVE_PLAYER: {
+            auto teams = championship->getTeamManager().getTeams();
+            Team* t = nullptr;
+            for (auto team : teams) {
+                if(team->getName() == args[1]) {
+                    t = team;
+                }
+            }
+            if (t == nullptr) throw std::invalid_argument("No team with this name.");
+            removePlayer(args[0], *t);
+            break;
+        }
+
+        case Command::TRANSFER_PLAYERS: {
+            auto teams = championship->getTeamManager().getTeams();
+            Team* t1 = nullptr; Team* t2 = nullptr;
+            for (auto team : teams) {
+                if(team->getName() == args[1]) {
+                    t1 = team;
+                }
+                if(team->getName() == args[2]) {
+                    t2 = team;
+                }
+            }
+            if (t1 == nullptr || t2 == nullptr) throw std::invalid_argument("No teams with these names.");
+            transferPlayers(*t1, *t2);
+            break;
+        }
+
+        case Command::VIEW_PLAYER: {
+            viewPlayer(args[0], *championship);
+            break;
+        }
+
+        case Command::LIST_PLAYERS: {
+            for(auto t : championship->getTeamManager().getTeams()) {
+                listPlayers(*t);
+            }
+            break;
+        }
+
+        case Command::UPDATE_SALARY: {
+            Player* player = nullptr;
+            for(auto t : championship->getTeamManager().getTeams()) {
+                for(auto p : t->getPlayers()) {
+                    if(p->getName() == args[0]) {
+                        player = p;
+                        break;
+                    }
+                }
+            }
+            if(player == nullptr) throw std::invalid_argument("No player with this name.");
+            updateSalary(*championship, *player);
+            break;
+        }
+
+        case Command::LIST_TOP_SCORERS:
+        case Command::GET_TOP_SCORERS: {
+            for (auto t : championship->getTeamManager().getTeams()) {
+                listTopScorers(*t);
+            }
+            break;
+        }
+
+        case Command::VIEW_PLAYER_RANKING: {
+            viewPlayerRanking(*championship);
+            break;
+        }
+
+        case Command::LIST_PLAYER_STATS: {
+            for(auto t : championship->getTeamManager().getTeams()) {
+                listPlayerStats(*t);
+            }
+            break;
+        }
+
+        case Command::AUTO_SELECT_LINEUP: {
+            autoSelectLineup(championship->getMatches()[0]);
+            break;
+        }
+
+        case Command::DELETE_LINEUP: {
+            Lineup* lineup = nullptr;
+            Match* match = nullptr;
+            for (const auto& m : championship->getMatches()) {
+                if(m.getHost()->getName() == args[0]) {
+                    try {
+                        match = new Match(m);
+                        lineup = new Lineup(m.getHost());
+                        deleteLineup(*match, *lineup);
+                        continue;
+                    } catch(...) {
+                        delete match;
+                        delete lineup;
+                        throw;
+                    }
+                }
+                if (m.getGuest()->getName() == args[0]) {
+                    try {
+                        match = new Match(m);
+                        lineup = new Lineup(m.getGuest());
+                        deleteLineup(*match, *lineup);
+                    } catch(...) {
+                        delete match;
+                        delete lineup;
+                        throw;
+                    }
+                }
+            }
+            break;
+        }
+
+        case Command::EXPORT_DATA: {
+            exportData(*history, !args.empty() ? args[0] : "out.dat");
+            break;
+        }
+
+        case Command::IMPORT_DATA: {
+            importData(!args.empty() ? args[0] : "in.dat");
+            break;
+        }
+
+        case Command::LIST_SEASON_STATS: {
+            listSeasonStats(*championship);
+            break;
+        }
+
+        case Command::UNKNOWN:
+        default: {
+            throw std::invalid_argument("Invalid command");
+        }
     }
 }

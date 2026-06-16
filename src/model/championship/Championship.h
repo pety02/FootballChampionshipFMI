@@ -15,21 +15,22 @@
  */
 class Championship final {
 private:
-    TeamManager teamManager;
-    AccountingManager accountingManager;
-    std::vector<Match> matches;
-    unsigned currentRoundNumber;
-    unsigned year;
-    bool finished;
+    TeamManager teamManager = TeamManager();
+    AccountingManager accountingManager = AccountingManager();
+    std::vector<Match> matches = std::vector<Match>();
+    unsigned currentRoundNumber = 0;
+    unsigned year = 0;
+    bool finished = false;
 
 public:
+    explicit Championship(const TeamManager& manager) : teamManager(manager), accountingManager(AccountingManager()) {}
     /**
     * A constructor with parameters of the Championship class.
     * Before to create the championship it validates the passed parameters' values.
     * @param teamManager the team manager of the championship
     * @param matches the matches of the championship
     */
-    explicit Championship(const TeamManager &teamManager, const std::vector<Match> &matches);
+    Championship(const TeamManager &teamManager, const std::vector<Match> &matches);
 
     /**
     * The default destructor of the championship.
@@ -55,6 +56,12 @@ public:
      * @return a const reference to the current championship's matches' vector.
      */
     [[nodiscard]] const std::vector<Match> &getMatches() const;
+
+ /**
+     * Returns a vector of the matches.
+     * @return a const reference to the current championship's matches' vector.
+     */
+ [[nodiscard]] std::vector<Match> &getMatches();
 
     /**
      * @return the current round number.

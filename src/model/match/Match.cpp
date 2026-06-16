@@ -82,10 +82,10 @@ unsigned Match::getRoundNumber() const {
     return this->roundNumber;
 }
 
-const std::vector<Player*> Match::getScorers() const {
+std::vector<Player*> Match::getScorers() const {
     std::vector<Player*> scorers = std::vector<Player*>();
-    for (int i = 0; i < this->matchResult.goals.size(); ++i) {
-        scorers.push_back(this->matchResult.goals[i]->player);
+    for (auto goal : this->matchResult.goals) {
+        scorers.push_back(goal->player);
     }
     return scorers;
 }
@@ -98,12 +98,25 @@ void Match::setGuest(Team* guest) {
     this->guest = guest;
 }
 
+void Match::setHostLineup(const Lineup& hostLineup) {
+    this->hostLineup = hostLineup;
+}
+
+void Match::setGuestLineup(const Lineup& guestLineup) {
+    this->guestLineup = guestLineup;
+}
+
 void Match::addGoal(Player *scorer, bool isHostPlayer) {
     this->matchResult.goals.push_back(new MatchResult::Scorer(scorer, isHostPlayer));
 }
 
 bool Match::isFinished() const {
     return this->finished;
+}
+
+void Match::clearLineups() {
+    delete this->guest; this->guest = nullptr;
+    delete this->host; this->host = nullptr;
 }
 
 unsigned Match::calculateAttackStrength(const Lineup& lineup) {
@@ -206,15 +219,15 @@ Player *Match::chooseScorer(const std::vector<Player *> &players) {
     return weightedPool[std::rand() % weightedPool.size()];
 }
 
-Match::MatchResult Match::play() {
+Match::MatchResult Match::play() const {
 
     if (this->finished) {
-        return {this->host, this->guest, this->hostGoals, this->guestGoals, this->matchResult.goals};
+        return Match::MatchResult(this->host, this->guest, this->hostGoals, this->guestGoals, this->matchResult.goals);
     }
 
     static bool seeded = false;
     if (!seeded) {
-        std::srand((unsigned)std::time(nullptr));
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
         seeded = true;
     }
 
@@ -234,8 +247,6 @@ Match::MatchResult Match::play() {
     const unsigned guestDefense =
         calculateDefenseStrength(this->guestLineup);
 
-    const int hostAdvantage = 5;
-
     unsigned hostGoals = 0;
     unsigned guestGoals = 0;
 
@@ -243,8 +254,9 @@ Match::MatchResult Match::play() {
 
     // HOME ATTACKS
     for (int i = 0; i < 10; i++) {
+        constexpr int hostAdvantage = 5;
 
-        int chance = 30 + hostAttack - guestDefense + hostAdvantage;
+        unsigned chance = hostAttack + 30 - guestDefense + hostAdvantage;
         if (chance < 5) chance = 5;
         if (chance > 80) chance = 80;
 
@@ -259,7 +271,7 @@ Match::MatchResult Match::play() {
     // GUEST ATTACKS
     for (int i = 0; i < 10; i++) {
 
-        int chance = 30 + guestAttack - hostDefense;
+        unsigned chance = 30 + guestAttack - hostDefense;
         if (chance < 5) chance = 5;
         if (chance > 80) chance = 80;
 

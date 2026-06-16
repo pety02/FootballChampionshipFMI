@@ -4,7 +4,6 @@
 
 #include "../team/manager/TeamManager.h"
 #include <stdexcept>
-
 #include "../../match/Match.h"
 #include "../../../simulation/MatchResultApplier.h"
 #include "../../../utils/ExceptionMessages.h"
@@ -16,15 +15,57 @@ TeamManager::TeamManager(const std::string &name, const std::vector<Team>& teams
     TeamValidator::validateTeamsCount(4, teams.size());
 
     for (const auto & team : teams) {
-        this->teams.push_back(team.clone());
+        Team* cloned;
+        try {
+            cloned = team.clone();
+            this->teams.push_back(cloned);
+        } catch (...) {
+            delete cloned;
+            throw;
+        }
     }
 }
 
-void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) {
+TeamManager::TeamManager(const TeamManager& other)
+    : name(other.name)
+{
+    for (Team* t : other.teams)
+    {
+        teams.push_back(t->clone());
+    }
+}
+
+TeamManager& TeamManager::operator=(const TeamManager& other)
+{
+    if (this == &other)
+        return *this;
+
+    for (Team* t : teams)
+        delete t;
+
+    teams.clear();
+
+    name = other.name;
+
+    for (Team* t : other.teams)
+    {
+        teams.push_back(t->clone());
+    }
+
+    return *this;
+}
+
+TeamManager::~TeamManager() {
+    for (Team* team : this->teams) {
+        delete team;
+    }
+}
+
+void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) const {
     int teamIndex = 0;
     for(const auto &currTeam : teams) {
         if(currTeam->getName() == teamName) {
-            this->teams[teamIndex]->addPlayer(player, false);
+            this->teams[teamIndex]->addPlayer(*player, false);
             return;
         }
         teamIndex++;
@@ -34,15 +75,15 @@ void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) {
 }
 
 void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
-        Player* secondPlayer, Team& secondTeam) {
+        Player* secondPlayer, Team& secondTeam) const {
 
     TeamValidator::validateThatTeamsAreFound(this->teams, firstTeam, secondTeam);
 
-    firstTeam.addPlayer(secondPlayer, true);
-    secondTeam.addPlayer(firstPlayer, true);
+    firstTeam.addPlayer(*secondPlayer, true);
+    secondTeam.addPlayer(*firstPlayer, true);
 }
 
-void TeamManager::registerMatchResult(Team *homeTeam, unsigned homeGoals, Team *guestTeam, unsigned guestGoals) {
+void TeamManager::registerMatchResult(Team *homeTeam, unsigned homeGoals, Team *guestTeam, unsigned guestGoals) const {
     TeamValidator::validateThatTeamsAreMangedByAManager(this->teams, homeTeam, guestTeam);
 
     Match::MatchResult result;

@@ -29,7 +29,7 @@ public:
     /**
     *
     */
-    static void validateRemainingBudget(double remainingBudget, const std::string& playerName);
+    static void validateRemainingBudget(double remainingBudget);
 
     /**
     *
@@ -40,13 +40,13 @@ public:
     /**
     *
     */
-    static void validatePlayersCountByPosition(std::vector<unsigned>& args, unsigned remainingPlaces, const std::string& exceptionMessage);
+    static void validatePlayersCountByPosition(const std::vector<unsigned>& args, unsigned remainingPlaces, const std::string& exceptionMessage);
 
     static void validateTeamsCount(unsigned minTeamsCount, unsigned currentTeamsCount);
 
     static void validateThatTeamsAreFound(const std::vector<Team*>& teams, const Team& firstTeam, const Team& secondTeam);
 
-    static void validateThatTeamsAreMangedByAManager(const std::vector<Team*>& teams, Team *homeTeam, Team *guestTeam);
+    static void validateThatTeamsAreMangedByAManager(const std::vector<Team*>& teams, const Team *homeTeam, const Team *guestTeam);
 };
 
 #endif //TEAMVALIDATOR_H

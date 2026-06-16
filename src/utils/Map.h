@@ -13,23 +13,28 @@ private:
     std::vector<std::pair<K, std::vector<V>>> data;
 
     int findIndex(const K& key) const {
-        for (int i = 0; i < (int)data.size(); i++)
+        for (int i = 0; i < static_cast<int>(data.size()); i++)
             if (data[i].first == key)
                 return i;
         return -1;
     }
 
 public:
-    using value_type = std::pair<K, V>;
-    using iterator = typename std::vector<value_type>::iterator;
-    using const_iterator = typename std::vector<value_type>::const_iterator;
+    //using value_type = std::pair<K, V>;
+    using iterator = typename std::vector<std::pair<K, std::vector<V>>>::iterator;
+    using const_iterator = typename std::vector<std::pair<K, std::vector<V>>>::const_iterator;
 
     Map() = default;
 
     void add(const K& key, const V& value) {
         int idx = findIndex(key);
-        if (idx != -1)
-            data[idx].second.push_back(value);
+
+        if (idx == -1) {
+            data.push_back({key, {value}});
+            return;
+        }
+
+        data[idx].second.push_back(value);
     }
 
     void remove(const K& key) {
@@ -64,6 +69,29 @@ public:
     const_iterator end() const { return data.end(); }
 
     const std::vector<std::pair<K, std::vector<V>>>& getData() const { return data; }
+
+    template<typename Compare>
+    void sortBy(Compare comp) {
+        int n = data.size();
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            int best = i;
+
+            for (int j = i + 1; j < n; j++)
+            {
+                if (comp(data[j].first, data[best].first))
+                {
+                    best = j;
+                }
+            }
+
+            if (best != i)
+            {
+                std::swap(data[i], data[best]);
+            }
+        }
+    }
 };
 
 #endif

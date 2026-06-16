@@ -29,6 +29,11 @@ Player::Player(const std::string &name, const unsigned number,
     PlayerValidator::validateTransferSum(transferSum);
 }
 
+Player::Player(const Player& other)
+    : Player(other.name, other.number, other.position, other.salary, other.transferSum) {
+
+}
+
 void Player::setNumber(const unsigned number) {
     this->number = number;
 }
@@ -65,6 +70,10 @@ double Player::getTransferSum() const {
     return this->transferSum;
 }
 
-[[nodiscard]] Player::Statistics& Player::getStats() {
+const Player::Statistics& Player::getStats() const {
+    return this->stats;
+}
+
+Player::Statistics& Player::getStats() {
     return this->stats;
 }
