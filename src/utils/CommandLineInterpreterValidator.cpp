@@ -7,7 +7,7 @@
 #include <ExceptionMessages.h>
 #include <stdexcept>
 
-void CommandLineInterpreterValidator::validGoalsCount(unsigned scoredGals, int totalScoredGoals) {
+void CommandLineInterpreterValidator::validateGoalsCount(unsigned scoredGals, int totalScoredGoals) {
     if(scoredGals > totalScoredGoals) throw std::invalid_argument(toString(ExceptionMessages::SCORED_GOALS_CANNOT_BE_MORE_THAN_TOTAL_SCORED_GOALS));
 }
 

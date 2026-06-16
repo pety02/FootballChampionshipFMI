@@ -5,14 +5,64 @@
 #ifndef COMMANDLINEINTERPRETERVALIDATOR_H
 #define COMMANDLINEINTERPRETERVALIDATOR_H
 
-#include "../model/match/Match.h"
+#include <string>
+#include "../model/team/Team.h"
 
+/**
+ * Validation utilities used by the CommandLineInterpreter.
+ *
+ * Responsible for enforcing rules related to:
+ * - goal consistency in matches
+ * - player-team relationships (home/guest membership)
+ * - uniqueness constraints for player operations
+ */
 class CommandLineInterpreterValidator {
 public:
-    static void validGoalsCount(unsigned scoredGals, int totalScoredGoals);
-    static bool validateIsHomePlayer(const std::string& playerName, const Team& team);
-    static bool validateIsGuestPlayer(const std::string& playerName, const Team& team);
-    static void validateUniquePlayerName(const std::string& playerName, const Team& team);
+    /**
+     * Validates that the number of scored goals is consistent
+     * with the total number of goals recorded in a match.
+     *
+     * @param scoredGoals Number of goals attributed to a player/team.
+     * @param totalScoredGoals Total goals recorded in the match.
+     *
+     * @throws std::invalid_argument if values are inconsistent.
+     */
+    static void validateGoalsCount(unsigned scoredGoals, int totalScoredGoals);
+
+    /**
+     * Checks whether a player belongs to the home team.
+     *
+     * NOTE: This function only validates membership, it does not throw.
+     *
+     * @param playerName Name of the player.
+     * @param team Team to check against.
+     * @return true if player belongs to the home team, false otherwise.
+     */
+    static bool validateIsHomePlayer(const std::string& playerName,
+                                     const Team& team);
+
+    /**
+     * Checks whether a player belongs to the guest team.
+     *
+     * NOTE: This function only validates membership, it does not throw.
+     *
+     * @param playerName Name of the player.
+     * @param team Team to check against.
+     * @return true if player belongs to the guest team, false otherwise.
+     */
+    static bool validateIsGuestPlayer(const std::string& playerName,
+                                      const Team& team);
+
+    /**
+     * Ensures that a player name is unique within a given team.
+     *
+     * @param playerName Name to check.
+     * @param team Team in which uniqueness must be guaranteed.
+     *
+     * @throws std::invalid_argument if a player with the same name exists.
+     */
+    static void validateUniquePlayerName(const std::string& playerName,
+                                         const Team& team);
 };
 
-#endif //COMMANDLINEINTERPRETERVALIDATOR_H
+#endif // COMMANDLINEINTERPRETERVALIDATOR_H

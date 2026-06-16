@@ -91,7 +91,7 @@ void CommandLineInterpreter::enterMatchResult(Match &match) {
         std::cout << "Enter goals: ";
         std::cin >> scoredGals;
 
-        CommandLineInterpreterValidator::validGoalsCount(scoredGals, totalGoalsCount);
+        CommandLineInterpreterValidator::validateGoalsCount(scoredGals, totalGoalsCount);
 
         if (CommandLineInterpreterValidator::validateIsHomePlayer(playerName, *match.getHost())) {
             result.homeGoals += scoredGals;

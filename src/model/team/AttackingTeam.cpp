@@ -40,7 +40,7 @@ void AttackingTeam::addPlayer(Player& player, bool isTransfer) {
     // 4. Специфична валидация за нападатели (Минимум 6 отбелязани гола)
     // Забележка: по условие важи за ВСЕКИ нов нападател в AttackingTeam
     TeamValidator::validatePlayerScoredGoals(playerPosition, Player::Position::FORWARD, player.getStats().scoredGoals,
-        AttackingTeam::FROWARD_MIN_SCORED_GOALS, player.getName(), this->name);
+        AttackingTeam::FORWARD_MIN_SCORED_GOALS, player.getName(), this->name);
 
     // 5. Изчисляване на оставащите места и нужния минимум по позиции
     // Взимаме броя места, които остават СЛЕД като добавим този играч

@@ -5,15 +5,21 @@
 #ifndef COMMANDLINEINTERPRETER_H
 #define COMMANDLINEINTERPRETER_H
 
-#include "../model/championship/history/ChampionshipHistory.h"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <cstring>
+#include "../model/championship/history/ChampionshipHistory.h"
 #include "../model/team/factory/TeamFactory.h"
-
 #include "../simulation/FootballGameSimulator.h"
+#include "../utils/Map.h"
+#include "../model/match/Match.h"
+#include "../model/match/lineup/Lineup.h"
 
 /**
+ * Enum representing all supported CLI commands.
  *
+ * This enum is used internally after parsing user input strings.
  */
 enum Command {
     LIST_SEASONS,
@@ -44,21 +50,30 @@ enum Command {
     LIST_TEAM_STATS,
     VIEW_PLAYER_RANKING,
     LIST_SEASON_STATS,
-    LIST_PLAYER_STATS, GET_CHAMPION, GET_RUNNER_UP, GET_THIRD_PLACE,
+    LIST_PLAYER_STATS,
+
+    GET_CHAMPION,
+    GET_RUNNER_UP,
+    GET_THIRD_PLACE,
     GET_TOP_SCORERS,
+
     EXPORT_DATA,
     IMPORT_DATA,
+
     SIMULATE_GOAL,
+
     HELP,
     EXIT,
     MENU,
+
     UNKNOWN
 };
 
 /**
+ * Converts string input into internal Command enum.
  *
- * @param cmd
- * @return
+ * @param cmd Raw command string entered by the user.
+ * @return Corresponding Command enum value or UNKNOWN.
  */
 inline Command parseCommand(const std::string& cmd) {
     if (cmd == "list_seasons") return Command::LIST_SEASONS;
@@ -110,252 +125,131 @@ inline Command parseCommand(const std::string& cmd) {
 }
 
 /**
+ * Main CLI controller responsible for interpreting commands
+ * and delegating execution to the simulation logic.
  *
+ * IMPORTANT:
+ * - This class uses raw pointers but does NOT own the objects
+ *   passed into its constructor.
  */
 class CommandLineInterpreter {
 private:
- ChampionshipHistory* history = nullptr;
- Championship* championship = nullptr;
- FootballGameSimulator* simulator = nullptr;
+    ChampionshipHistory* history = nullptr;
+    Championship* championship = nullptr;
+    FootballGameSimulator* simulator = nullptr;
 
 public:
- CommandLineInterpreter(
-     ChampionshipHistory& h,
-     Championship& c,
-     FootballGameSimulator& s
- ) : history(&h), championship(&c), simulator(&s) {}
+    /**
+     * Creates interpreter with external ownership.
+     *
+     * @param h Championship history (owned externally)
+     * @param c Active championship (owned externally)
+     * @param s Simulator (owned externally)
+     */
+    CommandLineInterpreter(
+        ChampionshipHistory& h,
+        Championship& c,
+        FootballGameSimulator& s
+    ) : history(&h), championship(&c), simulator(&s) {}
 
 private:
-    /**
-     *
-     * @param championshipHistory
-     * @return
-     */
-    static Map<unsigned, Championship> listSeasons(const ChampionshipHistory& championshipHistory);
+    static Map<unsigned, Championship>
+    listSeasons(const ChampionshipHistory& championshipHistory);
 
-    /**
-     *
-     * @param championship
-     */
     static void playAllMatches(Championship& championship);
 
-    /**
-     *
-     * @param championship
-     */
     static void showPodium(const Championship& championship);
 
-    /**
-     *
-     * @param history
-     * @param championship
-     */
-    static void finishSeason(ChampionshipHistory& history, Championship& championship);
+    static void finishSeason(ChampionshipHistory& history,
+                             Championship& championship);
 
-    /**
-     *
-     * @param simulator
-     * @param matchIndex
-     */
-    static void playMatch(FootballGameSimulator& simulator, int matchIndex);
+    static void playMatch(FootballGameSimulator& simulator,
+                          int matchIndex);
 
-    /**
-     *
-     * @param championship
-     */
     static void viewMatches(const Championship& championship);
 
-    /**
-     *
-     * @param match
-     */
     static void enterMatchResult(Match& match);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
     static std::vector<Team*> listTeams(Championship& championship);
 
     static TeamType parseTeamType(const std::string& type);
 
-    /**
-     *
-     * @param args
-     * @param championship
-     */
-    static void addTeam(std::vector<std::string> args, Championship& championship);
+    static void addTeam(std::vector<std::string> args,
+                        Championship& championship);
 
-    /**
-     *
-     * @param teamName
-     * @param championship
-     */
-    static void removeTeam(const std::string& teamName, Championship& championship);
+    static void removeTeam(const std::string& teamName,
+                           Championship& championship);
 
     static Player::Position toPosition(const std::string& posValue);
 
-    /**
-     *
-     * @param player
-     * @param team
-     */
     static void addPlayer(Player& player, Team& team);
 
-    /**
-     *
-     * @param playerName
-     * @param team
-     */
-    static void removePlayer(const std::string& playerName, Team& team);
+    static void removePlayer(const std::string& playerName,
+                             Team& team);
 
-    /**
-     *
-     * @param firstTeam
-     * @param secondTeam
-     */
-    static void transferPlayers(Team& firstTeam, Team& secondTeam);
+    static void transferPlayers(Team& firstTeam,
+                                Team& secondTeam);
 
-    /**
-     *
-     * @param playerName
-     * @param championship
-     */
-    static void viewPlayer(const std::string &playerName, const Championship& championship);
+    static void viewPlayer(const std::string& playerName,
+                           const Championship& championship);
 
-    /**
-     *
-     * @param team
-     * @return
-     */
     static std::vector<Player*> listPlayers(const Team& team);
 
-    /**
-     *
-     * @param championship
-     * @param player
-     */
-    static void updateSalary(Championship& championship, Player& player);
+    static void updateSalary(Championship& championship,
+                             Player& player);
 
-    /**
-     *
-     * @param match
-     * @return
-     */
     static void autoSelectLineup(Match& match);
 
-    /**
-     *
-     * @param match
-     * @param lineup
-     */
-    static void deleteLineup(Match& match, const Lineup& lineup);
+    static void deleteLineup(Match& match,
+                             const Lineup& lineup);
 
-    /**
-     *
-     * @param team
-     * @return
-     */
     static Map<Player*, unsigned> listTopScorers(Team& team);
 
-    /**
-     *
-     * @param team
-     * @return
-     */
     static Team::Statistics listTeamStats(Team& team);
 
-    /**
-     *
-     * @param championship
-     */
-    static void viewPlayerRanking(Championship &championship);
+    static void viewPlayerRanking(Championship& championship);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
-    static Map<Team*, Team::Statistics> listSeasonStats(Championship &championship);
+    static Map<Team*, Team::Statistics>
+    listSeasonStats(Championship& championship);
 
-    /**
-     *
-     * @param team
-     * @return
-     */
-    static Map<Player*, Player::Statistics> listPlayerStats(const Team& team);
+    static Map<Player*, Player::Statistics>
+    listPlayerStats(const Team& team);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
     static const Team& getChampion(const Championship& championship);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
     static const Team& getRunnerUp(const Championship& championship);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
     static const Team& getThirdPlace(const Championship& championship);
 
-    /**
-     *
-     * @param championship
-     * @return
-     */
     static const Player& getTopScorer(const Championship& championship);
 
-    /**
-     *
-     * @param championshipHistory
-     * @param filename
-     */
-    static void exportData(const ChampionshipHistory& championshipHistory, const std::string& filename);
+    static void exportData(const ChampionshipHistory& history,
+                           const std::string& filename);
 
-    /**
-     *
-     * @param filename
-     * @return
-     */
-    static ChampionshipHistory& importData(const std::string& filename);
+    static ChampionshipHistory&
+    importData(const std::string& filename);
 
-    /**
-     *
-     * @param match
-     */
     static void simulateGoal(Match& match);
 
-    /**
-     *
-     */
     static void help(const std::string& command);
 
-    /**
-     *
-     */
     static void menu();
 
     /**
+     * Frees dynamically allocated resources owned by this interpreter.
      *
-    */
+     * NOTE: only deletes members if this class owns them (check design).
+     */
     void cleanup();
-public:
 
+public:
     /**
+     * Executes a parsed command with arguments.
      *
-     * @param command
-     * @param args
+     * @param command Parsed command enum
+     * @param args Command arguments
      */
     void execute(Command command, std::vector<std::string> args);
 };
 
-#endif //COMMANDLINEINTERPRETER_H
+#endif // COMMANDLINEINTERPRETER_H

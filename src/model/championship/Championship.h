@@ -57,19 +57,25 @@ public:
      */
     [[nodiscard]] const std::vector<Match> &getMatches() const;
 
- /**
+     /**
      * Returns a vector of the matches.
      * @return a const reference to the current championship's matches' vector.
      */
- [[nodiscard]] std::vector<Match> &getMatches();
+    [[nodiscard]] std::vector<Match> &getMatches();
 
     /**
      * @return the current round number.
      */
     [[nodiscard]] unsigned getCurrentRoundNumber() const;
 
+    /**
+     * @return a reference to the account manager assigned to this championship.
+    */
     [[nodiscard]] AccountingManager &getAccountingManager();
 
+    /**
+     * @return a const reference to the account manager assigned to this championship .
+    */
     [[nodiscard]] const AccountingManager &getAccountingManager() const;
 
     /**

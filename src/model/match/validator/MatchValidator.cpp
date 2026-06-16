@@ -16,8 +16,8 @@ void MatchValidator::validateLineups(const std::vector<Match>& matches) {
     bool hasValidLineups = true;
 
     for (const auto & match : matches) {
-        if(match.getHostLineup().getPlayers().size() < 11
-            || match.getGuestLineup().getPlayers().size() > 11) {
+        if(MatchValidator::MAX_LINEUP_SIZE < match.getHostLineup().getPlayers().size()
+            || MatchValidator::MAX_LINEUP_SIZE < match.getGuestLineup().getPlayers().size()) {
             hasValidLineups = false;
             break;
             }
@@ -26,6 +26,6 @@ void MatchValidator::validateLineups(const std::vector<Match>& matches) {
 }
 
 void MatchValidator::validateMatchesCount(unsigned currentSize, unsigned targetSize) {
-    if(currentSize >= targetSize)
+    if(targetSize <= currentSize)
         throw std::invalid_argument(toString(ExceptionMessages::ENOUGH_MATCHES));
 }

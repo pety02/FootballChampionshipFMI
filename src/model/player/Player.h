@@ -8,34 +8,47 @@
 #include <string>
 
 /**
-*
-*/
+ * Represents a football player participating in a team.
+ *
+ * A player has personal information such as name, squad number,
+ * playing position, salary, transfer value, and accumulated
+ * career statistics within the simulation.
+ */
 class Player final {
 public:
     /**
-    *
-    */
+     * Enumerates the supported football positions.
+     */
     enum class Position {
-        UNKNOWN, GOALKEEPER, DEFENDER, MIDFIELDER, WINGER, FORWARD, COUNT
+        UNKNOWN,     ///< Undefined player position.
+        GOALKEEPER,  ///< Goalkeeper position.
+        DEFENDER,    ///< Defender position.
+        MIDFIELDER,  ///< Midfielder position.
+        WINGER,      ///< Winger position.
+        FORWARD,     ///< Forward position.
+        COUNT        ///< Total number of supported positions.
     };
 
     /**
-    *
-    */
+     * Represents a player's statistical information.
+     */
     struct Statistics {
-        unsigned matchesCount;
-        unsigned scoredGoals;
+        unsigned matchesCount; ///< Total number of matches played.
+        unsigned scoredGoals;  ///< Total number of goals scored.
 
+        /**
+         * Constructs a statistics object with all values initialized to zero.
+         */
         Statistics();
 
         /**
-        *
-        */
+         * Increases the number of matches played by one.
+         */
         void increaseMatchesCount();
 
         /**
-        *
-        */
+         * Increases the number of goals scored by one.
+         */
         void increaseScoredGoals();
     };
 
@@ -48,62 +61,124 @@ private:
     Statistics stats = Statistics();
 
 public:
-    Player(const std::string& name, unsigned number, Position position, double salary, double transferSum);
+    /**
+     * Constructs a player with the specified properties.
+     *
+     * @param name The player's full name.
+     * @param number The player's squad number.
+     * @param position The player's field position.
+     * @param salary The player's salary.
+     * @param transferSum The player's transfer value.
+     */
+    Player(const std::string& name,
+           unsigned number,
+           Position position,
+           double salary,
+           double transferSum);
+
+    /**
+     * Constructs a player as a copy of another player.
+     *
+     * @param other The player to copy.
+     */
     Player(const Player& other);
+
+    /**
+     * Copy assignment operator is disabled.
+     */
     Player& operator=(const Player& other) = delete;
+
+    /**
+     * Move constructor is disabled.
+     */
     Player(Player&& other) = delete;
+
+    /**
+     * Move assignment operator is disabled.
+     */
     Player& operator=(Player&& other) = delete;
+
+    /**
+     * Destroys the player object.
+     */
     ~Player() noexcept = default;
 
     /**
-    *
-    */
+     * Changes the player's squad number.
+     *
+     * @param number The new squad number.
+     */
     void setNumber(unsigned number);
 
     /**
-    *
-    */
+     * Changes the player's position.
+     *
+     * @param position The new playing position.
+     */
     void setPosition(Position position);
 
     /**
-    *
-    */
+     * Changes the player's salary.
+     *
+     * @param salary The new salary value.
+     */
     void setSalary(double salary);
 
     /**
-    *
-    */
+     * Changes the player's transfer value.
+     *
+     * @param transferSum The new transfer value.
+     */
     void setTransferSum(double transferSum);
 
     /**
-    *
-    */
+     * Gets the player's name.
+     *
+     * @return Constant reference to the player's name.
+     */
     [[nodiscard]] const std::string& getName() const;
 
     /**
-    *
-    */
+     * Gets the player's squad number.
+     *
+     * @return The player's squad number.
+     */
     [[nodiscard]] unsigned getNumber() const;
 
     /**
-    *
-    */
+     * Gets the player's current position.
+     *
+     * @return The player's playing position.
+     */
     [[nodiscard]] Position getPosition() const;
 
     /**
-    *
-    */
+     * Gets the player's salary.
+     *
+     * @return The player's salary.
+     */
     [[nodiscard]] double getSalary() const;
 
     /**
-    *
-    */
+     * Gets the player's transfer value.
+     *
+     * @return The player's transfer value.
+     */
     [[nodiscard]] double getTransferSum() const;
 
     /**
-    *
-    */
+     * Provides read-only access to the player's statistics.
+     *
+     * @return Constant reference to the player's statistics.
+     */
     [[nodiscard]] const Statistics& getStats() const;
+
+    /**
+     * Provides mutable access to the player's statistics.
+     *
+     * @return Reference to the player's statistics.
+     */
     [[nodiscard]] Statistics& getStats();
 };
+
 #endif //PLAYER_H
