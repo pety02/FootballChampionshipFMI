@@ -31,18 +31,18 @@ void MatchResultApplier::applyTeam(Team* team,
 
 void MatchResultApplier::applyPlayers(const Match::MatchResult& result) {
     bool isHome = false;
-    for (Player* p : result.home->getPlayers()) {
-        p->getStats().increaseMatchesCount();
+    for (Player p : result.home->getPlayers()) {
+        p.getStats().increaseMatchesCount();
         isHome = true;
     }
 
-    for (Player* p : result.guest->getPlayers()) {
-        p->getStats().increaseMatchesCount();
+    for (Player p : result.guest->getPlayers()) {
+        p.getStats().increaseMatchesCount();
         isHome = false;
     }
 
     for (auto& g : result.goals) {
-        g->player->getStats().increaseScoredGoals();
+        g->player.getStats().increaseScoredGoals();
         g->isHome = isHome;
     }
 }

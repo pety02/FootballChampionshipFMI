@@ -13,7 +13,7 @@ void CommandLineInterpreterValidator::validateGoalsCount(unsigned scoredGals, in
 
 bool CommandLineInterpreterValidator::validateIsHomePlayer(const std::string& playerName, const Team& team) {
     for(const auto& player : team.getPlayers()) {
-        if(player->getName() == playerName) {
+        if(player.getName() == playerName) {
             return true;
         }
     }
@@ -23,7 +23,7 @@ bool CommandLineInterpreterValidator::validateIsHomePlayer(const std::string& pl
 
 bool CommandLineInterpreterValidator::validateIsGuestPlayer(const std::string& playerName, const Team& team) {
     for(const auto& player : team.getPlayers()) {
-        if(player->getName() == playerName) {
+        if(player.getName() == playerName) {
             return true;
         }
     }
@@ -33,7 +33,7 @@ bool CommandLineInterpreterValidator::validateIsGuestPlayer(const std::string& p
 
 void CommandLineInterpreterValidator::validateUniquePlayerName(const std::string& playerName, const Team& team) {
     for(const auto& player : team.getPlayers()) {
-        if(player->getName() == playerName) {
+        if(player.getName() == playerName) {
             throw std::invalid_argument(toString(ExceptionMessages::THERE_IS_PLAYER_WITH_SAME_NAME));
         }
     }

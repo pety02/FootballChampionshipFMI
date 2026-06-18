@@ -5,20 +5,10 @@
 #ifndef TEAMFACTORY_H
 #define TEAMFACTORY_H
 
-#include "../Team.h"
+#include "../TeamType.h"
 #include <string>
 
-/**
- * Enumerates the supported team strategies.
- *
- * The selected type determines the concrete team implementation
- * created by the TeamFactory.
- */
-enum class TeamType {
-    ATTACKING, ///< Creates a team focused on offensive play.
-    DEFENSIVE, ///< Creates a team focused on defensive play.
-    BALANCED   ///< Creates a team with a balanced strategy.
-};
+class Team;
 
 /**
  * A factory class responsible for creating team instances.
@@ -54,6 +44,7 @@ public:
                             const std::string& coachName,
                             const std::string& stadiumName,
                             double budget);
+    static Team* createEmptyTeam(TeamType type);
 };
 
 #endif //TEAMFACTORY_H

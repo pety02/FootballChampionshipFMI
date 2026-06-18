@@ -13,7 +13,7 @@
 class Lineup final {
 private:
     Team* team = nullptr;
-    std::vector<Player*> players = std::vector<Player*>();
+    std::vector<Player> players = std::vector<Player>();
 
     /**
     * Generates a random lineup with players from a definite team.
@@ -21,10 +21,11 @@ private:
     * @param team - the parent team of a lineup.
     * @return a vector of Players' pointers part of a lineup.
     */
-    static std::vector<Player*> generateRandomLineup(const Team& team);
+    static std::vector<Player> generateRandomLineup(const Team& team);
 public:
     static constexpr unsigned LINEUP_SIZE = 11;
 
+    Lineup() = default;
     /**
     * Creates a lineup with a parent team.
     *
@@ -64,7 +65,7 @@ public:
     *
     * @param player the player who should be added in the current lineup.
     */
-    void addPlayer(Player* player);
+    void addPlayer(const Player&);
 
     /**
     * Checks whether the lineup is valid configuration.
@@ -94,7 +95,46 @@ public:
     /**
     * @return a const reference to the players in the lineup.
     */
-    [[nodiscard]] const std::vector<Player*>& getPlayers() const;
+    [[nodiscard]] const std::vector<Player>& getPlayers() const;
+
+    friend std::ostream& operator<<(std::ostream& os,
+                                const Lineup& lineup)
+    {
+        os << lineup.team->getName() << '\n';
+
+        os << lineup.players.size() << '\n';
+
+        for(const auto& p : lineup.players)
+            os << p;
+
+        return os;
+    }
+    friend std::istream& operator>>(std::istream& is,
+                                Lineup& lineup)
+    {
+        std::string teamName;
+
+        size_t count;
+
+        std::getline(is >> std::ws, teamName);
+
+        is >> count;
+
+        std::vector<Player> players;
+
+        for(size_t i=0;i<count;i++)
+        {
+            Player p;
+            is >> p;
+
+            players.push_back(p);
+        }
+
+        lineup.team = nullptr; // resolve later
+        lineup.players = std::move(players);
+
+        return is;
+    }
 };
 
 #endif //LINEUP_H

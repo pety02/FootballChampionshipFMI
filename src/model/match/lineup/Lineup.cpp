@@ -5,30 +5,28 @@
 #include "Lineup.h"
 #include <stdexcept>
 
-std::vector<Player*> Lineup::generateRandomLineup(const Team& team)
+std::vector<Player> Lineup::generateRandomLineup(const Team& team)
 {
     const auto& allPlayers = team.getPlayers();
-    std::vector<Player*> result;
+    std::vector<Player> result;
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
     // helper lambda-like logic (no <algorithm>)
-    auto canAdd = [&](const Player* p) -> bool
+    auto canAdd = [&](const Player& p) -> bool
     {
-        if (!p) return false;
-
         // uniqueness
         for (auto x : result)
-            if (x == p) return false;
+            if (x.getName() == p.getName()) return false;
 
         return true;
     };
 
-    auto tryAdd = [&](Player* p) -> bool
+    auto tryAdd = [&](const Player& p) -> bool
     {
         if (!canAdd(p)) return false;
 
-        Player::Position pos = p->getPosition();
+        Player::Position pos = p.getPosition();
 
         // enforce position limits
         if (pos == Player::Position::GOALKEEPER && gk >= 1) return false;
@@ -61,7 +59,7 @@ std::vector<Player*> Lineup::generateRandomLineup(const Team& team)
         if (result.size() >= LINEUP_SIZE)
             break;
 
-        if (p->getStats().matchesCount < 3)
+        if (p.getStats().matchesCount < 3)
         {
             tryAdd(p);
         }
@@ -120,17 +118,15 @@ void Lineup::setTeam(Team* team) {
     this->team = team;
 }
 
-void Lineup::addPlayer(Player* player)
+void Lineup::addPlayer(const Player& player)
 {
-    if (!player) return;
-
     if (players.size() >= LINEUP_SIZE)
         throw std::runtime_error("Lineup already full");
 
     // check duplicates
     for (auto p : players)
     {
-        if (p == player || p->getName() == player->getName())
+        if (p.getName() == player.getName())
             throw std::runtime_error("Player already in lineup"); // use PlayerValidator::validateName(currentPlayer->getName(), player->getName());
     }
 
@@ -146,7 +142,7 @@ bool Lineup::isValid() const
 
     for (auto p : players)
     {
-        switch (p->getPosition())
+        switch (p.getPosition())
         {
             case Player::Position::GOALKEEPER: gk++; break;
             case Player::Position::DEFENDER: def++; break;
@@ -166,7 +162,7 @@ bool Lineup::isValid() const
 
 void Lineup::removePlayer(const std::string& playerName) {
     for (int i = 0; i < this->players.size(); ++i) {
-        if(this->players[i]->getName() == playerName) {
+        if(this->players[i].getName() == playerName) {
             this->players.erase(this->players.begin() + i);
         }
     }
@@ -176,6 +172,6 @@ const Team* Lineup::getTeam() const {
     return this->team;
 }
 
-const std::vector<Player *> & Lineup::getPlayers() const {
+const std::vector<Player> & Lineup::getPlayers() const {
     return this->players;
 }

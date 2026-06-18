@@ -27,13 +27,29 @@ public:
         * and a flag for his/her state - if he/she is a home player or a guest player.
         */
         struct Scorer {
-            Player* player = nullptr;
+            Player player = Player();
             bool isHome = false;
 
             /**
             * Default constructor, constructor with one param (player or his/her flag) and all args constructor at once.
             */
-            explicit Scorer(Player* player = nullptr, bool isHome = false) : player(player), isHome(isHome) {}
+            explicit Scorer(Player player = Player(), bool isHome = false) : player(player), isHome(isHome) {}
+
+            friend std::ostream& operator<<(std::ostream& os, const Scorer& scorer) {
+               os << scorer.player  << "\n" << scorer.isHome << "\n";
+
+               return os;
+            }
+            friend std::istream& operator>>(std::istream& is, Scorer& scorer) {
+               Player player;
+               bool isHome;
+
+               is >> player >> isHome;
+
+               scorer = Scorer(player, isHome);
+
+               return is;
+            }
         };
 
         std::vector<Scorer*> goals = std::vector<Scorer*>();
@@ -44,6 +60,56 @@ public:
         explicit MatchResult(Team* home = nullptr, Team* guest = nullptr, unsigned homeGoals = 0,
             unsigned guestGoals = 0, const std::vector<Scorer*>& goals = std::vector<Scorer*>())
         : home(home), guest(guest), homeGoals(homeGoals), guestGoals(guestGoals), goals(goals) {};
+
+        friend std::ostream& operator<<(std::ostream& os, const MatchResult& matchResult) {
+         os << matchResult.home->getName() << '\n';
+         os << matchResult.guest->getName() << '\n';
+
+           for(int i = 0; i < matchResult.homeGoals + matchResult.guestGoals; ++i) {
+              os << matchResult.goals[i]->player << " " << matchResult.goals[i]->isHome << "\n";
+           }
+
+           return os;
+        }
+     friend std::istream& operator>>(std::istream& is, MatchResult& matchResult)
+        {
+         std::string homeName;
+         std::string guestName;
+
+         std::getline(is >> std::ws, homeName);
+         std::getline(is, guestName);
+
+         unsigned homeGoals;
+         unsigned guestGoals;
+
+         is >> homeGoals >> guestGoals;
+
+         // We only know the names here.
+         // Team pointers must be resolved elsewhere.
+         matchResult.home = nullptr;
+         matchResult.guest = nullptr;
+
+         matchResult.homeGoals = homeGoals;
+         matchResult.guestGoals = guestGoals;
+
+         // Clear existing scorers
+         for (Scorer* scorer : matchResult.goals)
+          delete scorer;
+
+         matchResult.goals.clear();
+
+         const unsigned totalGoals = homeGoals + guestGoals;
+
+         for (unsigned i = 0; i < totalGoals; ++i)
+         {
+          Scorer* scorer = new Scorer();
+          is >> *scorer;
+
+          matchResult.goals.push_back(scorer);
+         }
+
+         return is;
+        }
     };
 private:
     Team* host = nullptr;
@@ -61,6 +127,7 @@ private:
     bool finished = false;
 
 public:
+    Match() = default;
     /**
     * Constructs a match object with its lineups.
     */
@@ -140,7 +207,7 @@ public:
      *
      * @return A vector containing pointers to the scoring players.
      */
-    [[nodiscard]] std::vector<Player*> getScorers() const;
+    [[nodiscard]] std::vector<Player> getScorers() const;
 
     /**
      * Sets the host team participating in the match.
@@ -180,7 +247,7 @@ public:
      * @param isHostPlayer True if the scorer belongs to the host team;
      *                     false if the scorer belongs to the guest team.
      */
-    void addGoal(Player* scorer, bool isHostPlayer);
+    void addGoal(Player scorer, bool isHostPlayer);
 
     /**
      * Checks whether the match has been completed.
@@ -222,7 +289,7 @@ public:
      * @param players Vector containing pointers to potential scorers.
      * @return Pointer to the selected player, or nullptr if the vector is empty.
      */
-    static Player* chooseScorer(const std::vector<Player*>& players);
+    static Player chooseScorer(const std::vector<Player>& players);
 
     /**
      * Simulates the match and generates the final result.
@@ -233,6 +300,56 @@ public:
      * @return A MatchResult object describing the outcome of the match.
      */
     [[nodiscard]] MatchResult play() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Match& match) {
+       os << match.host->getName()  << '\n'
+          << match.guest->getName() << '\n'
+          << match.hostLineup << '\n'
+          << match.guestLineup << '\n'
+          << match.hostGoals << '\n'
+          << match.guestGoals << '\n'
+          << match.roundNumber << '\n'
+          << match.matchResult << '\n'
+          << match.finished << '\n';
+
+       return os;
+    }
+    friend std::istream& operator>>(std::istream& is, Match& match) {
+       Team* host = nullptr;
+       Team* guest = nullptr;
+       Lineup hostLineup;
+       Lineup guestLineup;
+       unsigned hostGoals = 0;
+       unsigned guestGoals = 0;
+       unsigned roundNumber = 0;
+       MatchResult matchResult;
+       bool finished = false;
+
+     std::string hostName;
+     std::string guestName;
+
+     std::getline(is >> std::ws, hostName);
+     std::getline(is, guestName);
+       is >> hostLineup
+          >> guestLineup
+          >> hostGoals
+          >> guestGoals
+          >> roundNumber
+          >> matchResult
+          >> finished;
+
+       match.host = host;
+       match.guest = guest;
+       match.hostLineup = hostLineup;
+       match.guestLineup = guestLineup;
+       match.hostGoals = hostGoals;
+       match.guestGoals = guestGoals;
+       match.roundNumber = roundNumber;
+       match.matchResult = matchResult;
+       match.finished = finished;
+
+       return is;
+    }
 };
 
 #endif //MATCH_H

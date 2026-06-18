@@ -37,7 +37,7 @@ void Team::Statistics::increaseConcededGoals(unsigned concededGoals) {
 }
 
 void Team::buyPlayer(Player& player, Player::Position playerPos, double remainingBudget, bool isTransfer) {
-    this->players.push_back(new Player(player));
+    this->players.emplace_back(player);
     if(isTransfer) {
         this->budget = remainingBudget;
     }
@@ -52,7 +52,7 @@ void Team::buyPlayer(Player& player, Player::Position playerPos, double remainin
 void Team::removePlayer(const std::string& playerName) {
     int i = 0;
     for (auto& player : this->players) {
-        if (player->getName() == playerName) {
+        if (player.getName() == playerName) {
             this->players.erase(this->players.begin() + i);
         }
         i++;
@@ -82,22 +82,17 @@ void Team::copy(const Team& other) {
 }
 
 void Team::destroy() {
-    for (auto& player : this->players) {
-        delete player;
-    }
-    this->players.clear();
-
     delete this->teamManager; this->teamManager = nullptr;
 }
 
 Team::Team()
-    : name(std::string()), stadiumName(std::string()), players(std::vector<Player*>()),
+    : type(TeamType::UNKNOWN), name(std::string()), stadiumName(std::string()), players(std::vector<Player>()),
         budget(0.0), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 }
 
-Team::Team(const std::string& name, const std::string& coachName, std::string  stadiumName, const double budget)
-    : name(name), stadiumName(std::move(stadiumName)), players(std::vector<Player*>()),
+Team::Team(TeamType type, const std::string& name, const std::string& coachName, std::string  stadiumName, const double budget)
+    : type(type), name(name), stadiumName(std::move(stadiumName)), players(std::vector<Player>()),
         budget(budget), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 
@@ -149,7 +144,7 @@ const std::string & Team::getStadiumName() const {
     return this->stadiumName;
 }
 
-const std::vector<Player*> & Team::getPlayers() const {
+const std::vector<Player>& Team::getPlayers() const {
     return this->players;
 }
 

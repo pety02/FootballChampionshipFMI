@@ -7,9 +7,6 @@
 #include "../../utils/ExceptionMessages.h"
 #include "../../utils/StringValidator.h"
 
-Player::Statistics::Statistics() : matchesCount(0), scoredGoals(0) {
-}
-
 void Player::Statistics::increaseMatchesCount() {
     ++this->matchesCount;
 }
@@ -32,6 +29,18 @@ Player::Player(const std::string &name, const unsigned number,
 Player::Player(const Player& other)
     : Player(other.name, other.number, other.position, other.salary, other.transferSum) {
 
+}
+
+Player& Player::operator=(const Player& other) {
+    if(this != &other) {
+        this->name = other.name;
+        this->number = other.number;
+        this->position = other.position;
+        this->salary = other.salary;
+        this->transferSum = other.transferSum;
+    }
+
+    return *this;
 }
 
 void Player::setNumber(const unsigned number) {

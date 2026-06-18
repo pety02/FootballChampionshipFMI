@@ -7,7 +7,7 @@
 void AccountingManager::regulateSalary(Player& player, Team& team) {
     unsigned teamTotalMatches = 0;
     for (int index = 0; index < team.getPlayers().size(); index++) {
-        if(player.getName() == team.getPlayers()[index]->getName()) {
+        if(player.getName() == team.getPlayers()[index].getName()) {
             teamTotalMatches = team.getStats().lossesCount + team.getStats().winsCount + team.getStats().drawsCount;
             break;
         }

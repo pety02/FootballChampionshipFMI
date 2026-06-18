@@ -11,6 +11,7 @@ int main()
     FootballGameSimulator simulator;
 
     CommandLineInterpreter cli(history, championship, simulator);
+    history.addChampionship(championship);
 
     cli.execute(Command::MENU, {});
 

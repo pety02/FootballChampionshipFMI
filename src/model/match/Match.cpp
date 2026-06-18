@@ -82,8 +82,8 @@ unsigned Match::getRoundNumber() const {
     return this->roundNumber;
 }
 
-std::vector<Player*> Match::getScorers() const {
-    std::vector<Player*> scorers = std::vector<Player*>();
+std::vector<Player> Match::getScorers() const {
+    std::vector<Player> scorers = std::vector<Player>();
     for (auto goal : this->matchResult.goals) {
         scorers.push_back(goal->player);
     }
@@ -106,7 +106,7 @@ void Match::setGuestLineup(const Lineup& guestLineup) {
     this->guestLineup = guestLineup;
 }
 
-void Match::addGoal(Player *scorer, bool isHostPlayer) {
+void Match::addGoal(Player scorer, bool isHostPlayer) {
     this->matchResult.goals.push_back(new MatchResult::Scorer(scorer, isHostPlayer));
 }
 
@@ -122,10 +122,10 @@ void Match::clearLineups() {
 unsigned Match::calculateAttackStrength(const Lineup& lineup) {
     unsigned strength = 0;
 
-    const std::vector<Player*>& players = lineup.getPlayers();
+    const std::vector<Player>& players = lineup.getPlayers();
 
-    for (Player* p : players) {
-        switch (p->getPosition()) {
+    for (Player p : players) {
+        switch (p.getPosition()) {
             case Player::Position::FORWARD:
                 strength += 4;
             break;
@@ -153,10 +153,10 @@ unsigned Match::calculateAttackStrength(const Lineup& lineup) {
 unsigned Match::calculateDefenseStrength(const Lineup& lineup) {
     unsigned strength = 0;
 
-    const std::vector<Player*>& players = lineup.getPlayers();
+    const std::vector<Player>& players = lineup.getPlayers();
 
-    for (Player* p : players) {
-        switch (p->getPosition()) {
+    for (Player p : players) {
+        switch (p.getPosition()) {
             case Player::Position::GOALKEEPER:
                 strength += 5;
             break;
@@ -181,12 +181,12 @@ unsigned Match::calculateDefenseStrength(const Lineup& lineup) {
     return strength;
 }
 
-Player *Match::chooseScorer(const std::vector<Player *> &players) {
-    std::vector<Player*> weightedPool;
+Player Match::chooseScorer(const std::vector<Player> &players) {
+    std::vector<Player> weightedPool;
 
-    for (Player* p : players) {
+    for (Player p : players) {
 
-        switch (p->getPosition()) {
+        switch (p.getPosition()) {
 
             case Player::Position::FORWARD:
                 for (int i = 0; i < 5; i++)
@@ -263,7 +263,7 @@ Match::MatchResult Match::play() const {
         if ((std::rand() % 100) < chance) {
             ++hostGoals;
 
-            Player* scorer = chooseScorer(this->hostLineup.getPlayers());
+            Player scorer = chooseScorer(this->hostLineup.getPlayers());
             goals.push_back(new Match::MatchResult::Scorer(scorer, true));
         }
     }
@@ -278,7 +278,7 @@ Match::MatchResult Match::play() const {
         if ((std::rand() % 100) < chance) {
             ++guestGoals;
 
-            Player* scorer = chooseScorer(this->guestLineup.getPlayers());
+            Player scorer = chooseScorer(this->guestLineup.getPlayers());
             goals.push_back(new MatchResult::Scorer(scorer, false));
         }
     }

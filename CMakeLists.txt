@@ -51,6 +51,7 @@ add_library(model_team
         src/model/team/BalancedTeam.cpp
         src/model/team/DefensiveTeam.cpp
         src/model/team/Team.cpp
+        src/model/team/TeamType.h
 )
 
 target_include_directories(model_team PUBLIC
@@ -80,6 +81,7 @@ add_library(utils
         src/utils/Command.h
         src/utils/CommandLineInterpreterValidator.h
         src/utils/CommandLineInterpreterValidator.cpp
+        src/utils/Utils.h
 )
 
 target_include_directories(utils PUBLIC
@@ -93,7 +95,9 @@ add_executable(FootballChampionshipFMI src/main.cpp
         src/utils/CommandLineInterpreter.cpp
         src/utils/Command.h
         src/utils/CommandLineInterpreterValidator.h
-        src/utils/CommandLineInterpreterValidator.cpp)
+        src/utils/CommandLineInterpreterValidator.cpp
+        src/model/team/TeamType.h
+        src/utils/Utils.h)
 
 # Link the libraries
 target_link_libraries(FootballChampionshipFMI PRIVATE

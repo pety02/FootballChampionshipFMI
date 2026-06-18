@@ -12,7 +12,6 @@
 #include "../model/championship/history/ChampionshipHistory.h"
 #include "../model/team/factory/TeamFactory.h"
 #include "../simulation/FootballGameSimulator.h"
-#include "../utils/Map.h"
 #include "../model/match/Match.h"
 #include "../model/match/lineup/Lineup.h"
 
@@ -153,8 +152,7 @@ public:
     ) : history(&h), championship(&c), simulator(&s) {}
 
 private:
-    static Map<unsigned, Championship>
-    listSeasons(const ChampionshipHistory& championshipHistory);
+    static const std::vector<Championship>& listSeasons(const ChampionshipHistory& championshipHistory);
 
     static void playAllMatches(Championship& championship);
 
@@ -171,8 +169,6 @@ private:
     static void enterMatchResult(Match& match);
 
     static std::vector<Team*> listTeams(Championship& championship);
-
-    static TeamType parseTeamType(const std::string& type);
 
     static void addTeam(std::vector<std::string> args,
                         Championship& championship);
@@ -193,7 +189,7 @@ private:
     static void viewPlayer(const std::string& playerName,
                            const Championship& championship);
 
-    static std::vector<Player*> listPlayers(const Team& team);
+    static std::vector<Player> listPlayers(const Team& team);
 
     static void updateSalary(Championship& championship,
                              Player& player);
@@ -203,16 +199,16 @@ private:
     static void deleteLineup(Match& match,
                              const Lineup& lineup);
 
-    static Map<Player*, unsigned> listTopScorers(Team& team);
+    static std::vector<Player> listTopScorers(Team& team);
 
     static Team::Statistics listTeamStats(Team& team);
 
     static void viewPlayerRanking(Championship& championship);
 
-    static Map<Team*, Team::Statistics>
+    static std::vector<Team::Statistics>
     listSeasonStats(Championship& championship);
 
-    static Map<Player*, Player::Statistics>
+    static std::vector<Player::Statistics>
     listPlayerStats(const Team& team);
 
     static const Team& getChampion(const Championship& championship);
@@ -223,11 +219,10 @@ private:
 
     static const Player& getTopScorer(const Championship& championship);
 
-    static void exportData(const ChampionshipHistory& history,
-                           const std::string& filename);
+    void exportData(const ChampionshipHistory& history, const std::string& filename);
 
     static ChampionshipHistory&
-    importData(const std::string& filename);
+    importData(ChampionshipHistory& history, const std::string& filename);
 
     static void simulateGoal(Match& match);
 

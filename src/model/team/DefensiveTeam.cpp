@@ -10,7 +10,7 @@ DefensiveTeam::DefensiveTeam() : Team() {
 }
 
 DefensiveTeam::DefensiveTeam(const std::string &name, const std::string &coachName, const std::string &stadiumName,
-    double budget) : Team(name, coachName, stadiumName, budget) {
+    double budget) : Team(TeamType::DEFENSIVE, name, coachName, stadiumName, budget) {
 }
 
 DefensiveTeam::DefensiveTeam(const DefensiveTeam &other) : Team(other) {

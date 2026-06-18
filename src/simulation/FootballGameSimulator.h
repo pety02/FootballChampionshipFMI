@@ -88,7 +88,7 @@ public:
      *
      * @param match Pointer to the match to simulate.
      */
-    void play(Match* match);
+    void play(Match& match);
 
     /**
      * Records a goal scored by a player in a match.
@@ -96,7 +96,7 @@ public:
      * @param player Pointer to the scoring player.
      * @param match Reference to the match where the goal occurred.
      */
-    void addScorer(Player* player, Match& match);
+    void addScorer(const Player& player, Match& match);
 
     /**
      * Increments the home team's goal count in a match.

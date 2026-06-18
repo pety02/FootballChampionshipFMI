@@ -42,7 +42,7 @@ public:
     /**
      * Adds a value under a key.
      */
-    void add(const K& key, const V& value) {
+    void add(K& key, const V& value) {
         int idx = findIndex(key);
 
         if (idx == -1) {

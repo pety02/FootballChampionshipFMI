@@ -23,6 +23,10 @@ private:
     bool finished = false;
 
 public:
+    /**
+    * Default constructor of Championship class.
+    */
+    Championship() = default;
     explicit Championship(const TeamManager& manager) : teamManager(manager), accountingManager(AccountingManager()) {}
     /**
     * A constructor with parameters of the Championship class.
@@ -101,6 +105,43 @@ public:
     * Sets `finished` status to the current championship when all its matches are finished.
     */
     void finish();
+
+   friend std::ostream& operator<<(std::ostream& os, const Championship& championship) {
+      os << championship.getYear() << '\n'
+         << championship.getCurrentRoundNumber() << '\n'
+         << championship.isFinished() << '\n'
+         << championship.getTeamManager() << '\n'
+         << championship.getMatches().size() << '\n';
+
+      for(const auto &match : championship.getMatches()) {
+         os << match << '\n';
+      }
+
+      return os;
+   }
+   friend std::istream& operator>>(std::istream& is, Championship& championship) {
+      unsigned year, currentRoundNumber;
+      bool isFinished;
+      TeamManager teamManager;
+      int matchesCount;
+      std::vector<Match> matches;
+
+      is >> year >> currentRoundNumber >> isFinished >> teamManager >> matchesCount;
+    for(int i=0;i<matchesCount;i++)
+    {
+     Match match;
+     is >> match;
+     matches.push_back(match);
+    }
+
+      championship.year = year;
+      championship.currentRoundNumber = currentRoundNumber;
+      championship.finished = isFinished;
+      championship.teamManager = teamManager;
+      championship.matches = matches;
+
+      return is;
+   }
 };
 
 #endif //CHAMPIONSHIP_H

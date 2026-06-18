@@ -6,16 +6,13 @@
 #define CHAMPIONSHIPCOLLECTION_H
 
 #include "../../championship/Championship.h"
-#include "../../../utils/Map.h"
 
 /**
- * A class that represents the history of the championships as a map of key-value pairs where:
- * - The key is the year of the championship.
- * - The value is the definite championship.
+ * A class that represents the history of the championships as a vector of Championship objects.
  */
 class ChampionshipHistory final {
 private:
-    Map<unsigned, Championship> championships = Map<unsigned, Championship>(); // key: year, value: championship
+    std::vector<Championship> championships = std::vector<Championship>();
 
 public:
    static constexpr unsigned CURRENT_YEAR = 2026;
@@ -33,23 +30,22 @@ public:
    /**
     * Adds a championship in the history log of past championships with the year when it has been held.
     * Before-hands the methods validate the passed year argument if it is at least 1900 and at most the current year.
-    * @param year - the year when the championship has been held
     * @param championship - the championship that should be added in the history log
     */
-   void addChampionship(unsigned year, const Championship& championship);
+   void addChampionship(const Championship& championship);
 
    /**
     * Returns all championships held in the past.
     * @return a map of the held championships.
     */
-   [[nodiscard]] const Map<unsigned, Championship>& getChampionships() const;
+   [[nodiscard]] const std::vector<Championship>& getChampionships() const;
 
    /**
     * Returns a definite championship by its year.
     * @param year - the held year of the championship
     * @return a reference to the definite championship
     */
-   std::vector<Championship>& operator[](unsigned year);
+   const Championship& operator[](unsigned year);
 };
 
 #endif //CHAMPIONSHIPCOLLECTION_H

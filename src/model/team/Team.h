@@ -8,9 +8,13 @@
 #include <vector>
 #include <string>
 
-#include "../player/Player.h"
+#include "TeamType.h"
+#include "../../utils/Utils.h"
+//#include "manager/TeamManager.h"
 
 class TeamManager;
+
+#include "../player/Player.h"
 
 /**
  * Base class representing a football team.
@@ -64,6 +68,28 @@ public:
          * Increases the number of goals conceded.
          */
         void increaseConcededGoals(unsigned concededGoals);
+
+        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats) {
+         os << stats.concededGoals << ' '
+            << stats.scoredGoals << ' '
+            << stats.drawsCount << ' '
+            << stats.winsCount << ' '
+            << stats.lossesCount;
+
+         return os;
+        }
+        friend std::istream& operator>>(std::istream& is, Statistics& stats) {
+           unsigned concededGoals, scoredGoals, drawsCount, winsCount, lossesCount;
+           is >> concededGoals >> scoredGoals >> drawsCount >> winsCount >> lossesCount;
+
+           stats.concededGoals = concededGoals;
+           stats.scoredGoals = scoredGoals;
+           stats.drawsCount = drawsCount;
+           stats.winsCount = winsCount;
+           stats.lossesCount = lossesCount;
+
+           return is;
+        }
     };
 
     /**
@@ -72,6 +98,7 @@ public:
     static constexpr unsigned MAX_TEAM_SIZE = 20;
 
 protected:
+    TeamType type = TeamType::UNKNOWN;
     std::string name = std::string();
     std::string stadiumName = std::string();
 
@@ -80,7 +107,7 @@ protected:
      *
      * Team owns these Player pointers and is responsible for deleting them.
      */
-    std::vector<Player*> players = std::vector<Player*>();
+    std::vector<Player> players = std::vector<Player>();
 
     double budget = 0.0;
     Statistics stats = Statistics();
@@ -124,7 +151,8 @@ public:
      * @param stadiumName The stadium name.
      * @param budget The initial budget.
      */
-    Team(const std::string& name,
+    Team(TeamType type,
+         const std::string& name,
          const std::string& coachName,
          std::string stadiumName,
          double budget);
@@ -204,7 +232,7 @@ public:
      *
      * @return Constant reference to the player list.
      */
-    [[nodiscard]] const std::vector<Player*>& getPlayers() const;
+    [[nodiscard]] const std::vector<Player>& getPlayers() const;
 
     /**
      * Gets the current budget of the team.
@@ -249,6 +277,76 @@ public:
      * @throws std::invalid_argument If player is not found.
      */
     void removePlayer(const std::string& playerName);
+
+ friend std::ostream& operator<<(std::ostream& os, const Team& team)
+ {
+  os << Utils::toString(team.type) << '\n'
+     << team.name << '\n'
+     << team.stadiumName << '\n'
+     << team.budget << '\n'
+     << team.stats << '\n'
+     << team.forwardersCount << '\n'
+     << team.midfieldersCount << '\n'
+     << team.goalkeepersCount << '\n'
+     << team.defendersCount << '\n'
+     << team.wingersCount << '\n'
+     << team.players.size() << '\n';
+
+  for(const auto& p : team.players)
+   os << p;
+
+  return os;
+ }
+ friend std::istream& operator>>(std::istream& is, Team& team)
+ {
+  std::string typeStr;
+  std::string name;
+  std::string stadium;
+
+  double budget;
+  Statistics stats;
+
+  unsigned f,m,gk,d,w;
+  size_t playerCount;
+
+  std::getline(is >> std::ws, typeStr);
+  std::getline(is, name);
+  std::getline(is, stadium);
+
+  is >> budget
+     >> stats
+     >> f
+     >> m
+     >> gk
+     >> d
+     >> w
+     >> playerCount;
+
+  std::vector<Player> players;
+
+  for(size_t i=0;i<playerCount;i++)
+  {
+   Player p;
+   is >> p;
+   players.push_back(p);
+  }
+
+  team.type = Utils::parseTeamType(typeStr);
+  team.name = name;
+  team.stadiumName = stadium;
+  team.budget = budget;
+  team.stats = stats;
+
+  team.forwardersCount = f;
+  team.midfieldersCount = m;
+  team.goalkeepersCount = gk;
+  team.defendersCount = d;
+  team.wingersCount = w;
+
+  team.players = std::move(players);
+
+  return is;
+ }
 };
 
 #endif //TEAM_H

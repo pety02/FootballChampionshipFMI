@@ -10,14 +10,15 @@
 #include "../../simulation/validator/FootballGameSimulatorValidator.h"
 
 std::vector<std::string> FootballGameSimulator::getChampions() const {
-    Map<std::string, unsigned> champions;
+    std::vector<std::pair<std::string, unsigned>> champions;
 
-    for (auto& match : this->currentChampionship->getMatches()) {
-        champions[match.getHost()->getName()].push_back(
-            match.getHost()->getStats().scoredGoals);
-
-        champions[match.getGuest()->getName()].push_back(
-            match.getGuest()->getStats().scoredGoals);
+    for(auto champ : champions) {
+        for (auto& match : this->currentChampionship->getMatches()) {
+            if(champ.first == match.getHost()->getName())
+                champ.second = match.getHostGoals();
+            if(champ.first == match.getGuest()->getName())
+                champ.second = match.getGuestGoals();
+        }
     }
 
     // Convert Map → vector
@@ -49,8 +50,8 @@ FootballGameSimulator::FootballGameSimulator() : championshipHistory(Championshi
 }
 
 void FootballGameSimulator::simulate() {
-    for(const auto& match : this->currentChampionship->getMatches()) {
-        this->play(new Match(match));
+    for(auto match : this->currentChampionship->getMatches()) {
+        this->play(match);
     }
 
     this->currentChampionship->finish();
@@ -66,7 +67,7 @@ void FootballGameSimulator::updateChampionshipRound() {
 
 std::string FootballGameSimulator::findGoalMaster() {
     std::string goalMasterName;
-    Map<std::string, unsigned> scorers;
+    std::vector<std::pair<std::string, unsigned>> scorers;
 
     for (const auto& match : this->currentChampionship->getMatches()) {
 
@@ -74,7 +75,7 @@ std::string FootballGameSimulator::findGoalMaster() {
         for (const auto& scorer : match.getScorers()) {
 
             // unique player identification by name
-            scorers[scorer->getName()].push_back(1);
+            scorers.push_back(std::make_pair(scorer.getName(), scorer.getStats().scoredGoals));
         }
     }
 
@@ -83,7 +84,7 @@ std::string FootballGameSimulator::findGoalMaster() {
     for (const auto& scorer : scorers) {
 
         const std::string& scorerName = scorer.first;
-        unsigned goals = scorer.second.size();
+        unsigned goals = scorer.second;
 
         if (goals > maxGoals) {
             maxGoals = goals;
@@ -100,25 +101,25 @@ void FootballGameSimulator::finishChampionship() {
     this->bronzeTeam = this->getChampions()[2];
     this->goalMaster = this->findGoalMaster();
 
-    this->championshipHistory.addChampionship(this->currentChampionship->getYear(), *this->currentChampionship);
+    this->championshipHistory.addChampionship(*this->currentChampionship);
 }
 
-void FootballGameSimulator::play(Match* match) {
-    FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, *match);
-    match->play();
+void FootballGameSimulator::play(Match& match) {
+    FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, match);
+    match.play();
 }
 
-void FootballGameSimulator::addScorer(Player* player, Match &match) {
+void FootballGameSimulator::addScorer(const Player& player, Match &match) {
     FootballGameSimulatorValidator::validateMatchExists(this->currentChampionship, match);
     for(const auto& hostLineupPlayer : match.getHostLineup().getPlayers()) {
-        if(player->getName() == hostLineupPlayer->getName()) {
+        if(player.getName() == hostLineupPlayer.getName()) {
             match.addGoal(player, true);
             this->increaseHostGoals(match);
         }
     }
 
-    for(const auto& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
-        if(player->getName() == guestLineupPlayer->getName()) {
+    for(auto guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+        if(player.getName() == guestLineupPlayer.getName()) {
             match.addGoal(player, false);
             this->increaseGuestGoals(match);
         }
@@ -156,18 +157,18 @@ void FootballGameSimulator::finishMatch(Match &match) {
 
     // update the players statistics
     for (auto hostLineupPlayer : match.getHostLineup().getPlayers()) {
-        hostLineupPlayer->getStats().matchesCount++;
+        hostLineupPlayer.getStats().matchesCount++;
         for (auto hostPlayer : match.getHost()->getPlayers()) {
-            if(hostLineupPlayer->getName() == hostPlayer->getName()) {
-                hostLineupPlayer->getStats().scoredGoals += 1;
+            if(hostLineupPlayer.getName() == hostPlayer.getName()) {
+                hostLineupPlayer.getStats().scoredGoals += 1;
             }
         }
     }
-    for (auto& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
-        guestLineupPlayer->getStats().matchesCount++;
+    for (auto guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+        guestLineupPlayer.getStats().matchesCount++;
         for (auto guestPlayer : match.getGuest()->getPlayers()) {
-            if(guestLineupPlayer->getName() == guestPlayer->getName()) {
-                guestLineupPlayer->getStats().scoredGoals += 1;
+            if(guestLineupPlayer.getName() == guestPlayer.getName()) {
+                guestLineupPlayer.getStats().scoredGoals += 1;
             }
         }
     }

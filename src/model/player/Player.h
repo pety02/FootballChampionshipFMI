@@ -4,7 +4,7 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
-
+#include <fstream>
 #include <string>
 
 /**
@@ -39,7 +39,8 @@ public:
         /**
          * Constructs a statistics object with all values initialized to zero.
          */
-        Statistics();
+        explicit Statistics(unsigned matchesCount = 0, unsigned scoredGoals = 0)
+                    : matchesCount(matchesCount), scoredGoals(scoredGoals) {};
 
         /**
          * Increases the number of matches played by one.
@@ -50,6 +51,20 @@ public:
          * Increases the number of goals scored by one.
          */
         void increaseScoredGoals();
+
+        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats) {
+           os << stats.matchesCount << "\n" << stats.scoredGoals << "\n";
+
+           return os;
+        }
+        friend std::istream& operator>>(std::istream& is, Statistics& stats) {
+           unsigned matchesCount, scoredGoals;
+
+           is >> matchesCount >> scoredGoals;
+           stats = Statistics(matchesCount, scoredGoals);
+
+           return is;
+        }
     };
 
 private:
@@ -61,6 +76,10 @@ private:
     Statistics stats = Statistics();
 
 public:
+    /**
+    * Default constructo of Player class.
+    */
+    Player() = default;
     /**
      * Constructs a player with the specified properties.
      *
@@ -84,19 +103,9 @@ public:
     Player(const Player& other);
 
     /**
-     * Copy assignment operator is disabled.
+     * Copy assignment operator.
      */
-    Player& operator=(const Player& other) = delete;
-
-    /**
-     * Move constructor is disabled.
-     */
-    Player(Player&& other) = delete;
-
-    /**
-     * Move assignment operator is disabled.
-     */
-    Player& operator=(Player&& other) = delete;
+    Player& operator=(const Player& other);
 
     /**
      * Destroys the player object.
@@ -179,6 +188,44 @@ public:
      * @return Reference to the player's statistics.
      */
     [[nodiscard]] Statistics& getStats();
+
+ friend std::ostream& operator<<(std::ostream& os, const Player& player)
+ {
+  os << player.name << '\n'
+     << player.number << '\n'
+     << static_cast<int>(player.position) << '\n'
+     << player.salary << '\n'
+     << player.transferSum << '\n'
+     << player.stats << '\n';
+
+  return os;
+ }
+ friend std::istream& operator>>(std::istream& is, Player& player)
+ {
+  std::string name;
+  unsigned number;
+  int pos;
+  double salary;
+  double transferSum;
+  Statistics stats;
+
+  std::getline(is >> std::ws, name);
+
+  is >> number
+     >> pos
+     >> salary
+     >> transferSum
+     >> stats;
+
+  player.name = name;
+  player.number = number;
+  player.position = static_cast<Position>(pos);
+  player.salary = salary;
+  player.transferSum = transferSum;
+  player.stats = stats;
+
+  return is;
+ }
 };
 
 #endif //PLAYER_H

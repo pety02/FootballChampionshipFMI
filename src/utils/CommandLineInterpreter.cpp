@@ -4,14 +4,17 @@
 
 #include "CommandLineInterpreter.h"
 
-#include "../model/team/factory/TeamFactory.h"
+#include <algorithm>
 
+#include "ExceptionMessages.h"
+
+#include "../model/team/factory/TeamFactory.h"
+#include <fstream>
 #include "CommandLineInterpreterValidator.h"
+#include "Utils.h"
 #include "../simulation/MatchResultApplier.h"
 
-Map<unsigned, Championship>
-CommandLineInterpreter::listSeasons(
-        const ChampionshipHistory& history) {
+const std::vector<Championship>& CommandLineInterpreter::listSeasons(const ChampionshipHistory& history) {
 
     return history.getChampionships();
 }
@@ -22,7 +25,7 @@ void CommandLineInterpreter::playAllMatches(
     FootballGameSimulator simulator;
 
     for (auto match : championship.getMatches()) {
-        simulator.play(&match);
+        simulator.play(match);
     }
 }
 
@@ -38,7 +41,7 @@ void CommandLineInterpreter::finishSeason(
 
     playAllMatches(championship);
 
-    history.addChampionship(championship.getYear(), championship);
+    history.addChampionship(championship);
 
     std::cout << "Season finished.\n";
 }
@@ -49,7 +52,7 @@ void CommandLineInterpreter::playMatch(
 
     Championship championship = simulator.getCurrentChampionship();
     Match match(championship.getMatches()[matchIndex]);
-    simulator.play(&match);
+    simulator.play(match);
 }
 
 void CommandLineInterpreter::viewMatches(
@@ -111,22 +114,11 @@ std::vector<Team*> CommandLineInterpreter::listTeams(Championship &championship)
     return championship.getTeamManager().getTeams();
 }
 
-TeamType CommandLineInterpreter::parseTeamType(const std::string& type)
-{
-    if (type == "attacking") return TeamType::ATTACKING;
-    if (type == "defensive") return TeamType::DEFENSIVE;
-    if (type == "balanced")  return TeamType::BALANCED;
-
-    throw std::invalid_argument(
-    toString(ExceptionMessages::THE_TEAM_TYPE_SHOULD_BE_ONE_OF_THE_GIVEN)
-    );
-}
-
 void CommandLineInterpreter::addTeam(std::vector<std::string> args, Championship& championship) {
     if (args.empty())
         throw std::invalid_argument(toString(ExceptionMessages::INVALID_ARGUMENT));
 
-    TeamType type = parseTeamType(args[0]);
+    TeamType type = Utils::parseTeamType(args[0]);
     std::string name = args[1];
     std::string coach = args[2];
     std::string stadium = args[3];
@@ -214,12 +206,12 @@ void CommandLineInterpreter::transferPlayers(
 
     std::cin >> secondPlayer;
 
-    Player* p1 = nullptr;
-    Player* p2 = nullptr;
+    Player p1;
+    Player p2;
 
     for (auto p : firstTeam.getPlayers()) {
 
-        if (p->getName() == firstPlayer) {
+        if (p.getName() == firstPlayer) {
 
             p1 = p;
             break;
@@ -228,41 +220,34 @@ void CommandLineInterpreter::transferPlayers(
 
     for (auto p : secondTeam.getPlayers()) {
 
-        if (p->getName() == secondPlayer) {
+        if (p.getName() == secondPlayer) {
 
             p2 = p;
             break;
         }
     }
 
-    if (!p1 || !p2)
-        throw std::invalid_argument(
-                toString(ExceptionMessages::
-                        BOTH_TEAMS_CANNOT_BE_FOUND));
-
     firstTeam.removePlayer(firstPlayer);
     secondTeam.removePlayer(secondPlayer);
 
-    firstTeam.addPlayer(*p2, true);
-    secondTeam.addPlayer(*p1, true);
+    firstTeam.addPlayer(p2, true);
+    secondTeam.addPlayer(p1, true);
 }
 
 void CommandLineInterpreter::viewPlayer(const std::string &playerName, const Championship& championship) {
-    Player* player = nullptr;
+    Player player;
     for(auto t : championship.getTeamManager().getTeams()) {
         for(auto p : t->getPlayers()) {
-            if(p->getName() == playerName) {
+            if(p.getName() == playerName) {
                 player = p;
                 break;
             }
         }
     }
-    if(player == nullptr) {
-        return; // TODO: can be thrown an exception
-    }
-    std::cout << "Player: { name: " << player->getName() << ", number: " << player->getNumber() << ", position: ";
 
-    switch (player->getPosition()) {
+    std::cout << "Player: { name: " << player.getName() << ", number: " << player.getNumber() << ", position: ";
+
+    switch (player.getPosition()) {
         case Player::Position::GOALKEEPER: std::cout << "Goalkeeper"; break;
         case Player::Position::DEFENDER: std::cout << "Defender"; break;
         case Player::Position::MIDFIELDER: std::cout << "Midfielder"; break;
@@ -271,11 +256,11 @@ void CommandLineInterpreter::viewPlayer(const std::string &playerName, const Cha
         default: std::cout << "Unknown"; break;
     }
 
-    std::cout << ", salary: " << player->getSalary() << ", transferSum: " << player->getTransferSum() << ", stats: { matchesCount: "
-    << player->getStats().matchesCount << ", scoredGoals:" << player->getStats().scoredGoals << " } }" << std::endl;
+    std::cout << ", salary: " << player.getSalary() << ", transferSum: " << player.getTransferSum() << ", stats: { matchesCount: "
+    << player.getStats().matchesCount << ", scoredGoals:" << player.getStats().scoredGoals << " } }" << std::endl;
 }
 
-std::vector<Player*> CommandLineInterpreter::listPlayers(const Team &team) {
+std::vector<Player> CommandLineInterpreter::listPlayers(const Team &team) {
     return team.getPlayers();
 }
 
@@ -314,17 +299,16 @@ void CommandLineInterpreter::deleteLineup(
     match.clearLineups();
 }
 
-Map<Player*, unsigned>
+std::vector<Player>
 CommandLineInterpreter::listTopScorers(
         Team& team) {
 
-    static Map<Player*, unsigned> scorers;
+    static std::vector<Player> scorers;
 
     for (auto player : team.getPlayers()) {
 
-        scorers.add(
-                player,
-                player->getStats().scoredGoals);
+        scorers.push_back(
+                player);
     }
 
     return scorers;
@@ -341,28 +325,28 @@ void CommandLineInterpreter::viewPlayerRanking(
         for (auto player : team->getPlayers()) {
 
             std::cout
-                    << player->getName()
+                    << player.getName()
                     << " "
-                    << player->getStats().scoredGoals
+                    << player.getStats().scoredGoals
                     << '\n';
         }
     }
 }
 
-Map<Team*, Team::Statistics> CommandLineInterpreter::listSeasonStats(Championship &championship) {
-    Map<Team*, Team::Statistics> stats;
+std::vector<Team::Statistics> CommandLineInterpreter::listSeasonStats(Championship &championship) {
+    std::vector<Team::Statistics> stats;
     for (auto team :
          championship.getTeamManager().getTeams()) {
 
-        stats.add(team, team->getStats());
+        stats.push_back(team->getStats());
          }
     return stats;
 }
 
-Map<Player*, Player::Statistics> CommandLineInterpreter::listPlayerStats(const Team &team) {
-    auto stats = Map<Player*, Player::Statistics>();
-    for ( const auto& player: team.getPlayers()) {
-        stats.add(player, player->getStats());
+std::vector<Player::Statistics> CommandLineInterpreter::listPlayerStats(const Team &team) {
+    auto stats = std::vector<Player::Statistics>();
+    for ( auto player: team.getPlayers()) {
+        stats.push_back(player.getStats());
     }
 
     return stats;
@@ -372,83 +356,120 @@ const Team&
 CommandLineInterpreter::getChampion(
         const Championship& championship) {
 
-    Map<Team*, unsigned> champs = Map<Team*, unsigned>();
+    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (const auto& team : championship.getTeamManager().getTeams())
+    for (auto team : championship.getTeamManager().getTeams())
     {
-        champs.add(team, team->getStats().scoredGoals);
+        champs.push_back(std::make_pair(team, team->getStats().scoredGoals));
     }
 
     // sort by goals (descending)
-    champs.sortBy([](Team* a, Team* b)
-    {
-        return a->getStats().scoredGoals > b->getStats().scoredGoals;
-    });
+    std::sort(champs.begin(), champs.end(), std::less_equal<std::pair<Team*, unsigned>>());
 
-    const auto& data = champs.getData();
-
-    if (data.size() < 3) {
+    if (champs.size() < 3) {
         throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
     }
 
-    return *data[0].first; // 1st place
+    return *champs[0].first; // 1st place
 }
 
 const Team& CommandLineInterpreter::getRunnerUp(const Championship &championship) {
-    Map<Team*, unsigned> champs;
+    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (const auto& team : championship.getTeamManager().getTeams())
+    for (auto team : championship.getTeamManager().getTeams())
     {
-        champs.add(team, team->getStats().scoredGoals);
+        champs.push_back(std::make_pair(team, team->getStats().scoredGoals));
     }
 
     // sort by goals (descending)
-    champs.sortBy([](Team* a, Team* b)
-    {
-        return a->getStats().scoredGoals > b->getStats().scoredGoals;
-    });
+    std::sort(champs.begin(), champs.end(), std::less_equal<std::pair<Team*, unsigned>>());
 
-    const auto& data = champs.getData();
+    if (champs.size() < 3) {
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
+    }
 
-    if (data.size() < 3)
-        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
-
-    return *data[1].first; // 2nd place
+    return *champs[1].first; // 2nd place
 }
 
 const Team& CommandLineInterpreter::getThirdPlace(const Championship &championship)
 {
-    Map<Team*, unsigned> champs;
+    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (const auto& team : championship.getTeamManager().getTeams())
+    for (auto team : championship.getTeamManager().getTeams())
     {
-        champs.add(team, team->getStats().scoredGoals);
+        champs.push_back(std::make_pair(team, team->getStats().scoredGoals));
     }
 
     // sort by goals (descending)
-    champs.sortBy([](Team* a, Team* b)
-    {
-        return a->getStats().scoredGoals > b->getStats().scoredGoals;
-    });
+    std::sort(champs.begin(), champs.end(), std::less_equal<std::pair<Team*, unsigned>>());
 
-    const auto& data = champs.getData();
+    if (champs.size() < 3) {
+        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
+    }
 
-    if (data.size() < 3)
-        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
-
-    return *data[2].first; // 3rd place
+    return *champs[2].first; // 3rd place
 }
 
 const Player& CommandLineInterpreter::getTopScorer(const Championship &championship) {
-    // TODO: implement similar logic to this with top teams
+    Player player;
+    unsigned maxScoredGoals = 0;
+    for(const auto& m : championship.getMatches()) {
+        for(const auto p : m.getHost()->getPlayers()) {
+            if(p.getStats().scoredGoals > maxScoredGoals) {
+                maxScoredGoals = p.getStats().scoredGoals;
+                player = p;
+            }
+        }
+        for(const auto p : m.getGuest()->getPlayers()) {
+            if(p.getStats().scoredGoals > maxScoredGoals) {
+                maxScoredGoals = p.getStats().scoredGoals;
+                player = p;
+            }
+        }
+    }
+
+    return player;
 }
 
-void CommandLineInterpreter::exportData(const ChampionshipHistory &championshipHistory, const std::string &filename) {
-    // TODO: save data for a real game simulation in a file
+void CommandLineInterpreter::exportData(const ChampionshipHistory& history, const std::string &filename) {
+    std::ofstream out(filename);
+
+    const auto& championships = history.getChampionships();
+
+    out << championships.size();
+
+    for (const auto& championship : championships)
+    {
+        out << championship;
+    }
+
+    out.close();
 }
 
-ChampionshipHistory& CommandLineInterpreter::importData(const std::string &filename) {
-    // TODO: read a file and init a game from data saved in this file
+ChampionshipHistory& CommandLineInterpreter::importData(ChampionshipHistory& history, const std::string &filename) {
+    std::ifstream in(filename);
+
+    unsigned count;
+    in >> count;
+
+    for (unsigned i = 0; i < count; ++i)
+    {
+        unsigned year;
+        in >> year;
+
+        Championship championship;
+
+        // read championship data
+        in >> championship;
+
+        std::cout << championship;
+
+        history.addChampionship(championship);
+    }
+
+    in.close();
+
+    return history;
 }
 
 void CommandLineInterpreter::simulateGoal(Match &match) {
@@ -919,17 +940,16 @@ void CommandLineInterpreter::execute(Command command, std::vector<std::string> a
         }
 
         case Command::UPDATE_SALARY: {
-            Player* player = nullptr;
+            Player player;
             for(auto t : championship->getTeamManager().getTeams()) {
                 for(auto p : t->getPlayers()) {
-                    if(p->getName() == args[0]) {
+                    if(p.getName() == args[0]) {
                         player = p;
                         break;
                     }
                 }
             }
-            if(player == nullptr) throw std::invalid_argument("No player with this name.");
-            updateSalary(*championship, *player);
+            updateSalary(*championship, player);
             break;
         }
 
@@ -995,7 +1015,7 @@ void CommandLineInterpreter::execute(Command command, std::vector<std::string> a
         }
 
         case Command::IMPORT_DATA: {
-            importData(!args.empty() ? args[0] : "in.dat");
+            importData(*history, !args.empty() ? args[0] : "in.dat");
             break;
         }
 

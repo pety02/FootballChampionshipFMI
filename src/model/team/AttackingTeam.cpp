@@ -15,7 +15,7 @@ AttackingTeam::AttackingTeam() : Team() {
 }
 
 AttackingTeam::AttackingTeam(const std::string &name, const std::string &coachName, const std::string &stadiumName,
-    double budget) : Team(name, coachName, stadiumName, budget) {
+    double budget) : Team(TeamType::ATTACKING, name, coachName, stadiumName, budget) {
 }
 
 AttackingTeam::AttackingTeam(const AttackingTeam &other) : Team(other) {

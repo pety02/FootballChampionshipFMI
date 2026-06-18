@@ -142,9 +142,9 @@ inline std::string toString(ExceptionMessages message) {
 
         // Team validation
         case ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY:
-            return "Team cannot be NULL.";
+            return "Team name cannot be empty.";
         case ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK:
-            return "Team cannot be blank.";
+            return "Team name cannot be blank.";
         case ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY:
             return "Stadium name cannot be empty.";
         case ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK:

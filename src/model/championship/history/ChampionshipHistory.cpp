@@ -4,21 +4,27 @@
 
 #include "../championship/history/ChampionshipHistory.h"
 
+#include <stdexcept>
+
 #include "../validator/ChampionshipValidator.h"
 
-ChampionshipHistory::ChampionshipHistory() : championships(Map<unsigned, Championship>()) {
+ChampionshipHistory::ChampionshipHistory() : championships(std::vector<Championship>()) {
 }
 
-void ChampionshipHistory::addChampionship(unsigned year, const Championship &championship) {
-    ChampionshipValidator::validateYear(year);
-
-    this->championships[year].push_back(championship);
+void ChampionshipHistory::addChampionship(const Championship &championship) {
+    this->championships.push_back(championship);
 }
 
-const Map<unsigned, Championship>& ChampionshipHistory::getChampionships() const {
+const std::vector<Championship>& ChampionshipHistory::getChampionships() const {
     return this->championships;
 }
 
-std::vector<Championship>& ChampionshipHistory::operator[](unsigned year) {
-    return championships[year];
+const Championship& ChampionshipHistory::operator[](unsigned year) {
+    for (unsigned i = 0; i < this->championships.size(); i++) {
+        if(championships[i].getYear() == year) {
+            return championships[i];
+        }
+    }
+
+    throw std::invalid_argument("Championship with this year does not exist.");
 }

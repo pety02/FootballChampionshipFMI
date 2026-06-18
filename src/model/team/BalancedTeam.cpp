@@ -10,7 +10,7 @@ BalancedTeam::BalancedTeam() : Team() {
 }
 
 BalancedTeam::BalancedTeam(const std::string &name, const std::string &coachName, const std::string &stadiumName,
-    double budget) : Team(name, coachName, stadiumName, budget) {
+    double budget) : Team(TeamType::BALANCED, name, coachName, stadiumName, budget) {
 }
 
 BalancedTeam::BalancedTeam(const BalancedTeam &other) : Team(other) {
