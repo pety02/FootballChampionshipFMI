@@ -59,6 +59,8 @@ enum class ExceptionMessages {
     BOTH_TEAMS_CANNOT_BE_FOUND,
     TEAM_WITH_A_NAME_CANNOT_BE_FOUND,
     TEAM_NOT_MANAGED_BY_THIS_MANAGER,
+    NOT_UNIQUE_PLAYER_NUMBER,
+    NOT_UNIQUE_PLAYER_NAME,
 
     // Map
     KEY_NOT_FOUND,
@@ -173,6 +175,10 @@ inline std::string toString(ExceptionMessages message) {
             return "Team with a name cannot be found.";
         case ExceptionMessages::TEAM_NOT_MANAGED_BY_THIS_MANAGER:
             return "Team is not managed by this manager.";
+        case ExceptionMessages::NOT_UNIQUE_PLAYER_NUMBER:
+            return "The player number is not unique.";
+        case ExceptionMessages::NOT_UNIQUE_PLAYER_NAME:
+            return "The player name is not unique.";
 
         // Map
         case ExceptionMessages::KEY_NOT_FOUND:

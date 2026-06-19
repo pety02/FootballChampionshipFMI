@@ -33,6 +33,9 @@ void DefensiveTeam::addPlayer(Player& player, bool isTransfer) {
     double remainingBudget = this->budget - player.getTransferSum();
     TeamValidator::validateRemainingBudget(remainingBudget);
 
+    TeamValidator::validateUniquePlayerNumber(*this, player.getNumber());
+    TeamValidator::validateUniquePlayerName(*this, player.getName());
+
     // 3. Валидация на игралната позиция
     Player::Position playerPosition = player.getPosition();
     PlayerValidator::validatePosition(playerPosition);

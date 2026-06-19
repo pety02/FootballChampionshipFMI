@@ -86,3 +86,19 @@ void TeamValidator::validateThatTeamsAreMangedByAManager(const std::vector<Team 
         throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_MANAGED_BY_THIS_MANAGER));
     }
 }
+
+void TeamValidator::validateUniquePlayerNumber(const Team& team, unsigned number) {
+    for(const auto& player : team.getPlayers()) {
+        if(player.getNumber() == number) {
+            throw std::invalid_argument(toString(ExceptionMessages::NOT_UNIQUE_PLAYER_NUMBER));
+        }
+    }
+}
+
+void TeamValidator::validateUniquePlayerName(const Team& team, const std::string& name) {
+    for(const auto& player : team.getPlayers()) {
+        if(player.getName() == name) {
+            throw std::invalid_argument(toString(ExceptionMessages::NOT_UNIQUE_PLAYER_NAME));
+        }
+    }
+}

@@ -3,6 +3,9 @@
 //
 
 #include "../player/Player.h"
+
+#include <iostream>
+
 #include "validator/PlayerValidator.h"
 #include "../../utils/ExceptionMessages.h"
 #include "../../utils/validator/StringValidator.h"
@@ -17,13 +20,15 @@ void Player::Statistics::increaseScoredGoals() {
 
 Player::Player(const std::string &name, const unsigned number,
     const Position position, const double salary, const double transferSum)
-    : name(name), number(number), position(position), salary(salary), transferSum(transferSum) {
+    : name(name), number(number), salary(salary), transferSum(transferSum) {
 
     StringValidator::validate(name, toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_BLANK));
     PlayerValidator::validateNumber(number);
     PlayerValidator::validatePosition(position);
     PlayerValidator::validateSalary(salary);
     PlayerValidator::validateTransferSum(transferSum);
+
+    this->setPosition(position);
 }
 
 Player::Player(const Player& other)
@@ -35,7 +40,7 @@ Player& Player::operator=(const Player& other) {
     if(this != &other) {
         this->name = other.name;
         this->number = other.number;
-        this->position = other.position;
+        this->setPosition(other.position);
         this->salary = other.salary;
         this->transferSum = other.transferSum;
     }
@@ -49,6 +54,12 @@ void Player::setNumber(const unsigned number) {
 
 void Player::setPosition(const Position position) {
     this->position = position;
+
+    if (this->position == Position::FORWARD) {
+        if (this->stats.scoredGoals < 6) {
+            this->stats.scoredGoals = 6;
+        }
+    }
 }
 
 void Player::setSalary(const double salary) {

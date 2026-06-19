@@ -219,7 +219,7 @@ public:
 
   player.name = name;
   player.number = number;
-  player.position = static_cast<Position>(pos);
+  player.setPosition(static_cast<Position>(pos));
   player.salary = salary;
   player.transferSum = transferSum;
   player.stats = stats;

@@ -4,7 +4,6 @@
 
 #include "Team.h"
 
-#include <stdexcept>
 #include <utility>
 
 #include "validator/TeamValidator.h"

@@ -124,6 +124,10 @@ public:
     static void validateThatTeamsAreMangedByAManager(const std::vector<Team*>& teams,
                                                       const Team* homeTeam,
                                                       const Team* guestTeam);
+
+    static void validateUniquePlayerNumber(const Team& team, unsigned number);
+
+    static void validateUniquePlayerName(const Team& team, const std::string& name);
 };
 
 #endif //TEAMVALIDATOR_H

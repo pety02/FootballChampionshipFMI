@@ -65,7 +65,7 @@ void PlayerEngine::transferPlayers(
 
 void PlayerEngine::viewPlayer(const std::string &playerName, const Championship& championship) {
     Player player;
-    for(auto t : championship.getTeamManager().getTeams()) {
+    for(const auto t : championship.getTeamManager().getTeams()) {
         for(const auto& p : t->getPlayers()) {
             if(p.getName() == playerName) {
                 player = p;
@@ -86,7 +86,7 @@ void PlayerEngine::viewPlayer(const std::string &playerName, const Championship&
     }
 
     std::cout << ", salary: " << player.getSalary() << ", transferSum: " << player.getTransferSum() << ", stats: { matchesCount: "
-    << player.getStats().matchesCount << ", scoredGoals:" << player.getStats().scoredGoals << " } }" << std::endl;
+    << player.getStats().matchesCount << ", scoredGoals: " << player.getStats().scoredGoals << " } }" << std::endl;
 }
 
 std::vector<Player> PlayerEngine::listPlayers(const Team &team) {
