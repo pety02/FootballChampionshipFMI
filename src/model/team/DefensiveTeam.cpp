@@ -3,8 +3,8 @@
 //
 
 #include "DefensiveTeam.h"
-#include "../../player/validator/PlayerValidator.h"
-#include "../../team/validator/TeamValidator.h"
+#include "../player/validator/PlayerValidator.h"
+#include "validator/TeamValidator.h"
 
 DefensiveTeam::DefensiveTeam() : Team() {
 }

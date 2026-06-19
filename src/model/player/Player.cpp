@@ -3,9 +3,9 @@
 //
 
 #include "../player/Player.h"
-#include "../../player/validator/PlayerValidator.h"
+#include "validator/PlayerValidator.h"
 #include "../../utils/ExceptionMessages.h"
-#include "../../utils/StringValidator.h"
+#include "../../utils/validator/StringValidator.h"
 
 void Player::Statistics::increaseMatchesCount() {
     ++this->matchesCount;

@@ -2,14 +2,14 @@
 // Created by User on 5/17/2026.
 //
 
-#ifndef FOOTBALLGAMESIMULATOR_H
-#define FOOTBALLGAMESIMULATOR_H
+#ifndef FOOTBALLGAMEENGINE_H
+#define FOOTBALLGAMEENGINE_H
 
 #include <string>
 
-#include "../model/championship/history/ChampionshipHistory.h"
-#include "../model/match/Match.h"
-#include "../model/player/Player.h"
+#include "../../model/championship/history/ChampionshipHistory.h"
+#include "../../model/match/Match.h"
+#include "../../model/player/Player.h"
 
 /**
  * Core simulation engine for running football championships.
@@ -20,16 +20,10 @@
  * - Tracking results and statistics
  * - Determining final rankings (champion, vice-champion, etc.)
  */
-class FootballGameSimulator {
+class FootballGameEngine {
 private:
     ChampionshipHistory championshipHistory = ChampionshipHistory();
-
-    /**
-     * Currently active championship being simulated.
-     *
-     * Ownership: FootballGameSimulator owns this pointer.
-     */
-    Championship* currentChampionship = nullptr;
+    Championship currentChampionship = Championship();
 
     std::string champion = std::string();
     std::string viceChampion = std::string();
@@ -55,7 +49,7 @@ public:
     /**
      * Default constructor.
      */
-    FootballGameSimulator();
+    FootballGameEngine();
 
     /**
      * Initializes and creates a new championship.
@@ -88,7 +82,7 @@ public:
      *
      * @param match Pointer to the match to simulate.
      */
-    void play(Match& match);
+    void play(const Match& match) const;
 
     /**
      * Records a goal scored by a player in a match.
@@ -96,21 +90,21 @@ public:
      * @param player Pointer to the scoring player.
      * @param match Reference to the match where the goal occurred.
      */
-    void addScorer(const Player& player, Match& match);
+    void addScorer(const Player& player, Match& match) const;
 
     /**
      * Increments the home team's goal count in a match.
      *
      * @param match The match to update.
      */
-    void increaseHostGoals(const Match& match);
+    static void increaseHostGoals(const Match& match);
 
     /**
      * Increments the guest team's goal count in a match.
      *
      * @param match The match to update.
      */
-    void increaseGuestGoals(const Match& match);
+    static void increaseGuestGoals(const Match& match);
 
     /**
      * Marks a match as finished and finalizes its result.
@@ -125,6 +119,36 @@ public:
      * @return Constant reference to the championship.
      */
     [[nodiscard]] const Championship& getCurrentChampionship() const;
+
+ static std::vector<Championship> listSeasons(const ChampionshipHistory &championshipHistory); // simulator
+
+ static void playAllMatches(Championship& championship); // simulator
+
+ static void showPodium(const Championship& championship); // simulator
+
+ static void finishSeason(ChampionshipHistory& history, // simulator
+                          Championship& championship);
+
+ static void viewMatches(const Championship& championship); // simulator
+
+ static void enterMatchResult(const Match& match); // simulator
+
+ static std::vector<Team*> listTeams(Championship& championship); // simulator
+
+ static void addTeam(const std::vector<std::string> &args, // simulator
+                     Championship& championship);
+
+ static void removeTeam(const std::string& teamName, // simulator
+                        Championship& championship);
+
+ static void autoSelectLineup(Match& match); // simulator
+
+ static void deleteLineup(Match& match, // simulator
+                          const Lineup& lineup);
+
+ static std::vector<Player> listTopScorers(const Team& team); // simulator
+
+ static void simulateGoal(const Match& match); // simulator
 };
 
-#endif // FOOTBALLGAMESIMULATOR_H
+#endif // FOOTBALLGAMEENGINE_H

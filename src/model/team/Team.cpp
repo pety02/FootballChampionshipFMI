@@ -7,9 +7,9 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../team/validator/TeamValidator.h"
-#include "../../utils/StringValidator.h"
-#include "../../team/manager/TeamManager.h"
+#include "validator/TeamValidator.h"
+#include "../../utils/validator/StringValidator.h"
+#include "manager/TeamManager.h"
 #include "../../utils/ExceptionMessages.h"
 
 Team::Statistics::Statistics()

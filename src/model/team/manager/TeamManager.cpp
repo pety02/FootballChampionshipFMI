@@ -7,7 +7,7 @@
 #include "../../match/Match.h"
 #include "../../../simulation/MatchResultApplier.h"
 #include "../../../utils/ExceptionMessages.h"
-#include "../../../utils/StringValidator.h"
+#include "../../../utils/validator/StringValidator.h"
 #include "../../team/validator/TeamValidator.h"
 
 TeamManager::TeamManager(const std::string &name, const std::vector<Team>& teams) : name(name) {

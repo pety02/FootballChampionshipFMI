@@ -6,9 +6,9 @@
 
 #include <stdexcept>
 
-#include "../../championship/history/ChampionshipHistory.h"
-#include "../../championship/validator/ChampionshipValidator.h"
-#include "../../match/validator/MatchValidator.h"
+#include "history/ChampionshipHistory.h"
+#include "validator/ChampionshipValidator.h"
+#include "../match/validator/MatchValidator.h"
 #include "../../utils/ExceptionMessages.h"
 
 Championship::Championship(const TeamManager& teamManager, const std::vector<Match> &matches)

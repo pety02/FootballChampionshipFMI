@@ -6,6 +6,7 @@
 #define UTILS_H
 
 #include "../model/team/TeamType.h"
+#include "../model/player/Player.h"
 #include <string>
 #include <iostream>
 
@@ -26,6 +27,30 @@ public:
             case TeamType::DEFENSIVE: return "defensive";
             case TeamType::BALANCED: return "balanced";
             default: return "unknown";
+        }
+    }
+
+    static Player::Position toPosition(const std::string& posValue) {
+        // to lowercase
+        for (int i = 0; i < posValue.length(); i++) {
+            char c = posValue[i];
+            if (c >= 'A' && c <= 'Z') {
+                c += 32;
+            }
+        }
+
+        if(posValue == "goalkeeper") {
+            return Player::Position::GOALKEEPER;
+        } else if (posValue == "defender") {
+            return Player::Position::DEFENDER;
+        } else if (posValue == "midfielder") {
+            return Player::Position::MIDFIELDER;
+        } else if (posValue == "winger") {
+            return Player::Position::WINGER;
+        } else if (posValue == "forward") {
+            return Player::Position::FORWARD;
+        } else {
+            return Player::Position::UNKNOWN;
         }
     }
 };

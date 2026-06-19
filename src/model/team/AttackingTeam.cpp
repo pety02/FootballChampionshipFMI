@@ -7,9 +7,9 @@
 #include <stdexcept>
 
 #include "../../utils/ExceptionMessages.h"
-#include "../../player/validator/PlayerValidator.h"
-#include "../../team/manager/TeamManager.h"
-#include "../../team/validator/TeamValidator.h"
+#include "../player/validator/PlayerValidator.h"
+#include "manager/TeamManager.h"
+#include "validator/TeamValidator.h"
 
 AttackingTeam::AttackingTeam() : Team() {
 }

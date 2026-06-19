@@ -2,7 +2,7 @@
 // Created by User on 5/30/2026.
 //
 
-#include "../simulation/validator/FootballGameSimulatorValidator.h"
+#include "FootballGameSimulatorValidator.h"
 #include <stdexcept>
 
 #include "../../utils/ExceptionMessages.h"

@@ -1,16 +1,13 @@
 #include <iostream>
-
-#include "CommandLineInterpreter.h"
-
+#include "utils/CommandLineInterpreter.h"
 #include <sstream>
 
 int main()
 {
     ChampionshipHistory history;
     Championship championship = Championship(TeamManager());
-    FootballGameSimulator simulator;
 
-    CommandLineInterpreter cli(history, championship, simulator);
+    CommandLineInterpreter cli(history, championship);
     history.addChampionship(championship);
 
     cli.execute(Command::MENU, {});
@@ -32,9 +29,6 @@ int main()
         std::string commandValue;
         ss >> commandValue;
 
-        if (commandValue == "exit")
-            break;
-
         Command cmd = parseCommand(commandValue);
 
         std::vector<std::string> args;
@@ -45,9 +39,28 @@ int main()
             args.push_back(arg);
         }
 
+        if (commandValue == "exit") {
+            if(!args.empty()) {
+                std::cout << "EXIT command does not need any args. Do you want to exit the program anyway? Y/N\n> ";
+                std::string answer;
+                while(answer != "Y" && answer != "y" && answer != "N" && answer != "n") {
+                    std::getline(std::cin, answer);
+                }
+                if(answer == "Y" || answer == "y") {
+                    cli.execute(Command::EXIT, args);
+                    return 0;
+                }
+            } else {
+                cli.execute(Command::EXIT, args);
+                return 0;
+            }
+        }
+
         try
         {
-            cli.execute(cmd, args);
+            if(cmd != Command::EXIT) {
+                cli.execute(cmd, args);
+            }
         }
         catch (const std::exception& e)
         {

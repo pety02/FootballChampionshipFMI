@@ -2,11 +2,11 @@
 // Created by User on 6/15/2026.
 //
 
-#ifndef COMMANDLINEINTERPRETERVALIDATOR_H
-#define COMMANDLINEINTERPRETERVALIDATOR_H
+#ifndef COMMANDLINEVALIDATOR_H
+#define COMMANDLINEVALIDATOR_H
 
 #include <string>
-#include "../model/team/Team.h"
+#include "../../model/team/Team.h"
 
 /**
  * Validation utilities used by the CommandLineInterpreter.
@@ -16,7 +16,7 @@
  * - player-team relationships (home/guest membership)
  * - uniqueness constraints for player operations
  */
-class CommandLineInterpreterValidator {
+class CommandLineValidator {
 public:
     /**
      * Validates that the number of scored goals is consistent
@@ -65,4 +65,4 @@ public:
                                          const Team& team);
 };
 
-#endif // COMMANDLINEINTERPRETERVALIDATOR_H
+#endif // COMMANDLINEVALIDATOR_H
