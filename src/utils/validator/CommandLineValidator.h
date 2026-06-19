@@ -63,6 +63,8 @@ public:
      */
     static void validateUniquePlayerName(const std::string& playerName,
                                          const Team& team);
+
+   static Player resolvePlayer(const std::string& playerName, const Team& team);
 };
 
 #endif // COMMANDLINEVALIDATOR_H

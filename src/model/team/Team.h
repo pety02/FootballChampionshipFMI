@@ -10,7 +10,6 @@
 
 #include "TeamType.h"
 #include "../../utils/Utils.h"
-//#include "manager/TeamManager.h"
 
 class TeamManager;
 
@@ -164,10 +163,14 @@ public:
      */
     Team(const Team& other);
 
+    Team(Team&& other) noexcept;
+
     /**
      * Copy assignment operator.
      */
     Team& operator=(const Team& other);
+
+    Team& operator=(Team&& other) noexcept;
 
     /**
      * Virtual destructor.

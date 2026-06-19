@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <PlayerEngine.h>
 
 #include "../MatchResultApplier.h"
 #include "StatisticsEngine.h"
@@ -239,41 +240,69 @@ void FootballGameEngine::viewMatches(
     }
 }
 
-void FootballGameEngine::enterMatchResult(const Match &match) {
-    Match::MatchResult result(
-        match.getHost(),
-        match.getGuest());
+void FootballGameEngine::enterMatchResult(const Match &match)
+{
+    Match::MatchResult result;
+
+    result.home = match.getHost();
+    result.guest = match.getGuest();
 
     std::vector<Match::MatchResult::Scorer*> goals;
 
     int totalGoalsCount = 0;
 
-    while(totalGoalsCount <= 0) {
+    while (totalGoalsCount <= 0)
+    {
         std::cout << "Enter total goals count: ";
         std::cin >> totalGoalsCount;
     }
 
-    std::string playerName;
-    unsigned scoredGals;
-    while (totalGoalsCount > 0) {
+    unsigned remainingHomeGoals = 0;
+    unsigned remainingGuestGoals = 0;
+
+    for (int i = 0; i < totalGoalsCount; i++)
+    {
+        std::string playerName;
         std::cout << "Enter player name: ";
         std::cin >> playerName;
 
+        unsigned scoredGoals;
         std::cout << "Enter goals: ";
-        std::cin >> scoredGals;
+        std::cin >> scoredGoals;
 
-        CommandLineValidator::validateGoalsCount(scoredGals, totalGoalsCount);
+        if (CommandLineValidator::validateIsHomePlayer(playerName, *match.getHost()))
+        {
+            remainingHomeGoals += scoredGoals;
 
-        if (CommandLineValidator::validateIsHomePlayer(playerName, *match.getHost())) {
-            result.homeGoals += scoredGals;
-        } else if (CommandLineValidator::validateIsGuestPlayer(playerName, *match.getGuest())) {
-            result.guestGoals += scoredGals;
-        } else {
-            throw std::invalid_argument(toString(ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH));
+            goals.push_back(
+                new Match::MatchResult::Scorer(
+                    CommandLineValidator::resolvePlayer(playerName, *match.getHost()),
+                    true
+                )
+            );
         }
+        else if (CommandLineValidator::validateIsGuestPlayer(playerName, *match.getGuest()))
+        {
+            remainingGuestGoals += scoredGoals;
 
-        totalGoalsCount--;
+            goals.push_back(
+                new Match::MatchResult::Scorer(
+                    CommandLineValidator::resolvePlayer(playerName, *match.getGuest()),
+                    false
+                )
+            );
+        }
+        else
+        {
+            throw std::invalid_argument(
+                toString(ExceptionMessages::DOES_NOT_PLAY_IN_THIS_MATCH)
+            );
+        }
     }
+
+    result.homeGoals = remainingHomeGoals;
+    result.guestGoals = remainingGuestGoals;
+    result.goals = goals;
 
     MatchResultApplier::apply(result);
 }
@@ -321,9 +350,12 @@ void FootballGameEngine::removeTeam(const std::string &teamName, Championship &c
     championship.getTeamManager().removeTeam(teamName);
 }
 
-void FootballGameEngine::autoSelectLineup(Match& match) {
-    match.setHostLineup(Lineup(match.getHost()));
-    match.setGuestLineup(Lineup(match.getGuest()));
+void FootballGameEngine::autoSelectLineups(Match& match, Team* host, Team* guest) {
+    Lineup hostLineup = Lineup(host);
+    Lineup guestLineup = Lineup(guest);
+
+    match.setHostLineup(hostLineup);
+    match.setGuestLineup(guestLineup);
 }
 
 void FootballGameEngine::deleteLineup(

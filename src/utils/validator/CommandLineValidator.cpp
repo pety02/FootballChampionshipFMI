@@ -38,3 +38,20 @@ void CommandLineValidator::validateUniquePlayerName(const std::string& playerNam
         }
     }
 }
+
+Player CommandLineValidator::resolvePlayer(const std::string& playerName, const Team& team)
+{
+    const std::vector<Player>& players = team.getPlayers();
+
+    for (const Player& p : players)
+    {
+        if (p.getName() == playerName)
+        {
+            return p; // return by value (safe, no lifetime issues)
+        }
+    }
+
+    throw std::invalid_argument(
+        "Does not play in this team."
+    );
+}

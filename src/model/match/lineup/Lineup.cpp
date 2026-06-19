@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #include "Lineup.h"
 #include <stdexcept>
 
@@ -12,30 +8,24 @@ std::vector<Player> Lineup::generateRandomLineup(const Team& team)
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
-    // helper lambda-like logic (no <algorithm>)
-    auto canAdd = [&](const Player& p) -> bool
-    {
-        // uniqueness
-        for (auto x : result)
-            if (x.getName() == p.getName()) return false;
-
+    auto canAdd = [&](const Player& p) -> bool {
+        for (const auto& x : result)
+            if (x.getName() == p.getName())
+                return false;
         return true;
     };
 
-    auto tryAdd = [&](const Player& p) -> bool
-    {
+    auto tryAdd = [&](const Player& p) -> bool {
         if (!canAdd(p)) return false;
 
         Player::Position pos = p.getPosition();
 
-        // enforce position limits
         if (pos == Player::Position::GOALKEEPER && gk >= 1) return false;
         if (pos == Player::Position::DEFENDER && def >= 4) return false;
         if (pos == Player::Position::MIDFIELDER && mid >= 4) return false;
         if (pos == Player::Position::WINGER && wing >= 3) return false;
         if (pos == Player::Position::FORWARD && fwd >= 3) return false;
 
-        // add player
         result.push_back(p);
 
         switch (pos)
@@ -45,76 +35,69 @@ std::vector<Player> Lineup::generateRandomLineup(const Team& team)
             case Player::Position::MIDFIELDER: mid++; break;
             case Player::Position::WINGER: wing++; break;
             case Player::Position::FORWARD: fwd++; break;
-            default: break; // TODO: can be thrown an exception
+            default: break;
         }
 
         return true;
     };
 
-    // =========================================================
-    // 1. PRIORITY PASS: players with < 3 matches
-    // =========================================================
-    for (auto p : allPlayers)
-    {
-        if (result.size() >= LINEUP_SIZE)
-            break;
-
-        if (p.getStats().matchesCount < 3)
-        {
+    for (const auto& p : allPlayers)
+        if (result.size() < LINEUP_SIZE && p.getStats().matchesCount < 3)
             tryAdd(p);
-        }
-    }
 
-    // =========================================================
-    // 2. SECOND PASS: fill remaining slots
-    // =========================================================
-    for (auto p : allPlayers)
-    {
-        if (result.size() >= LINEUP_SIZE)
-            break;
-
-        tryAdd(p);
-    }
-
-    // =========================================================
-    // 3. FINAL VALIDATION (optional but recommended)
-    // =========================================================
-    if (result.size() != LINEUP_SIZE ||
-        gk != 1 ||
-        def < 2 ||
-        mid < 2 ||
-        wing < 2 ||
-        fwd < 2)
-    {
-        throw std::runtime_error("Failed to generate valid lineup");
-    }
+    for (const auto& p : allPlayers)
+        if (result.size() < LINEUP_SIZE)
+            tryAdd(p);
 
     return result;
 }
 
-Lineup::Lineup(Team* team) {
-    this->team = team;
-    this->players = Lineup::generateRandomLineup(*team);
-}
+// ===================== CONSTRUCTORS =====================
 
-Lineup::Lineup(const Lineup &other)
-    : team(other.team), players(other.players)
-{}
+Lineup::Lineup(Team* team)
+    : team(team),
+      players(team ? generateRandomLineup(*team) : std::vector<Player>()) {}
 
-Lineup & Lineup::operator=(const Lineup &other) {
-    if (this != &other) {
+// COPY
+Lineup::Lineup(const Lineup& other)
+    : team(other.team),
+      players(other.players) {}
+
+// COPY ASSIGNMENT
+Lineup& Lineup::operator=(const Lineup& other)
+{
+    if (this != &other)
+    {
         team = other.team;
         players = other.players;
     }
     return *this;
 }
 
-Lineup::~Lineup() {
-    players.clear();
-    team = nullptr;
+// MOVE CONSTRUCTOR
+Lineup::Lineup(Lineup&& other) noexcept
+    : team(other.team),
+      players(std::move(other.players))
+{
+    other.team = nullptr;
 }
 
-void Lineup::setTeam(Team* team) {
+// MOVE ASSIGNMENT
+Lineup& Lineup::operator=(Lineup&& other) noexcept
+{
+    if (this != &other)
+    {
+        team = other.team;
+        players = std::move(other.players);
+        other.team = nullptr;
+    }
+    return *this;
+}
+
+// ===================== METHODS =====================
+
+void Lineup::setTeam(Team* team)
+{
     this->team = team;
 }
 
@@ -123,12 +106,9 @@ void Lineup::addPlayer(const Player& player)
     if (players.size() >= LINEUP_SIZE)
         throw std::runtime_error("Lineup already full");
 
-    // check duplicates
-    for (auto p : players)
-    {
+    for (const auto& p : players)
         if (p.getName() == player.getName())
-            throw std::runtime_error("Player already in lineup"); // use PlayerValidator::validateName(currentPlayer->getName(), player->getName());
-    }
+            throw std::runtime_error("Player already in lineup");
 
     players.push_back(player);
 }
@@ -140,7 +120,7 @@ bool Lineup::isValid() const
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
-    for (auto p : players)
+    for (const auto& p : players)
     {
         switch (p.getPosition())
         {
@@ -149,7 +129,7 @@ bool Lineup::isValid() const
             case Player::Position::MIDFIELDER: mid++; break;
             case Player::Position::WINGER: wing++; break;
             case Player::Position::FORWARD: fwd++; break;
-            default: break; // TODO: can be thrown an exception
+            default: break;
         }
     }
 
@@ -160,18 +140,23 @@ bool Lineup::isValid() const
            fwd >= 2;
 }
 
-void Lineup::removePlayer(const std::string& playerName) {
-    for (int i = 0; i < this->players.size(); ++i) {
-        if(this->players[i].getName() == playerName) {
-            this->players.erase(this->players.begin() + i);
-        }
+void Lineup::removePlayer(const std::string& playerName)
+{
+    for (auto it = players.begin(); it != players.end(); )
+    {
+        if (it->getName() == playerName)
+            it = players.erase(it);
+        else
+            ++it;
     }
 }
 
-const Team* Lineup::getTeam() const {
-    return this->team;
+const Team* Lineup::getTeam() const
+{
+    return team;
 }
 
-const std::vector<Player> & Lineup::getPlayers() const {
-    return this->players;
+const std::vector<Player>& Lineup::getPlayers() const
+{
+    return players;
 }

@@ -217,7 +217,40 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::AUTO_SELECT_LINEUP: {
-            FootballGameEngine::autoSelectLineup(championship.getMatches()[0]);
+            std::cout << "Current championship's teams: ";
+            std::vector<Team*> teams = FootballGameEngine::listTeams(championship);
+            int i = 0;
+            for(const auto& team : teams) {
+                if(i == teams.size() - 1) {
+                    std::cout << team->getName() << std::endl;
+                    break;
+                }
+                std::cout << team->getName() << ", ";
+                ++i;
+            }
+            std::string host, guest;
+            std::cout << "> Enter host team name: ";
+            std::getline(std::cin, host);
+
+            std::cout << "> Enter guest team name: ";
+            std::getline(std::cin, guest);
+
+            Team* hostTeam = nullptr;
+            Team* guestTeam = nullptr;
+            for(auto const& team : championship.getTeamManager().getTeams()) {
+                if(team->getName() == host) {
+                    hostTeam = team;
+                    if(guestTeam != nullptr) break;
+                } else if(team->getName() == guest) {
+                    guestTeam = team;
+                    if(hostTeam != nullptr) break;
+                }
+            }
+
+            if(hostTeam == nullptr || guestTeam == nullptr) {
+                throw std::invalid_argument("No teams with these names.");
+            }
+            FootballGameEngine::autoSelectLineups(championship.getMatches()[0], hostTeam, guestTeam);
             break;
         }
 

@@ -11,6 +11,7 @@
 
 class PlayerEngine {
 public:
+    static void addPlayer(const std::string& playerName, Lineup& lineup); // player engine
     static void addPlayer(Player& player, Team& team); // player engine
 
     static void removePlayer(const std::string& playerName, // player engine

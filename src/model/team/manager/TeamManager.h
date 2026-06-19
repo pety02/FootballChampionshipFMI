@@ -47,7 +47,7 @@ public:
      * @param name The name of the team manager.
      * @param teams The collection of teams to manage.
      */
-    TeamManager(const std::string& name, const std::vector<Team>& teams);
+    TeamManager(const std::string& name, const std::vector<Team*>& teams);
 
     /**
      * Constructs a team manager as a copy of another manager.
@@ -64,6 +64,9 @@ public:
      * @return Reference to the current object.
      */
     TeamManager& operator=(const TeamManager& other);
+
+    TeamManager(TeamManager&& other) noexcept;
+    TeamManager& operator=(TeamManager&& other) noexcept;
 
     /**
      * Destroys the team manager and releases all owned teams.

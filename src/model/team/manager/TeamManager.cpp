@@ -10,16 +10,28 @@
 #include "../../../utils/validator/StringValidator.h"
 #include "../../team/validator/TeamValidator.h"
 
-TeamManager::TeamManager(const std::string &name, const std::vector<Team>& teams) : name(name) {
-    StringValidator::validate(name, toString(ExceptionMessages::COACH_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK));
-    TeamValidator::validateTeamsCount(4, teams.size());
+TeamManager::TeamManager(const std::string &name, const std::vector<Team*>& teams)
+    : name(name)
+{
+    StringValidator::validate(
+        name,
+        toString(ExceptionMessages::COACH_NAME_CANNOT_BE_EMPTY),
+        toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK)
+    );
 
-    for (const auto & team : teams) {
-        Team* cloned;
-        try {
-            cloned = team.clone();
+    // TODO: Move this validation on game startup
+    // TeamValidator::validateTeamsCount(4, teams.size());
+
+    for (const auto& team : teams)
+    {
+        Team* cloned = nullptr;
+        try
+        {
+            cloned = team->clone();
             this->teams.push_back(cloned);
-        } catch (...) {
+        }
+        catch (...)
+        {
             delete cloned;
             throw;
         }
@@ -40,44 +52,78 @@ TeamManager& TeamManager::operator=(const TeamManager& other)
     if (this == &other)
         return *this;
 
+    std::vector<Team*> newTeams;
+
+    try
+    {
+        for (Team* t : other.teams)
+            newTeams.push_back(t->clone());
+    }
+    catch (...)
+    {
+        for (Team* t : newTeams)
+            delete t;
+        throw;
+    }
+
     for (Team* t : teams)
         delete t;
 
-    teams.clear();
-
+    teams = std::move(newTeams);
     name = other.name;
-
-    for (Team* t : other.teams)
-    {
-        teams.push_back(t->clone());
-    }
 
     return *this;
 }
 
-TeamManager::~TeamManager() {
-    for (Team* team : this->teams) {
-        delete team;
-    }
+TeamManager::TeamManager(TeamManager&& other) noexcept
+    : name(std::move(other.name)),
+      teams(std::move(other.teams))
+{
+    other.teams.clear();
 }
 
-void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) const {
-    int teamIndex = 0;
-    for(const auto &currTeam : teams) {
-        if(currTeam->getName() == teamName) {
-            this->teams[teamIndex]->addPlayer(*player, false);
+TeamManager& TeamManager::operator=(TeamManager&& other) noexcept
+{
+    if (this == &other)
+        return *this;
+
+    for (Team* t : teams)
+        delete t;
+
+    teams = std::move(other.teams);
+    name = std::move(other.name);
+
+    other.teams.clear();
+
+    return *this;
+}
+
+TeamManager::~TeamManager()
+{
+    for (Team* team : teams)
+        delete team;
+}
+
+void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) const
+{
+    for (auto* currTeam : teams)
+    {
+        if (currTeam->getName() == teamName)
+        {
+            currTeam->addPlayer(*player, false);
             return;
         }
-        teamIndex++;
     }
 
-    throw std::invalid_argument(toString(ExceptionMessages::THE_PLAYER_CANNOT_BE_ADDED_TO_THE_TEAM));
+    throw std::invalid_argument(
+        toString(ExceptionMessages::THE_PLAYER_CANNOT_BE_ADDED_TO_THE_TEAM)
+    );
 }
 
 void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
-        Player* secondPlayer, Team& secondTeam) const {
-
-    TeamValidator::validateThatTeamsAreFound(this->teams, firstTeam, secondTeam);
+                           Player* secondPlayer, Team& secondTeam) const
+{
+    TeamValidator::validateThatTeamsAreFound(teams, firstTeam, secondTeam);
 
     firstTeam.addPlayer(*secondPlayer, true);
     secondTeam.addPlayer(*firstPlayer, true);
@@ -99,17 +145,21 @@ void TeamManager::addTeam(Team* team) {
     this->teams.push_back(team);
 }
 
-void TeamManager::removeTeam(const std::string& teamName) {
-    int toBeDeletedIndex = 0;
-    for(const auto &currTeam : teams) {
-        if(currTeam->getName() == teamName) {
-            this->teams.erase(this->teams.begin() + toBeDeletedIndex);
+void TeamManager::removeTeam(const std::string& teamName)
+{
+    for (auto it = teams.begin(); it != teams.end(); ++it)
+    {
+        if ((*it)->getName() == teamName)
+        {
+            delete *it;
+            teams.erase(it);
             return;
         }
-        toBeDeletedIndex++;
     }
 
-    throw std::invalid_argument(toString(ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND));
+    throw std::invalid_argument(
+        toString(ExceptionMessages::TEAM_WITH_A_NAME_CANNOT_BE_FOUND)
+    );
 }
 
 void TeamManager::setName(const std::string &name) {

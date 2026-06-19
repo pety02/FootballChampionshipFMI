@@ -49,12 +49,12 @@ void Team::buyPlayer(Player& player, Player::Position playerPos, double remainin
 }
 
 void Team::removePlayer(const std::string& playerName) {
-    int i = 0;
-    for (auto& player : this->players) {
-        if (player.getName() == playerName) {
-            this->players.erase(this->players.begin() + i);
+    for (auto it = players.begin(); it != players.end(); ) {
+        if (it->getName() == playerName) {
+            it = players.erase(it);
+        } else {
+            ++it;
         }
-        i++;
     }
 }
 
@@ -62,7 +62,7 @@ void Team::copy(const Team& other) {
     this->name = other.name;
     this->stadiumName = other.stadiumName;
     this->players.clear();
-    for (auto player : other.players) {
+    for (const auto& player : other.players) {
         this->players.push_back(player);
     }
     this->budget = other.budget;
@@ -81,7 +81,7 @@ void Team::copy(const Team& other) {
 }
 
 void Team::destroy() {
-    delete this->teamManager; this->teamManager = nullptr;
+    this->teamManager = nullptr;
 }
 
 Team::Team()
@@ -91,17 +91,36 @@ Team::Team()
 }
 
 Team::Team(TeamType type, const std::string& name, const std::string& coachName, std::string  stadiumName, const double budget)
-    : type(type), name(name), stadiumName(std::move(stadiumName)), players(std::vector<Player>()),
+    : type(type), name(name), stadiumName(stadiumName), players(std::vector<Player>()),
         budget(budget), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 
     StringValidator::validate(name, toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK));
-    StringValidator::validate(name, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
+    StringValidator::validate(coachName, toString(ExceptionMessages::COACH_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK));
+    StringValidator::validate(stadiumName, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
     TeamValidator::validateBudget(budget);
 }
 
 Team::Team(const Team& other) {
     this->copy(other);
+}
+
+Team::Team(Team&& other) noexcept {
+    type = other.type;
+    name = std::move(other.name);
+    stadiumName = std::move(other.stadiumName);
+    players = std::move(other.players);
+    budget = other.budget;
+    stats = other.stats;
+    teamManager = other.teamManager;
+
+    forwardersCount = other.forwardersCount;
+    midfieldersCount = other.midfieldersCount;
+    goalkeepersCount = other.goalkeepersCount;
+    defendersCount = other.defendersCount;
+    wingersCount = other.wingersCount;
+
+    other.teamManager = nullptr;
 }
 
 Team& Team::operator=(const Team &other) {
@@ -110,6 +129,29 @@ Team& Team::operator=(const Team &other) {
         this->copy(other);
     }
 
+    return *this;
+}
+
+Team& Team::operator=(Team&& other) noexcept {
+    if (this != &other) {
+        destroy();
+
+        type = other.type;
+        name = std::move(other.name);
+        stadiumName = std::move(other.stadiumName);
+        players = std::move(other.players);
+        budget = other.budget;
+        stats = other.stats;
+        teamManager = other.teamManager;
+
+        forwardersCount = other.forwardersCount;
+        midfieldersCount = other.midfieldersCount;
+        goalkeepersCount = other.goalkeepersCount;
+        defendersCount = other.defendersCount;
+        wingersCount = other.wingersCount;
+
+        other.teamManager = nullptr;
+    }
     return *this;
 }
 

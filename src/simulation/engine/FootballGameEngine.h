@@ -31,14 +31,6 @@ private:
     std::string goalMaster = std::string();
 
     /**
-     * Determines the player with the highest number of goals
-     * across the championship.
-     *
-     * @return Name of the top scorer.
-     */
-    std::string findGoalMaster();
-
-    /**
      * Retrieves the list of championship winners across history.
      *
      * @return Vector of champion team names.
@@ -50,6 +42,14 @@ public:
      * Default constructor.
      */
     FootballGameEngine();
+
+ /**
+  * Determines the player with the highest number of goals
+  * across the championship.
+  *
+  * @return Name of the top scorer.
+  */
+ std::string findGoalMaster();
 
     /**
      * Initializes and creates a new championship.
@@ -141,7 +141,7 @@ public:
  static void removeTeam(const std::string& teamName, // simulator
                         Championship& championship);
 
- static void autoSelectLineup(Match& match); // simulator
+ static void autoSelectLineups(Match& match, Team* host, Team* guest); // simulator
 
  static void deleteLineup(Match& match, // simulator
                           const Lineup& lineup);
