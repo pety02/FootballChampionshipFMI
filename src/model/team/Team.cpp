@@ -58,6 +58,10 @@ void Team::removePlayer(const std::string& playerName) {
     }
 }
 
+void Team::setTeamManager(const TeamManager& teamManager) {
+    this->teamManager = new TeamManager(teamManager);
+}
+
 void Team::copy(const Team& other) {
     this->name = other.name;
     this->stadiumName = other.stadiumName;

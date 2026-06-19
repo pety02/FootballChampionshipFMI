@@ -7,11 +7,12 @@
 
 #include <vector>
 #include <string>
-#include "../Team.h"
 #include "../factory/TeamFactory.h"
 #include "../TeamType.h"
 #include "../../../utils/Utils.h"
 #include "../../player/Player.h"
+
+class Team;
 
 /**
  * Manages a collection of football teams and coordinates operations
@@ -166,45 +167,8 @@ public:
      */
     [[nodiscard]] const std::vector<Team*>& getTeams() const;
 
-    friend std::ostream& operator<<(std::ostream& os, const TeamManager& teamManager) {
-       os << teamManager.getName() << '\n' << teamManager.getTeams().size() << '\n';
-       for(const auto& team : teamManager.getTeams()) {
-          os << team << '\n';
-       }
-
-       return os;
-    }
- friend std::istream& operator>>(std::istream& is, TeamManager& tm)
-    {
-     std::string managerName;
-     size_t teamCount;
-
-     std::getline(is >> std::ws, managerName);
-     is >> teamCount;
-
-     TeamManager temp;
-     temp.setName(managerName);
-
-     for(size_t i=0;i<teamCount;i++)
-     {
-      std::string typeStr;
-      std::getline(is >> std::ws, typeStr);
-
-      TeamType type =
-          Utils::parseTeamType(typeStr);
-
-      Team* team =
-          TeamFactory::createEmptyTeam(type);
-
-      is >> *team;
-
-      temp.addTeam(team);
-     }
-
-     tm = temp;
-
-     return is;
-    }
+    friend std::ostream& operator<<(std::ostream& os, const TeamManager& teamManager);
+    friend std::istream& operator>>(std::istream& is, TeamManager& tm);
 };
 
 #endif //TEAMMANAGER_H

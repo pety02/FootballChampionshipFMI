@@ -63,8 +63,8 @@ void FootballGameEngine::simulate() {
     this->currentChampionship.finish();
 }
 
-void FootballGameEngine::addMatch(const Match &match) {
-    this->currentChampionship.addMatch(match);
+void FootballGameEngine::addMatch(const Match &match, Championship& championship) {
+    championship.addMatch(match);
 }
 
 void FootballGameEngine::updateChampionshipRound() {
@@ -393,4 +393,9 @@ void FootballGameEngine::simulateGoal(const Match &match) {
         match.getGuest()->getStats().scoredGoals += 1;
         match.getHost()->getStats().concededGoals += 1;
     }
+}
+
+void FootballGameEngine::addManager(Team* team, TeamManager& teamManager) {
+    team->setTeamManager(teamManager);
+    teamManager.addTeam(team);
 }

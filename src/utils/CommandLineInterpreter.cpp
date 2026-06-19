@@ -103,6 +103,42 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
+        case Command::ADD_MANAGER: {
+            if (args.empty()) throw std::invalid_argument("Missing args");
+            TeamManager teamManager = TeamManager();
+            teamManager.setName(args[0]);
+            for(const auto& match : championship.getMatches()) {
+                FootballGameEngine::addManager(match.getHost(), teamManager);
+                FootballGameEngine::addManager(match.getGuest(), teamManager);
+                championship.setTeamManager(teamManager);
+            }
+            break;
+        }
+
+        case Command::ADD_MATCH: {
+            if (args.empty()) throw std::invalid_argument("Missing args");
+            if(args.size() < 2) throw std::invalid_argument("Invalid args size");
+
+            const std::string& hostName = args[0];
+            const std::string& guestName = args[1];
+            Lineup hostLineup, guestLineup;
+            for(const auto& team : championship.getTeamManager().getTeams()) {
+                if(team->getName() == hostName) {
+                    std::cout << "Auto selecting a host lineup that will play in the match..." << std::endl;
+                    hostLineup = Lineup(team);
+                    continue;
+                }
+                if(team->getName() == guestName) {
+                    std::cout << "Auto selecting a guest lineup that will play in the match..." << std::endl;
+                    guestLineup = Lineup(team);
+                    continue;
+                }
+            }
+            Match match = Match(hostLineup, guestLineup);
+            FootballGameEngine::addMatch(match, championship);
+            break;
+        }
+
         case Command::REMOVE_TEAM: {
             if (args.empty()) throw std::invalid_argument("Missing args");
             FootballGameEngine::removeTeam(args[0], championship);
@@ -216,44 +252,6 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        case Command::AUTO_SELECT_LINEUP: {
-            std::cout << "Current championship's teams: ";
-            std::vector<Team*> teams = FootballGameEngine::listTeams(championship);
-            int i = 0;
-            for(const auto& team : teams) {
-                if(i == teams.size() - 1) {
-                    std::cout << team->getName() << std::endl;
-                    break;
-                }
-                std::cout << team->getName() << ", ";
-                ++i;
-            }
-            std::string host, guest;
-            std::cout << "> Enter host team name: ";
-            std::getline(std::cin, host);
-
-            std::cout << "> Enter guest team name: ";
-            std::getline(std::cin, guest);
-
-            Team* hostTeam = nullptr;
-            Team* guestTeam = nullptr;
-            for(auto const& team : championship.getTeamManager().getTeams()) {
-                if(team->getName() == host) {
-                    hostTeam = team;
-                    if(guestTeam != nullptr) break;
-                } else if(team->getName() == guest) {
-                    guestTeam = team;
-                    if(hostTeam != nullptr) break;
-                }
-            }
-
-            if(hostTeam == nullptr || guestTeam == nullptr) {
-                throw std::invalid_argument("No teams with these names.");
-            }
-            FootballGameEngine::autoSelectLineups(championship.getMatches()[0], hostTeam, guestTeam);
-            break;
-        }
-
         case Command::DELETE_LINEUP: {
             Lineup* lineup = nullptr;
             Match* match = nullptr;
@@ -280,6 +278,10 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
 
         case Command::IMPORT_DATA: {
             SystemCommandsEngine::importData(history, !args.empty() ? args[0] : "in.dat");
+            std::cout << "IMPORTED DATA:" << std::endl;
+            for(const auto& record : history) {
+                std::cout << record;
+            }
             break;
         }
 

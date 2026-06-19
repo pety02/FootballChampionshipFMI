@@ -45,6 +45,8 @@ public:
     void addMatch(const Match &match);
     void finish();
 
+    void setTeamManager(const TeamManager &teamManager);
+
     friend std::ostream& operator<<(std::ostream& os, const Championship& championship);
     friend std::istream& operator>>(std::istream& is, Championship& championship);
 };

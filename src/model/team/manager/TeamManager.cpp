@@ -19,8 +19,7 @@ TeamManager::TeamManager(const std::string &name, const std::vector<Team*>& team
         toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK)
     );
 
-    // TODO: Move this validation on game startup
-    // TeamValidator::validateTeamsCount(4, teams.size());
+    TeamValidator::validateTeamsCount(4, teams.size());
 
     for (const auto& team : teams)
     {
@@ -176,4 +175,46 @@ std::vector<Team*>& TeamManager::getTeams() {
 
 const std::vector<Team*>& TeamManager::getTeams() const {
     return this->teams;
+}
+
+std::ostream& operator<<(std::ostream& os, const TeamManager& teamManager)
+{
+    os << teamManager.getName() << '\n' << teamManager.getTeams().size() << '\n';
+    for(const auto& team : teamManager.getTeams()) {
+        os << team << '\n';
+    }
+
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, TeamManager& tm)
+{
+    std::string managerName;
+    size_t teamCount;
+
+    std::getline(is >> std::ws, managerName);
+    is >> teamCount;
+
+    TeamManager temp;
+    temp.setName(managerName);
+
+    for(size_t i=0;i<teamCount;i++)
+    {
+        std::string typeStr;
+        std::getline(is >> std::ws, typeStr);
+
+        TeamType type =
+            Utils::parseTeamType(typeStr);
+
+        Team* team =
+            TeamFactory::createEmptyTeam(type);
+
+        is >> *team;
+
+        temp.addTeam(team);
+    }
+
+    tm = temp;
+
+    return is;
 }

@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include "manager/TeamManager.h"
 
 #include "TeamType.h"
 #include "../../utils/Utils.h"
@@ -145,6 +146,7 @@ public:
     /**
      * Constructs a team with basic information.
      *
+     * @param type
      * @param name The team name.
      * @param coachName The coach name.
      * @param stadiumName The stadium name.
@@ -281,6 +283,8 @@ public:
      */
     void removePlayer(const std::string& playerName);
 
+ void setTeamManager(const TeamManager& teamManager);
+
  friend std::ostream& operator<<(std::ostream& os, const Team& team)
  {
   os << Utils::toString(team.type) << '\n'
@@ -309,7 +313,7 @@ public:
   double budget;
   Statistics stats;
 
-  unsigned f,m,gk,d,w;
+  unsigned f, m, gk, d, w;
   size_t playerCount;
 
   std::getline(is >> std::ws, typeStr);
@@ -327,7 +331,7 @@ public:
 
   std::vector<Player> players;
 
-  for(size_t i=0;i<playerCount;i++)
+  for (size_t i = 0; i < playerCount; i++)
   {
    Player p;
    is >> p;

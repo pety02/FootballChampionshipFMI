@@ -102,6 +102,10 @@ void Championship::finish()
     this->finished = true;
 }
 
+void Championship::setTeamManager(const TeamManager &teamManager) {
+    this->teamManager = teamManager;
+}
+
 // --------------------
 // STREAM OUTPUT
 // --------------------

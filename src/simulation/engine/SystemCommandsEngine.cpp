@@ -61,6 +61,18 @@ void SystemCommandsEngine::help(const std::string& command) {
                       << "add_team attacking Liverpool Klopp Anfield 10000000\n";
             break;
 
+        case Command::ADD_MANAGER:
+            std::cout << "add_manager <name>\n"
+                      << "Example:\n"
+                      << "add_manager Anfield\n";
+            break;
+
+        case Command::ADD_MATCH:
+            std::cout << "add_match <host team name> <guest team name>\n"
+                      << "Example:\n"
+                      << "add_match Liverpool Liverpool2\n";
+            break;
+
         case Command::REMOVE_TEAM:
             std::cout << "remove_team <team_name>\n"
                       << "Removes a team from the championship.\n";

@@ -43,13 +43,13 @@ public:
      */
     FootballGameEngine();
 
- /**
-  * Determines the player with the highest number of goals
-  * across the championship.
-  *
-  * @return Name of the top scorer.
-  */
- std::string findGoalMaster();
+    /**
+     * Determines the player with the highest number of goals
+     * across the championship.
+     *
+     * @return Name of the top scorer.
+     */
+    std::string findGoalMaster();
 
     /**
      * Initializes and creates a new championship.
@@ -65,7 +65,7 @@ public:
      *
      * @throws std::invalid_argument If no championship is active.
      */
-    void addMatch(const Match& match);
+    static void addMatch(const Match &match, Championship& championship);
 
     /**
      * Advances the championship to the next round.
@@ -82,7 +82,7 @@ public:
      *
      * @param match Pointer to the match to simulate.
      */
-    void play(const Match& match) const;
+    void play(const Match &match) const;
 
     /**
      * Records a goal scored by a player in a match.
@@ -90,65 +90,67 @@ public:
      * @param player Pointer to the scoring player.
      * @param match Reference to the match where the goal occurred.
      */
-    void addScorer(const Player& player, Match& match) const;
+    void addScorer(const Player &player, Match &match) const;
 
     /**
      * Increments the home team's goal count in a match.
      *
      * @param match The match to update.
      */
-    static void increaseHostGoals(const Match& match);
+    static void increaseHostGoals(const Match &match);
 
     /**
      * Increments the guest team's goal count in a match.
      *
      * @param match The match to update.
      */
-    static void increaseGuestGoals(const Match& match);
+    static void increaseGuestGoals(const Match &match);
 
     /**
      * Marks a match as finished and finalizes its result.
      *
      * @param match Match to finalize.
      */
-    void finishMatch(Match& match);
+    void finishMatch(Match &match);
 
     /**
      * Gets the currently active championship.
      *
      * @return Constant reference to the championship.
      */
-    [[nodiscard]] const Championship& getCurrentChampionship() const;
+    [[nodiscard]] const Championship &getCurrentChampionship() const;
 
- static std::vector<Championship> listSeasons(const ChampionshipHistory &championshipHistory); // simulator
+    static std::vector<Championship> listSeasons(const ChampionshipHistory &championshipHistory); // simulator
 
- static void playAllMatches(Championship& championship); // simulator
+    static void playAllMatches(Championship &championship); // simulator
 
- static void showPodium(const Championship& championship); // simulator
+    static void showPodium(const Championship &championship); // simulator
 
- static void finishSeason(ChampionshipHistory& history, // simulator
-                          Championship& championship);
+    static void finishSeason(ChampionshipHistory &history, // simulator
+                             Championship &championship);
 
- static void viewMatches(const Championship& championship); // simulator
+    static void viewMatches(const Championship &championship); // simulator
 
- static void enterMatchResult(const Match& match); // simulator
+    static void enterMatchResult(const Match &match); // simulator
 
- static std::vector<Team*> listTeams(Championship& championship); // simulator
+    static std::vector<Team *> listTeams(Championship &championship); // simulator
 
- static void addTeam(const std::vector<std::string> &args, // simulator
-                     Championship& championship);
+    static void addTeam(const std::vector<std::string> &args, // simulator
+                        Championship &championship);
 
- static void removeTeam(const std::string& teamName, // simulator
-                        Championship& championship);
+    static void removeTeam(const std::string &teamName, // simulator
+                           Championship &championship);
 
- static void autoSelectLineups(Match& match, Team* host, Team* guest); // simulator
+    static void autoSelectLineups(Match &match, Team *host, Team *guest); // simulator
 
- static void deleteLineup(Match& match, // simulator
-                          const Lineup& lineup);
+    static void deleteLineup(Match &match, // simulator
+                             const Lineup &lineup);
 
- static std::vector<Player> listTopScorers(const Team& team); // simulator
+    static std::vector<Player> listTopScorers(const Team &team); // simulator
 
- static void simulateGoal(const Match& match); // simulator
+    static void simulateGoal(const Match &match); // simulator
+
+    static void addManager(Team* team, TeamManager& teamManager);
 };
 
 #endif // FOOTBALLGAMEENGINE_H
