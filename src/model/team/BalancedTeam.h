@@ -56,9 +56,9 @@ public:
      * @param stadiumName The name of the home stadium.
      * @param budget The initial budget of the team.
      */
-    BalancedTeam(const std::string& name,
-                 const std::string& coachName,
-                 const std::string& stadiumName,
+    BalancedTeam(const std::string &name,
+                 const std::string &coachName,
+                 const std::string &stadiumName,
                  double budget);
 
     /**
@@ -66,7 +66,7 @@ public:
      *
      * @param other The balanced team to copy.
      */
-    BalancedTeam(const BalancedTeam& other);
+    BalancedTeam(const BalancedTeam &other);
 
     /**
      * Copy assignment operator.
@@ -74,7 +74,7 @@ public:
      * @param other The balanced team to assign from.
      * @return Reference to the current object.
      */
-    BalancedTeam& operator=(const BalancedTeam& other);
+    BalancedTeam &operator=(const BalancedTeam &other);
 
     /**
      * Destructor.
@@ -88,7 +88,7 @@ public:
      *
      * @note The caller is responsible for deleting the returned object.
      */
-    [[nodiscard]] Team* clone() const override;
+    [[nodiscard]] Team *clone() const override;
 
     /**
      * Adds a player to the team using balanced-team rules.
@@ -99,76 +99,35 @@ public:
      * @param player The player to add.
      * @param isTransfer Indicates whether the player is added via transfer.
      */
-    void addPlayer(Player& player, bool isTransfer) override;
- friend std::ostream& operator<<(std::ostream& os, const BalancedTeam& team)
- {
-  os << Utils::toString(team.type) << '\n'
-     << team.name << '\n'
-     << team.stadiumName << '\n'
-     << team.budget << '\n'
-     << team.stats << '\n'
-     << team.forwardersCount << '\n'
-     << team.midfieldersCount << '\n'
-     << team.goalkeepersCount << '\n'
-     << team.defendersCount << '\n'
-     << team.wingersCount << '\n'
-     << team.players.size() << '\n';
+    void addPlayer(Player &player, bool isTransfer) override;
 
-  for(const auto& p : team.players)
-   os << p;
+    /**
+    * Outputs the state of a BalancedTeam object to an output stream.
+    *
+    * This function serializes the BalancedTeam instance into a structured format
+    * suitable for display or persistence. The output includes all relevant team
+    * attributes required to reconstruct the object later using the corresponding
+    * input operator.
+    *
+    * @param os The output stream to write the team data to.
+    * @param team The BalancedTeam instance to serialize.
+    * @return Reference to the output stream to support chained output operations.
+    */
+    friend std::ostream &operator<<(std::ostream &os, const BalancedTeam &team);
 
-  return os;
- }
- friend std::istream& operator>>(std::istream& is, BalancedTeam& team)
- {
-  std::string typeStr;
-  std::string name;
-  std::string stadium;
-
-  double budget;
-  Statistics stats;
-
-  unsigned f,m,gk,d,w;
-  size_t playerCount;
-
-  std::getline(is >> std::ws, typeStr);
-  std::getline(is, name);
-  std::getline(is, stadium);
-
-  is >> budget
-     >> stats
-     >> f
-     >> m
-     >> gk
-     >> d
-     >> w
-     >> playerCount;
-
-  std::vector<Player> players;
-
-  for(size_t i=0;i<playerCount;i++)
-  {
-   Player p;
-   is >> p;
-   players.push_back(p);
-  }
-
-  team.type = Utils::parseTeamType(typeStr);
-  team.name = name;
-  team.stadiumName = stadium;
-  team.budget = budget;
-  team.stats = stats;
-
-  team.forwardersCount = f;
-  team.midfieldersCount = m;
-  team.goalkeepersCount = gk;
-  team.defendersCount = d;
-  team.wingersCount = w;
-
-  team.players = std::move(players);
-
-  return is;
- }
+    /**
+     * Reads a BalancedTeam object from an input stream.
+     *
+     * This function deserializes a BalancedTeam instance from a previously
+     * serialized format produced by operator<<. It reconstructs the internal
+     * state of the team and assumes the input data is well-formed and follows
+     * the expected structure.
+     *
+     * @param is The input stream to read the team data from.
+     * @param team The BalancedTeam instance to populate.
+     * @return Reference to the input stream to support chained input operations.
+     */
+    friend std::istream &operator>>(std::istream &is, BalancedTeam &team);
 };
 
 #endif //BALANCEDTEAM_H

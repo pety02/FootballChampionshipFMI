@@ -4,6 +4,7 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
+
 #include <fstream>
 #include <string>
 
@@ -38,9 +39,11 @@ public:
 
         /**
          * Constructs a statistics object with all values initialized to zero.
+         *
+         * @param matchesCount Initial number of matches played (default 0).
+         * @param scoredGoals Initial number of goals scored (default 0).
          */
-        explicit Statistics(unsigned matchesCount = 0, unsigned scoredGoals = 0)
-                    : matchesCount(matchesCount), scoredGoals(scoredGoals) {};
+        explicit Statistics(unsigned matchesCount = 0, unsigned scoredGoals = 0);
 
         /**
          * Increases the number of matches played by one.
@@ -52,19 +55,23 @@ public:
          */
         void increaseScoredGoals();
 
-        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats) {
-           os << stats.matchesCount << "\n" << stats.scoredGoals << "\n";
+        /**
+         * Outputs player statistics to a stream in a formatted representation.
+         *
+         * @param os The output stream.
+         * @param stats The statistics object to output.
+         * @return Reference to the output stream.
+         */
+        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats);
 
-           return os;
-        }
-        friend std::istream& operator>>(std::istream& is, Statistics& stats) {
-           unsigned matchesCount, scoredGoals;
-
-           is >> matchesCount >> scoredGoals;
-           stats = Statistics(matchesCount, scoredGoals);
-
-           return is;
-        }
+        /**
+         * Reads player statistics from a stream.
+         *
+         * @param is The input stream.
+         * @param stats The statistics object to populate.
+         * @return Reference to the input stream.
+         */
+        friend std::istream& operator>>(std::istream& is, Statistics& stats);
     };
 
 private:
@@ -77,9 +84,10 @@ private:
 
 public:
     /**
-    * Default constructo of Player class.
+    * Default constructor of Player class.
     */
     Player() = default;
+
     /**
      * Constructs a player with the specified properties.
      *
@@ -104,6 +112,9 @@ public:
 
     /**
      * Copy assignment operator.
+     *
+     * @param other The player to copy from.
+     * @return Reference to this player.
      */
     Player& operator=(const Player& other);
 
@@ -189,43 +200,23 @@ public:
      */
     [[nodiscard]] Statistics& getStats();
 
- friend std::ostream& operator<<(std::ostream& os, const Player& player)
- {
-  os << player.name << '\n'
-     << player.number << '\n'
-     << static_cast<int>(player.position) << '\n'
-     << player.salary << '\n'
-     << player.transferSum << '\n'
-     << player.stats << '\n';
+    /**
+     * Outputs the player information to a stream in a formatted representation.
+     *
+     * @param os The output stream.
+     * @param player The player to output.
+     * @return Reference to the output stream.
+     */
+    friend std::ostream& operator<<(std::ostream& os, const Player& player);
 
-  return os;
- }
- friend std::istream& operator>>(std::istream& is, Player& player)
- {
-  std::string name;
-  unsigned number;
-  int pos;
-  double salary;
-  double transferSum;
-  Statistics stats;
-
-  std::getline(is >> std::ws, name);
-
-  is >> number
-     >> pos
-     >> salary
-     >> transferSum
-     >> stats;
-
-  player.name = name;
-  player.number = number;
-  player.setPosition(static_cast<Position>(pos));
-  player.salary = salary;
-  player.transferSum = transferSum;
-  player.stats = stats;
-
-  return is;
- }
+    /**
+     * Reads player information from a stream.
+     *
+     * @param is The input stream.
+     * @param player The player to populate.
+     * @return Reference to the input stream.
+     */
+    friend std::istream& operator>>(std::istream& is, Player& player);
 };
 
 #endif //PLAYER_H

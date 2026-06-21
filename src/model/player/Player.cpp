@@ -10,6 +10,24 @@
 #include "../../utils/ExceptionMessages.h"
 #include "../../utils/validator/StringValidator.h"
 
+Player::Statistics::Statistics(unsigned matchesCount, unsigned scoredGoals)
+                    : matchesCount(matchesCount), scoredGoals(scoredGoals) {}
+
+std::ostream& operator<<(std::ostream& os, const Player::Statistics& stats) {
+    os << stats.matchesCount << "\n" << stats.scoredGoals << "\n";
+
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Player::Statistics& stats) {
+    unsigned matchesCount, scoredGoals;
+
+    is >> matchesCount >> scoredGoals;
+    stats = Player::Statistics(matchesCount, scoredGoals);
+
+    return is;
+}
+
 void Player::Statistics::increaseMatchesCount() {
     ++this->matchesCount;
 }
@@ -96,4 +114,43 @@ const Player::Statistics& Player::getStats() const {
 
 Player::Statistics& Player::getStats() {
     return this->stats;
+}
+
+std::ostream& operator<<(std::ostream& os, const Player& player)
+{
+    os << player.name << '\n'
+       << player.number << '\n'
+       << static_cast<int>(player.position) << '\n'
+       << player.salary << '\n'
+       << player.transferSum << '\n'
+       << player.stats << '\n';
+
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Player& player)
+{
+    std::string name;
+    unsigned number;
+    int pos;
+    double salary;
+    double transferSum;
+    Player::Statistics stats;
+
+    std::getline(is >> std::ws, name);
+
+    is >> number
+       >> pos
+       >> salary
+       >> transferSum
+       >> stats;
+
+    player.name = name;
+    player.number = number;
+    player.setPosition(static_cast<Player::Position>(pos));
+    player.salary = salary;
+    player.transferSum = transferSum;
+    player.stats = stats;
+
+    return is;
 }

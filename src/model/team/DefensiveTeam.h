@@ -58,17 +58,17 @@ public:
      * @param stadiumName The name of the home stadium.
      * @param budget The initial budget of the team.
      */
-    DefensiveTeam(const std::string& name,
-                   const std::string& coachName,
-                   const std::string& stadiumName,
-                   double budget);
+    DefensiveTeam(const std::string &name,
+                  const std::string &coachName,
+                  const std::string &stadiumName,
+                  double budget);
 
     /**
      * Copy constructor.
      *
      * @param other The defensive team to copy.
      */
-    DefensiveTeam(const DefensiveTeam& other);
+    DefensiveTeam(const DefensiveTeam &other);
 
     /**
      * Copy assignment operator.
@@ -76,7 +76,7 @@ public:
      * @param other The defensive team to assign from.
      * @return Reference to the current object.
      */
-    DefensiveTeam& operator=(const DefensiveTeam& other);
+    DefensiveTeam &operator=(const DefensiveTeam &other);
 
     /**
      * Destructor.
@@ -90,7 +90,7 @@ public:
      *
      * @note The caller is responsible for deleting the returned object.
      */
-    [[nodiscard]] Team* clone() const override;
+    [[nodiscard]] Team *clone() const override;
 
     /**
      * Adds a player to the team using defensive-team rules.
@@ -101,76 +101,34 @@ public:
      * @param player The player to add.
      * @param isTransfer Indicates whether the player is added via transfer.
      */
-    void addPlayer(Player& player, bool isTransfer) override;
- friend std::ostream& operator<<(std::ostream& os, const DefensiveTeam& team)
- {
-  os << Utils::toString(team.type) << '\n'
-     << team.name << '\n'
-     << team.stadiumName << '\n'
-     << team.budget << '\n'
-     << team.stats << '\n'
-     << team.forwardersCount << '\n'
-     << team.midfieldersCount << '\n'
-     << team.goalkeepersCount << '\n'
-     << team.defendersCount << '\n'
-     << team.wingersCount << '\n'
-     << team.players.size() << '\n';
+    void addPlayer(Player &player, bool isTransfer) override;
 
-  for(const auto& p : team.players)
-   os << p;
+    /**
+     * Outputs the state of a DefensiveTeam object to an output stream.
+     *
+     * This function serializes the DefensiveTeam instance into a structured format
+     * suitable for display, logging, or persistence. The output includes all relevant
+     * defensive team attributes needed to fully reconstruct the object using the corresponding
+     * input operator.
+     *
+     * @param os The output stream to write the team data to.
+     * @param team The DefensiveTeam instance to serialize.
+     * @return Reference to the output stream to allow chained output operations.
+     */
+    friend std::ostream &operator<<(std::ostream &os, const DefensiveTeam &team);
 
-  return os;
- }
- friend std::istream& operator>>(std::istream& is, DefensiveTeam& team)
- {
-  std::string typeStr;
-  std::string name;
-  std::string stadium;
-
-  double budget;
-  Statistics stats;
-
-  unsigned f,m,gk,d,w;
-  size_t playerCount;
-
-  std::getline(is >> std::ws, typeStr);
-  std::getline(is, name);
-  std::getline(is, stadium);
-
-  is >> budget
-     >> stats
-     >> f
-     >> m
-     >> gk
-     >> d
-     >> w
-     >> playerCount;
-
-  std::vector<Player> players;
-
-  for(size_t i=0;i<playerCount;i++)
-  {
-   Player p;
-   is >> p;
-   players.push_back(p);
-  }
-
-  team.type = Utils::parseTeamType(typeStr);
-  team.name = name;
-  team.stadiumName = stadium;
-  team.budget = budget;
-  team.stats = stats;
-
-  team.forwardersCount = f;
-  team.midfieldersCount = m;
-  team.goalkeepersCount = gk;
-  team.defendersCount = d;
-  team.wingersCount = w;
-
-  team.players = std::move(players);
-
-  return is;
- }
+    /**
+     * Reads a DefensiveTeam object from an input stream.
+     *
+     * This function deserializes a DefensiveTeam instance from a previously
+     * serialized representation produced by operator<<. It reconstructs the full
+     * internal state of the team, assuming the input format is valid and consistent.
+     *
+     * @param is The input stream to read the team data from.
+     * @param team The DefensiveTeam instance to populate.
+     * @return Reference to the input stream to allow chained input operations.
+     */
+    friend std::istream &operator>>(std::istream &is, DefensiveTeam &team);
 };
 
 #endif //DEFENSIVETEAM_H

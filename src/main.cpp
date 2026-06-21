@@ -1,3 +1,4 @@
+#include <ExceptionMessages.h>
 #include <iostream>
 #include "utils/CommandLineInterpreter.h"
 #include <sstream>
@@ -5,13 +6,13 @@
 int main()
 {
     ChampionshipHistory history;
-    Championship championship = Championship(TeamManager());
+    AccountingManager accountingManager;
+    Championship championship = Championship(TeamManager(), std::vector<Match>(), CURRENT_YEAR, accountingManager);
 
     CommandLineInterpreter cli(history, championship);
     history.addChampionship(championship);
 
     cli.execute(Command::MENU, {});
-
     std::string line;
 
     while (true)

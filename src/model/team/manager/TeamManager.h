@@ -8,8 +8,6 @@
 #include <vector>
 #include <string>
 #include "../factory/TeamFactory.h"
-#include "../TeamType.h"
-#include "../../../utils/Utils.h"
 #include "../../player/Player.h"
 
 class Team;
@@ -20,7 +18,7 @@ class Team;
  *
  * This class is responsible for maintaining the list of registered
  * teams, transferring players between teams, recording match results,
- * and performing team-related administrative tasks.
+ * and performing team-related tasks.
  *
  * @note TeamManager owns the Team objects stored in its collection and
  * is responsible for releasing their memory upon destruction.
@@ -29,11 +27,6 @@ class TeamManager final {
 private:
     std::string name = std::string();
 
-    /**
-     * Collection of managed teams.
-     *
-     * TeamManager assumes ownership of these pointers.
-     */
     std::vector<Team*> teams = std::vector<Team*>();
 
 public:
@@ -61,12 +54,23 @@ public:
      * Assigns another team manager to this instance.
      *
      * @param other The manager to assign from.
-     *
      * @return Reference to the current object.
      */
     TeamManager& operator=(const TeamManager& other);
 
+    /**
+    * Move constructor. Transfers ownership of resources from another TeamManager.
+    *
+    * @param other The TeamManager to move from.
+    */
     TeamManager(TeamManager&& other) noexcept;
+
+    /**
+    * Move assignment operator. Transfers resources from another TeamManager into this one.
+    *
+    * @param other The TeamManager to move from.
+    * @return Reference to the assigned TeamManager.
+    */
     TeamManager& operator=(TeamManager&& other) noexcept;
 
     /**
@@ -167,7 +171,22 @@ public:
      */
     [[nodiscard]] const std::vector<Team*>& getTeams() const;
 
+    /**
+     * Outputs the team manager and its managed teams to a stream in a formatted representation.
+     *
+     * @param os The output stream.
+     * @param teamManager The team manager to output.
+     * @return Reference to the output stream.
+     */
     friend std::ostream& operator<<(std::ostream& os, const TeamManager& teamManager);
+
+    /**
+     * Reads a team manager and its configuration from a stream.
+     *
+     * @param is The input stream.
+     * @param tm The team manager to populate.
+     * @return Reference to the input stream.
+     */
     friend std::istream& operator>>(std::istream& is, TeamManager& tm);
 };
 

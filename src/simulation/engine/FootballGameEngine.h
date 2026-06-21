@@ -11,14 +11,6 @@
 #include "../../model/match/Match.h"
 #include "../../model/player/Player.h"
 
-template <typename L, typename R>
-struct Pair {
- L left;
- R right;
-
- Pair(L left, R right) : left(left), right(right) {}
-};
-
 /**
  * Core simulation engine for running football championships.
  *
@@ -73,7 +65,7 @@ public:
      *
      * @throws std::invalid_argument If no championship is active.
      */
-    static void addMatch(const Match &match, Championship& championship);
+    static void addMatch(const Match &match, Championship &championship);
 
     /**
      * Advances the championship to the next round.
@@ -128,37 +120,115 @@ public:
      */
     [[nodiscard]] const Championship &getCurrentChampionship() const;
 
-    static std::vector<Championship> listSeasons(const ChampionshipHistory &championshipHistory); // simulator
+    /**
+   * Returns all past championships stored in history.
+   *
+   * @param championshipHistory Championship history container.
+   * @return Vector of all championships.
+   */
+    static std::vector<Championship> listSeasons(const ChampionshipHistory &championshipHistory);
 
-    static void playAllMatches(Championship &championship); // simulator
+    /**
+    * Simulates all matches in a championship using a temporary engine instance.
+    *
+    * @param championship Championship to simulate.
+    */
+    static void playAllMatches(Championship &championship);
 
-    static void showPodium(const Championship &championship); // simulator
+    /**
+    * Displays the champion team of a championship.
+    *
+    * @param championship The championship to analyze.
+    */
+    static void showPodium(const Championship &championship);
 
-    static void finishSeason(ChampionshipHistory &history, // simulator
+    /**
+    * Finalizes a season, simulates all matches, and stores results in history.
+    *
+    * @param history Championship history.
+    * @param championship Championship to finalize.
+    */
+    static void finishSeason(ChampionshipHistory &history,
                              Championship &championship);
 
-    static void viewMatches(const Championship &championship); // simulator
+    /**
+    * Displays all matches in a championship.
+    *
+    * @param championship The championship to display.
+    */
+    static void viewMatches(const Championship &championship);
 
-    static void enterMatchResult(const Match &match); // simulator
+    /**
+    * Interactive input function for entering match results manually.
+    *
+    * @param match The match to populate with results.
+    */
+    static void enterMatchResult(const Match &match);
 
-    static std::vector<Team *> listTeams(Championship &championship); // simulator
+    /**
+    * Returns all teams in the given championship.
+    *
+    * @param championship The championship instance.
+    * @return Vector of team pointers.
+    */
+    static std::vector<Team *> listTeams(Championship &championship);
 
-    static void addTeam(const std::vector<std::string> &args, // simulator
+    /**
+    * Adds a new team to a championship using provided arguments.
+    *
+    * @param args Command-line style arguments describing the team.
+    * @param championship The championship to modify.
+    */
+    static void addTeam(const std::vector<std::string> &args,
                         Championship &championship);
 
-    static void removeTeam(const std::string &teamName, // simulator
+    /**
+    * Removes a team from a championship.
+    *
+    * @param teamName Name of the team to remove.
+    * @param championship The championship to modify.
+    */
+    static void removeTeam(const std::string &teamName,
                            Championship &championship);
 
-    static void autoSelectLineups(Match &match, Team *host, Team *guest); // simulator
+    /**
+    * Automatically generates and assigns lineups for a match.
+    *
+    * @param match The match to configure.
+    * @param host Home team.
+    * @param guest Guest team.
+    */
+    static void autoSelectLineups(Match &match, Team *host, Team *guest);
 
-    static void deleteLineup(Match &match, // simulator
-                             const Lineup &lineup);
+    /**
+    * Clears the lineups of a match.
+    *
+    * @param match The match whose lineups are cleared.
+    */
+    static void deleteLineups(Match &match);
 
-    static std::vector<Player> listTopScorers(const Team &team); // simulator
+    /**
+    * Returns a list of players considered top scorers (currently unfiltered).
+    *
+    * @param team The team to analyze.
+    * @return Vector of players.
+    */
+    static std::vector<Player> listTopScorers(const Team &team);
 
-    static void simulateGoal(const Match &match); // simulator
+    /**
+    * Simulates a single goal event interactively.
+    *
+    * @param match The match in which the goal occurs.
+    */
+    static void simulateGoal(const Match &match);
 
-    static void addManager(Team* team, TeamManager& teamManager);
+    /**
+ * Assigns a team manager to a team and registers it in the manager.
+ *
+ * @param team The team to assign.
+ * @param teamManager The manager managing the team.
+ */
+    static void addManager(Team *team, TeamManager &teamManager);
 };
 
 #endif // FOOTBALLGAMEENGINE_H

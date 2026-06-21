@@ -6,39 +6,15 @@
 
 #include <algorithm>
 #include <memory>
-#include <PlayerEngine.h>
+#include "engine/PlayerEngine.h"
 
 #include "../MatchResultApplier.h"
-#include "StatisticsEngine.h"
+#include "engine/StatisticsEngine.h"
 #include "../../model/championship/validator/ChampionshipValidator.h"
 #include "../../simulation/validator/FootballGameSimulatorValidator.h"
 #include "../../utils/validator/CommandLineValidator.h"
 #include "../../utils/ExceptionMessages.h"
-
-// TODO: move to utils
-void selectionSortByGoals(
-    std::vector<Pair<std::string, unsigned>>& teams) const
-{
-    for (size_t i = 0; i < teams.size(); ++i)
-    {
-        size_t maxIndex = i;
-
-        for (size_t j = i + 1; j < teams.size(); ++j)
-        {
-            if (teams[j].right > teams[maxIndex].right)
-            {
-                maxIndex = j;
-            }
-        }
-
-        if (maxIndex != i)
-        {
-            Pair<std::string, unsigned> temp = teams[i];
-            teams[i] = teams[maxIndex];
-            teams[maxIndex] = temp;
-        }
-    }
-}
+#include "../utils/Utils.h"
 
 std::vector<std::string> FootballGameEngine::getChampions() const
 {
@@ -57,7 +33,7 @@ std::vector<std::string> FootballGameEngine::getChampions() const
     }
 
     // Manual selection sort (descending by goals)
-    selectionSortByGoals(champions);
+    Utils::selectionSortByGoals(champions);
 
     std::vector<std::string> result;
 
@@ -212,9 +188,9 @@ const Championship& FootballGameEngine::getCurrentChampionship() const {
     return this->currentChampionship;
 }
 
-std::vector<Championship> FootballGameEngine::listSeasons(const ChampionshipHistory &history) {
+std::vector<Championship> FootballGameEngine::listSeasons(const ChampionshipHistory &championshipHistory) {
 
-    return history.getChampionships();
+    return championshipHistory.getChampionships();
 }
 
 void FootballGameEngine::playAllMatches(
@@ -376,10 +352,8 @@ void FootballGameEngine::autoSelectLineups(Match& match, Team* host, Team* guest
     match.setGuestLineup(guestLineup);
 }
 
-void FootballGameEngine::deleteLineup(
-        Match& match,
-        const Lineup&) {
-
+void FootballGameEngine::deleteLineups(
+        Match& match) {
     match.clearLineups();
 }
 

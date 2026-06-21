@@ -153,6 +153,7 @@ target_link_libraries(simulation_engine PUBLIC
 # =========================
 add_library(utils
         src/utils/CommandLineInterpreter.cpp
+        src/utils/Utils.cpp
 )
 
 target_include_directories(utils PUBLIC
@@ -179,7 +180,9 @@ target_link_libraries(FootballChampionshipFMI PRIVATE
 # =========================
 # TESTS
 # =========================
-add_executable(engine_tests)
+add_executable(engine_tests
+        src/utils/Utils.cpp
+        src/utils/Utils.cpp)
 
 target_sources(engine_tests PRIVATE
         test/simulation/engine/FootballGameEngineTest.cpp

@@ -20,7 +20,19 @@
  */
 class TeamValidator final {
 private:
- static bool isManaged(const Team* t, const std::vector<Team*>& teams);
+    /**
+   * Checks whether a given team is present in a collection of teams.
+   *
+   * This function determines if the specified team pointer refers to a team
+   * that is managed within the provided vector. The check is performed by
+   * comparing team identities using the team's name, not by pointer equality.
+   *
+   * @param t The team to search for.
+   * @param teams The collection of teams to search within.
+   * @return true if a team with the same name exists in the collection; false otherwise.
+   */
+    static bool isManaged(const Team *t, const std::vector<Team *> &teams);
+
 public:
     /**
      * Default constructor.
@@ -71,11 +83,11 @@ public:
      * @throws std::invalid_argument If validation fails.
      */
     static void validatePlayerScoredGoals(Player::Position playerPosition,
-                                           Player::Position targetPosition,
-                                           unsigned scoredGoals,
-                                           unsigned targetGoals,
-                                           const std::string& playerName,
-                                           const std::string& teamName);
+                                          Player::Position targetPosition,
+                                          unsigned scoredGoals,
+                                          unsigned targetGoals,
+                                          const std::string &playerName,
+                                          const std::string &teamName);
 
     /**
      * Validates that player distribution across positions is correct.
@@ -86,9 +98,9 @@ public:
      *
      * @throws std::invalid_argument If the distribution is invalid.
      */
-    static void validatePlayersCountByPosition(const std::vector<unsigned>& args,
+    static void validatePlayersCountByPosition(const std::vector<unsigned> &args,
                                                unsigned remainingPlaces,
-                                               const std::string& exceptionMessage);
+                                               const std::string &exceptionMessage);
 
     /**
      * Validates that the minimum required number of teams exists.
@@ -110,9 +122,9 @@ public:
      *
      * @throws std::invalid_argument If either team is not found.
      */
-    static void validateThatTeamsAreFound(const std::vector<Team*>& teams,
-                                          const Team& firstTeam,
-                                          const Team& secondTeam);
+    static void validateThatTeamsAreFound(const std::vector<Team *> &teams,
+                                          const Team &firstTeam,
+                                          const Team &secondTeam);
 
     /**
      * Validates that the given teams are managed by the same manager.
@@ -123,13 +135,29 @@ public:
      *
      * @throws std::invalid_argument If a team is not managed by the manager.
      */
-    static void validateThatTeamsAreMangedByAManager(const std::vector<Team*>& teams,
-                                                      const Team* homeTeam,
-                                                      const Team* guestTeam);
+    static void validateThatTeamsAreMangedByAManager(const std::vector<Team *> &teams,
+                                                     const Team *homeTeam,
+                                                     const Team *guestTeam);
 
-    static void validateUniquePlayerNumber(const Team& team, unsigned number);
+    /**
+     * Validates that a player number is unique within a team.
+     *
+     * @param team The team to check against.
+     * @param number The player number to validate.
+     *
+     * @throws std::invalid_argument If the number is already used.
+     */
+    static void validateUniquePlayerNumber(const Team &team, unsigned number);
 
-    static void validateUniquePlayerName(const Team& team, const std::string& name);
+    /**
+     * Validates that a player name is unique within a team.
+     *
+     * @param team The team to check against.
+     * @param name The player name to validate.
+     *
+     * @throws std::invalid_argument If the name is already used.
+     */
+    static void validateUniquePlayerName(const Team &team, const std::string &name);
 };
 
 #endif //TEAMVALIDATOR_H

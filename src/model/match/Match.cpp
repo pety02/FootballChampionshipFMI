@@ -3,7 +3,7 @@
 #include <ctime>
 #include <algorithm>
 
-Match::MatchResult::Scorer::Scorer(Player player, bool isHome)
+Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
     : player(player), isHome(isHome)
 {}
 
@@ -64,12 +64,6 @@ std::istream& operator>>(std::istream& is, Match::MatchResult::Scorer& scorer)
 
     return is;
 }
-
-// =========================
-// MATCH IMPLEMENTATION
-// =========================
-
-Match::Match() = default;
 
 Match::Match(const Lineup &hostLineup, const Lineup &guestLineup)
     : hostLineup(hostLineup),

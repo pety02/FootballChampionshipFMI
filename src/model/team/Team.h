@@ -69,26 +69,27 @@ public:
          */
         void increaseConcededGoals(unsigned concededGoals);
 
-        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats) {
-         os << stats.concededGoals << ' '
-            << stats.scoredGoals << ' '
-            << stats.drawsCount << ' '
-            << stats.winsCount << ' '
-            << stats.lossesCount;
+        friend std::ostream &operator<<(std::ostream &os, const Statistics &stats) {
+            os << stats.concededGoals << ' '
+                    << stats.scoredGoals << ' '
+                    << stats.drawsCount << ' '
+                    << stats.winsCount << ' '
+                    << stats.lossesCount;
 
-         return os;
+            return os;
         }
-        friend std::istream& operator>>(std::istream& is, Statistics& stats) {
-           unsigned concededGoals, scoredGoals, drawsCount, winsCount, lossesCount;
-           is >> concededGoals >> scoredGoals >> drawsCount >> winsCount >> lossesCount;
 
-           stats.concededGoals = concededGoals;
-           stats.scoredGoals = scoredGoals;
-           stats.drawsCount = drawsCount;
-           stats.winsCount = winsCount;
-           stats.lossesCount = lossesCount;
+        friend std::istream &operator>>(std::istream &is, Statistics &stats) {
+            unsigned concededGoals, scoredGoals, drawsCount, winsCount, lossesCount;
+            is >> concededGoals >> scoredGoals >> drawsCount >> winsCount >> lossesCount;
 
-           return is;
+            stats.concededGoals = concededGoals;
+            stats.scoredGoals = scoredGoals;
+            stats.drawsCount = drawsCount;
+            stats.winsCount = winsCount;
+            stats.lossesCount = lossesCount;
+
+            return is;
         }
     };
 
@@ -117,7 +118,7 @@ protected:
      *
      * Non-owning reference.
      */
-    TeamManager* teamManager = nullptr;
+    TeamManager *teamManager = nullptr;
 
     unsigned forwardersCount = 0;
     unsigned midfieldersCount = 0;
@@ -130,7 +131,7 @@ protected:
      *
      * @param other The team to copy from.
      */
-    void copy(const Team& other);
+    void copy(const Team &other);
 
     /**
      * Releases all dynamically allocated resources.
@@ -153,8 +154,8 @@ public:
      * @param budget The initial budget.
      */
     Team(TeamType type,
-         const std::string& name,
-         const std::string& coachName,
+         const std::string &name,
+         const std::string &coachName,
          std::string stadiumName,
          double budget);
 
@@ -163,16 +164,16 @@ public:
      *
      * Performs a deep copy of all team resources.
      */
-    Team(const Team& other);
+    Team(const Team &other);
 
-    Team(Team&& other) noexcept;
+    Team(Team &&other) noexcept;
 
     /**
      * Copy assignment operator.
      */
-    Team& operator=(const Team& other);
+    Team &operator=(const Team &other);
 
-    Team& operator=(Team&& other) noexcept;
+    Team &operator=(Team &&other) noexcept;
 
     /**
      * Virtual destructor.
@@ -188,21 +189,21 @@ public:
      *
      * @note Caller is responsible for deleting the returned object.
      */
-    [[nodiscard]] virtual Team* clone() const = 0;
+    [[nodiscard]] virtual Team *clone() const = 0;
 
     /**
      * Sets the team name.
      *
      * @param name New team name.
      */
-    void setTeamName(const std::string& name);
+    void setTeamName(const std::string &name);
 
     /**
      * Sets the stadium name.
      *
      * @param stadiumName New stadium name.
      */
-    void setStadiumName(const std::string& stadiumName);
+    void setStadiumName(const std::string &stadiumName);
 
     /**
      * Sets the team budget.
@@ -216,28 +217,28 @@ public:
      *
      * @return Constant reference to the team name.
      */
-    [[nodiscard]] const std::string& getName() const;
+    [[nodiscard]] const std::string &getName() const;
 
     /**
      * Gets the coach name.
      *
      * @return Constant reference to the coach name.
      */
-    [[nodiscard]] const std::string& getCoachName() const;
+    [[nodiscard]] const std::string &getCoachName() const;
 
     /**
      * Gets the stadium name.
      *
      * @return Constant reference to the stadium name.
      */
-    [[nodiscard]] const std::string& getStadiumName() const;
+    [[nodiscard]] const std::string &getStadiumName() const;
 
     /**
      * Gets all players in the team.
      *
      * @return Constant reference to the player list.
      */
-    [[nodiscard]] const std::vector<Player>& getPlayers() const;
+    [[nodiscard]] const std::vector<Player> &getPlayers() const;
 
     /**
      * Gets the current budget of the team.
@@ -251,7 +252,7 @@ public:
      *
      * @return Reference to team statistics.
      */
-    [[nodiscard]] Statistics& getStats();
+    [[nodiscard]] Statistics &getStats();
 
     /**
      * Adds a player to the team (team-type specific rules apply).
@@ -259,7 +260,7 @@ public:
      * @param player Player to add.
      * @param isTransfer True if added via transfer, false otherwise.
      */
-    virtual void addPlayer(Player& player, bool isTransfer) = 0;
+    virtual void addPlayer(Player &player, bool isTransfer) = 0;
 
     /**
      * Buys a player for the team.
@@ -269,7 +270,7 @@ public:
      * @param remainingBudget Current available budget.
      * @param isTransfer Whether this operation is part of a transfer.
      */
-    void buyPlayer(Player& player,
+    void buyPlayer(Player &player,
                    Player::Position playerPos,
                    double remainingBudget,
                    bool isTransfer);
@@ -281,79 +282,43 @@ public:
      *
      * @throws std::invalid_argument If player is not found.
      */
-    void removePlayer(const std::string& playerName);
+    void removePlayer(const std::string &playerName);
 
- void setTeamManager(const TeamManager& teamManager);
+    void setTeamManager(const TeamManager &teamManager);
 
- friend std::ostream& operator<<(std::ostream& os, const Team& team)
- {
-  os << Utils::toString(team.type) << '\n'
-     << team.name << '\n'
-     << team.stadiumName << '\n'
-     << team.budget << '\n'
-     << team.stats << '\n'
-     << team.forwardersCount << '\n'
-     << team.midfieldersCount << '\n'
-     << team.goalkeepersCount << '\n'
-     << team.defendersCount << '\n'
-     << team.wingersCount << '\n'
-     << team.players.size() << '\n';
+    /**
+    * Serializes a Team object to an output stream.
+    *
+    * This function writes the full state of the Team in a structured format
+    * suitable for persistence. The output includes the team type, basic
+    * identification data, financial information, statistical data, positional
+    * counts, and all players belonging to the team.
+    *
+    * Each field is written on a separate line, and the players are serialized
+    * using their own stream insertion operator.
+    *
+    * @param os The output stream to write the team data to.
+    * @param team The Team object to serialize.
+    * @return Reference to the output stream to allow chained output operations.
+    */
+    friend std::ostream &operator<<(std::ostream &os, const Team &team);
 
-  for(const auto& p : team.players)
-   os << p;
-
-  return os;
- }
- friend std::istream& operator>>(std::istream& is, Team& team)
- {
-  std::string typeStr;
-  std::string name;
-  std::string stadium;
-
-  double budget;
-  Statistics stats;
-
-  unsigned f, m, gk, d, w;
-  size_t playerCount;
-
-  std::getline(is >> std::ws, typeStr);
-  std::getline(is, name);
-  std::getline(is, stadium);
-
-  is >> budget
-     >> stats
-     >> f
-     >> m
-     >> gk
-     >> d
-     >> w
-     >> playerCount;
-
-  std::vector<Player> players;
-
-  for (size_t i = 0; i < playerCount; i++)
-  {
-   Player p;
-   is >> p;
-   players.push_back(p);
-  }
-
-  team.type = Utils::parseTeamType(typeStr);
-  team.name = name;
-  team.stadiumName = stadium;
-  team.budget = budget;
-  team.stats = stats;
-
-  team.forwardersCount = f;
-  team.midfieldersCount = m;
-  team.goalkeepersCount = gk;
-  team.defendersCount = d;
-  team.wingersCount = w;
-
-  team.players = std::move(players);
-
-  return is;
- }
+    /**
+    * Deserializes a Team object from an input stream.
+    *
+    * This function reconstructs a Team instance from a previously serialized
+    * representation produced by operator<<. It reads structured data in a strict
+    * order and restores the full internal state of the team, including all
+    * players.
+    *
+    * The function assumes the input format is valid and correctly ordered.
+    * Player objects are reconstructed using their own extraction operator.
+    *
+    * @param is The input stream to read the team data from.
+    * @param team The Team object to populate.
+    * @return Reference to the input stream to allow chained input operations.
+    */
+    friend std::istream &operator>>(std::istream &is, Team &team);
 };
 
 #endif //TEAM_H

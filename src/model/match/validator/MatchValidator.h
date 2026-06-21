@@ -34,7 +34,7 @@ public:
     /**
     * Validates that the matches count is at most the target count.
     */
-    static void validateMatchesCount(unsigned currentSize, unsigned targetSize);
+    static void validateHasEnoughMatches(unsigned currentSize, unsigned targetSize);
 };
 
 #endif //MATCHVALIDATOR_H

@@ -38,8 +38,8 @@ public:
      * @param team Team to check against.
      * @return true if player belongs to the home team, false otherwise.
      */
-    static bool validateIsHomePlayer(const std::string& playerName,
-                                     const Team& team);
+    static bool validateIsHomePlayer(const std::string &playerName,
+                                     const Team &team);
 
     /**
      * Checks whether a player belongs to the guest team.
@@ -50,8 +50,8 @@ public:
      * @param team Team to check against.
      * @return true if player belongs to the guest team, false otherwise.
      */
-    static bool validateIsGuestPlayer(const std::string& playerName,
-                                      const Team& team);
+    static bool validateIsGuestPlayer(const std::string &playerName,
+                                      const Team &team);
 
     /**
      * Ensures that a player name is unique within a given team.
@@ -61,10 +61,26 @@ public:
      *
      * @throws std::invalid_argument if a player with the same name exists.
      */
-    static void validateUniquePlayerName(const std::string& playerName,
-                                         const Team& team);
+    static void validateUniquePlayerName(const std::string &playerName,
+                                         const Team &team);
 
-   static Player resolvePlayer(const std::string& playerName, const Team& team);
+    /**
+    * Searches for a player by name inside a team and returns a copy of the player.
+    *
+    * This function iterates through the team's player list and attempts to find
+    * a player whose name matches the provided input. If found, a copy of that
+    * player is returned.
+    *
+    * The function returns by value to avoid lifetime and ownership issues,
+    * ensuring the returned object is independent of the team's internal storage.
+    *
+    * @param playerName The name of the player to search for.
+    * @param team The team in which to search for the player.
+    * @return A copy of the matching Player object.
+    *
+    * @throws std::invalid_argument If no player with the given name exists in the team.
+    */
+    static Player resolvePlayer(const std::string &playerName, const Team &team);
 };
 
 #endif // COMMANDLINEVALIDATOR_H

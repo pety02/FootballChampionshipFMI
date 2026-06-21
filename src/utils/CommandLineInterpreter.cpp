@@ -3,7 +3,7 @@
 //
 
 #include "CommandLineInterpreter.h"
-
+#include <iostream>
 #include "../simulation/engine/FootballGameEngine.h"
 #include "ExceptionMessages.h"
 #include "../simulation/engine/StatisticsEngine.h"
@@ -253,20 +253,9 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::DELETE_LINEUP: {
-            Lineup* lineup = nullptr;
             Match* match = nullptr;
             for (const Match& m : championship.getMatches()) {
-                if(m.getHost()->getName() == args[0]) {
-                    match = new Match(m);
-                    lineup = new Lineup(m.getHost());
-                    FootballGameEngine::deleteLineup(*match, *lineup);
-                    continue;
-                }
-                if (m.getGuest()->getName() == args[0]) {
-                    match = new Match(m);
-                    lineup = new Lineup(m.getGuest());
-                    FootballGameEngine::deleteLineup(*match, *lineup);
-                }
+                FootballGameEngine::deleteLineups(*match);
             }
             break;
         }

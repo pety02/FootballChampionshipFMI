@@ -4,28 +4,79 @@
 
 #ifndef STATISTICSENGINE_H
 #define STATISTICSENGINE_H
+
 #include "../../model/championship/Championship.h"
 #include "../../model/team/Team.h"
 
 class StatisticsEngine {
 public:
-    static Team::Statistics listTeamStats(Team& team);
+    /**
+    * Returns the statistical summary of a single team.
+    *
+    * @param team The team whose statistics are requested.
+    * @return A copy of the team's statistics.
+    */
+    static Team::Statistics listTeamStats(Team &team);
 
-    static std::vector<Team::Statistics>
-    listSeasonStats(Championship &championship);
+    /**
+    * Collects statistics for all teams participating in a championship.
+    *
+    * @param championship The championship to analyze.
+    * @return A vector containing statistics for each team.
+    */
+    static std::vector<Team::Statistics> listSeasonStats(Championship &championship);
 
-    static std::vector<Player::Statistics>
-    listPlayerStats(const Team& team);
+    /**
+    * Collects statistics for all players in a team.
+    *
+    * @param team The team whose players' statistics are requested.
+    * @return A vector of player statistics.
+    */
+    static std::vector<Player::Statistics> listPlayerStats(const Team &team);
 
-    static Player getTopScorer(const Championship& championship);
+    /**
+    * Finds the player with the highest number of scored goals in a championship.
+    *
+    * Iterates through all matches and all players in both home and guest teams
+    * to determine the top scorer.
+    *
+    * @param championship The championship to analyze.
+    * @return The player with the most scored goals.
+    */
+    static Player getTopScorer(const Championship &championship);
 
-    static void viewPlayerRanking(Championship& championship);
+    /**
+    * Prints a ranking of all players in a championship based on scored goals.
+    *
+    * @param championship The championship whose player rankings are displayed.
+    */
+    static void viewPlayerRanking(Championship &championship);
 
-    static const Team& getChampion(const Championship& championship);
+    /**
+    * Determines the champion team of a championship based on scored goals.
+    *
+    * Teams are ranked in descending order by total scored goals.
+    *
+    * @param championship The championship to evaluate.
+    * @return Reference to the winning team.
+    */
+    static const Team &getChampion(const Championship &championship);
 
-    static const Team& getRunnerUp(const Championship& championship);
+    /**
+    * Determines the runner-up team of a championship.
+    *
+    * @param championship The championship to evaluate.
+    * @return Reference to the second-place team.
+    */
+    static const Team &getRunnerUp(const Championship &championship);
 
-    static const Team& getThirdPlace(const Championship& championship);
+    /**
+    * Determines the third-place team of a championship.
+    *
+    * @param championship The championship to evaluate.
+    * @return Reference to the third-place team.
+    */
+    static const Team &getThirdPlace(const Championship &championship);
 };
 
 #endif //STATISTICSENGINE_H

@@ -32,9 +32,7 @@ public:
      * @param stadiumName The name of the team's home stadium.
      * @param budget The initial budget assigned to the team.
      *
-     * @return Pointer to the newly created Team object.
-     *
-     * @throws std::invalid_argument If the specified team type is invalid.
+     * @return Pointer to the newly created Team object or nullptr if the object is not created.
      *
      * @note The caller assumes ownership of the returned pointer and is
      * responsible for releasing the allocated memory.
@@ -44,6 +42,18 @@ public:
                             const std::string& coachName,
                             const std::string& stadiumName,
                             double budget);
+
+    /**
+    * Creates a default empty team needed for creating a team pointer before
+    * starting reading its fields' values from a binary file.
+    *
+    * @param type The type of team to create.
+    *
+    * @return Pointer to the newly created Team object or nullptr if the object is not created.
+    *
+    * @note The caller assumes ownership of the returned pointer and is
+    * responsible for releasing the allocated memory.
+    */
     static Team* createEmptyTeam(TeamType type);
 };
 

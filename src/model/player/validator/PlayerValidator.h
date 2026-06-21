@@ -68,21 +68,6 @@ public:
      * @throws std::invalid_argument If the transfer sum is invalid.
      */
     static void validateTransferSum(double transferSum);
-
-    /**
-     * Validates player names.
-     *
-     * Ensures that both names satisfy the application's naming rules,
-     * such as not being empty, blank, or identical when uniqueness
-     * is required.
-     *
-     * @param firstPlayerName The first player's name.
-     * @param secondPlayerName The second player's name.
-     *
-     * @throws std::invalid_argument If either name is invalid.
-     */
-    static void validateName(const std::string& firstPlayerName,
-                             const std::string& secondPlayerName);
 };
 
 #endif //PLAYERVALIDATOR_H

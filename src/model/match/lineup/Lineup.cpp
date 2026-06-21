@@ -1,29 +1,29 @@
 #include "Lineup.h"
 #include <stdexcept>
 
-bool Lineup::canAdd(const Player& p, const std::vector<Player>& result)
+bool Lineup::canAdd(const Player& player, const std::vector<Player>& teamPlayersList)
 {
-    for (const Player& x : result)
+    for (const Player& x : teamPlayersList)
     {
-        if (x.getName() == p.getName())
+        if (x.getName() == player.getName())
             return false;
     }
     return true;
 }
 
 bool Lineup::tryAdd(
-    const Player& p,
-    std::vector<Player>& result,
+    const Player& player,
+    std::vector<Player>& teamPlayersList,
     int& gk,
     int& def,
     int& mid,
     int& wing,
     int& fwd)
 {
-    if (!canAdd(p, result))
+    if (!canAdd(player, teamPlayersList))
         return false;
 
-    Player::Position pos = p.getPosition();
+    Player::Position pos = player.getPosition();
 
     if (pos == Player::Position::GOALKEEPER && gk >= 1) return false;
     if (pos == Player::Position::DEFENDER && def >= 4) return false;
@@ -31,7 +31,7 @@ bool Lineup::tryAdd(
     if (pos == Player::Position::WINGER && wing >= 3) return false;
     if (pos == Player::Position::FORWARD && fwd >= 3) return false;
 
-    result.push_back(p);
+    teamPlayersList.push_back(player);
 
     switch (pos)
     {
@@ -171,4 +171,35 @@ const Team* Lineup::getTeam() const
 const std::vector<Player>& Lineup::getPlayers() const
 {
     return players;
+}
+
+std::ostream& operator<<(std::ostream& os, const Lineup& lineup) {
+    os << (lineup.team ? lineup.team->getName() : "NULL") << '\n';
+    os << lineup.players.size() << '\n';
+
+    for (const Player& p : lineup.players)
+        os << p;
+
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Lineup& lineup) {
+    std::string teamName;
+    size_t count;
+
+    std::getline(is >> std::ws, teamName);
+    is >> count;
+
+    std::vector<Player> players;
+
+    for (size_t i = 0; i < count; i++) {
+        Player p;
+        is >> p;
+        players.push_back(p);
+    }
+
+    lineup.team = nullptr; // resolved externally
+    lineup.players = std::move(players);
+
+    return is;
 }
