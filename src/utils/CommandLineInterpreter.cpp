@@ -107,7 +107,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             if (args.empty()) throw std::invalid_argument("Missing args");
             TeamManager teamManager = TeamManager();
             teamManager.setName(args[0]);
-            for(const auto& match : championship.getMatches()) {
+            for(const Match& match : championship.getMatches()) {
                 FootballGameEngine::addManager(match.getHost(), teamManager);
                 FootballGameEngine::addManager(match.getGuest(), teamManager);
                 championship.setTeamManager(teamManager);
@@ -122,7 +122,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             const std::string& hostName = args[0];
             const std::string& guestName = args[1];
             Lineup hostLineup, guestLineup;
-            for(const auto& team : championship.getTeamManager().getTeams()) {
+            for(Team* team : championship.getTeamManager().getTeams()) {
                 if(team->getName() == hostName) {
                     std::cout << "Auto selecting a host lineup that will play in the match..." << std::endl;
                     hostLineup = Lineup(team);
@@ -146,7 +146,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::LIST_TEAM_STATS: {
-            for (auto t : championship.getTeamManager().getTeams()) {
+            for (Team* t : championship.getTeamManager().getTeams()) {
                 StatisticsEngine::listTeamStats(*t);
             }
             break;
@@ -161,7 +161,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
 
             const std::string& teamName = args[0];
             Team* team = nullptr;
-            for(auto currTeam : championship.getTeamManager().getTeams()) {
+            for(Team* currTeam : championship.getTeamManager().getTeams()) {
                 if(currTeam->getName() == teamName) {
                     team = currTeam;
                     break;
@@ -178,9 +178,9 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::REMOVE_PLAYER: {
-            auto teams = championship.getTeamManager().getTeams();
+            std::vector<Team*> teams = championship.getTeamManager().getTeams();
             Team* t = nullptr;
-            for (auto team : teams) {
+            for (Team* team : teams) {
                 if(team->getName() == args[1]) {
                     t = team;
                 }
@@ -191,9 +191,9 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::TRANSFER_PLAYERS: {
-            auto teams = championship.getTeamManager().getTeams();
+            std::vector<Team*> teams = championship.getTeamManager().getTeams();
             Team* t1 = nullptr; Team* t2 = nullptr;
-            for (auto team : teams) {
+            for (Team* team : teams) {
                 if(team->getName() == args[1]) {
                     t1 = team;
                 }
@@ -212,7 +212,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::LIST_PLAYERS: {
-            for(auto t : championship.getTeamManager().getTeams()) {
+            for(Team* t : championship.getTeamManager().getTeams()) {
                 PlayerEngine::listPlayers(*t);
             }
             break;
@@ -220,8 +220,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
 
         case Command::UPDATE_SALARY: {
             Player player;
-            for(auto t : championship.getTeamManager().getTeams()) {
-                for(const auto& p : t->getPlayers()) {
+            for(Team* t : championship.getTeamManager().getTeams()) {
+                for(const Player& p : t->getPlayers()) {
                     if(p.getName() == args[0]) {
                         player = p;
                         break;
@@ -234,7 +234,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
 
         case Command::LIST_TOP_SCORERS:
         case Command::GET_TOP_SCORERS: {
-            for (auto t : championship.getTeamManager().getTeams()) {
+            for (Team* t : championship.getTeamManager().getTeams()) {
                 FootballGameEngine::listTopScorers(*t);
             }
             break;
@@ -246,7 +246,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::LIST_PLAYER_STATS: {
-            for(auto t : championship.getTeamManager().getTeams()) {
+            for(Team* t : championship.getTeamManager().getTeams()) {
                 StatisticsEngine::listPlayerStats(*t);
             }
             break;
@@ -255,7 +255,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         case Command::DELETE_LINEUP: {
             Lineup* lineup = nullptr;
             Match* match = nullptr;
-            for (const auto& m : championship.getMatches()) {
+            for (const Match& m : championship.getMatches()) {
                 if(m.getHost()->getName() == args[0]) {
                     match = new Match(m);
                     lineup = new Lineup(m.getHost());
@@ -279,7 +279,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         case Command::IMPORT_DATA: {
             SystemCommandsEngine::importData(history, !args.empty() ? args[0] : "in.dat");
             std::cout << "IMPORTED DATA:" << std::endl;
-            for(const auto& record : history) {
+            for(const Championship& record : history) {
                 std::cout << record;
             }
             break;

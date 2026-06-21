@@ -9,7 +9,7 @@
 
 void FootballGameSimulatorValidator::validateMatchExists(Championship* currentChampionship, const Match& match) {
     bool matchExists = false;
-    for(const auto& currentChampionshipMatch : currentChampionship->getMatches()) {
+    for(const Match& currentChampionshipMatch : currentChampionship->getMatches()) {
         if(match.getHost()->getName() == currentChampionshipMatch.getHost()->getName()
             && match.getGuest()->getName() == currentChampionshipMatch.getGuest()->getName()) {
             matchExists = true;
@@ -25,7 +25,7 @@ void FootballGameSimulatorValidator::validateLineupExists(Championship* currentC
 
     const std::vector<Match>& currentMatches = currentChampionship->getMatches();
 
-    for (const auto & currentMatch : currentMatches) {
+    for (const Match& currentMatch : currentMatches) {
 
         if (match->getHost()->getName() == currentMatch.getHost()->getName()
                 && match->getGuest()->getName() ==  currentMatch.getGuest()->getName()) {

@@ -11,6 +11,14 @@
 #include "../../model/match/Match.h"
 #include "../../model/player/Player.h"
 
+template <typename L, typename R>
+struct Pair {
+ L left;
+ R right;
+
+ Pair(L left, R right) : left(left), right(right) {}
+};
+
 /**
  * Core simulation engine for running football championships.
  *

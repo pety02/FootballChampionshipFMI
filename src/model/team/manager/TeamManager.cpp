@@ -21,7 +21,7 @@ TeamManager::TeamManager(const std::string &name, const std::vector<Team*>& team
 
     TeamValidator::validateTeamsCount(4, teams.size());
 
-    for (const auto& team : teams)
+    for (Team* team : teams)
     {
         Team* cloned = nullptr;
         try
@@ -105,7 +105,7 @@ TeamManager::~TeamManager()
 
 void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) const
 {
-    for (auto* currTeam : teams)
+    for (Team* currTeam : teams)
     {
         if (currTeam->getName() == teamName)
         {
@@ -146,7 +146,7 @@ void TeamManager::addTeam(Team* team) {
 
 void TeamManager::removeTeam(const std::string& teamName)
 {
-    for (auto it = teams.begin(); it != teams.end(); ++it)
+    for (std::vector<Team*>::iterator it = teams.begin(); it != teams.end(); ++it)
     {
         if ((*it)->getName() == teamName)
         {
@@ -180,7 +180,7 @@ const std::vector<Team*>& TeamManager::getTeams() const {
 std::ostream& operator<<(std::ostream& os, const TeamManager& teamManager)
 {
     os << teamManager.getName() << '\n' << teamManager.getTeams().size() << '\n';
-    for(const auto& team : teamManager.getTeams()) {
+    for(const Team* team : teamManager.getTeams()) {
         os << team << '\n';
     }
 

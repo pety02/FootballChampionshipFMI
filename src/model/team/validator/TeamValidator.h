@@ -19,6 +19,8 @@
  * and validity of team-related operations.
  */
 class TeamValidator final {
+private:
+ static bool isManaged(const Team* t, const std::vector<Team*>& teams);
 public:
     /**
      * Default constructor.

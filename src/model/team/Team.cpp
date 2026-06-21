@@ -49,7 +49,7 @@ void Team::buyPlayer(Player& player, Player::Position playerPos, double remainin
 }
 
 void Team::removePlayer(const std::string& playerName) {
-    for (auto it = players.begin(); it != players.end(); ) {
+    for (std::vector<Player>::iterator it = players.begin(); it != players.end(); ) {
         if (it->getName() == playerName) {
             it = players.erase(it);
         } else {
@@ -66,7 +66,7 @@ void Team::copy(const Team& other) {
     this->name = other.name;
     this->stadiumName = other.stadiumName;
     this->players.clear();
-    for (const auto& player : other.players) {
+    for (const Player& player : other.players) {
         this->players.push_back(player);
     }
     this->budget = other.budget;

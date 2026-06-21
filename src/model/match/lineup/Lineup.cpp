@@ -1,53 +1,65 @@
 #include "Lineup.h"
 #include <stdexcept>
 
+bool Lineup::canAdd(const Player& p, const std::vector<Player>& result)
+{
+    for (const Player& x : result)
+    {
+        if (x.getName() == p.getName())
+            return false;
+    }
+    return true;
+}
+
+bool Lineup::tryAdd(
+    const Player& p,
+    std::vector<Player>& result,
+    int& gk,
+    int& def,
+    int& mid,
+    int& wing,
+    int& fwd)
+{
+    if (!canAdd(p, result))
+        return false;
+
+    Player::Position pos = p.getPosition();
+
+    if (pos == Player::Position::GOALKEEPER && gk >= 1) return false;
+    if (pos == Player::Position::DEFENDER && def >= 4) return false;
+    if (pos == Player::Position::MIDFIELDER && mid >= 4) return false;
+    if (pos == Player::Position::WINGER && wing >= 3) return false;
+    if (pos == Player::Position::FORWARD && fwd >= 3) return false;
+
+    result.push_back(p);
+
+    switch (pos)
+    {
+        case Player::Position::GOALKEEPER: ++gk; break;
+        case Player::Position::DEFENDER:   ++def; break;
+        case Player::Position::MIDFIELDER: ++mid; break;
+        case Player::Position::WINGER:     ++wing; break;
+        case Player::Position::FORWARD:    ++fwd; break;
+        default: break;
+    }
+
+    return true;
+}
+
 std::vector<Player> Lineup::generateRandomLineup(const Team& team)
 {
-    const auto& allPlayers = team.getPlayers();
+    const std::vector<Player>& allPlayers = team.getPlayers();
     std::vector<Player> result;
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
-    auto canAdd = [&](const Player& p) -> bool {
-        for (const auto& x : result)
-            if (x.getName() == p.getName())
-                return false;
-        return true;
-    };
-
-    auto tryAdd = [&](const Player& p) -> bool {
-        if (!canAdd(p)) return false;
-
-        Player::Position pos = p.getPosition();
-
-        if (pos == Player::Position::GOALKEEPER && gk >= 1) return false;
-        if (pos == Player::Position::DEFENDER && def >= 4) return false;
-        if (pos == Player::Position::MIDFIELDER && mid >= 4) return false;
-        if (pos == Player::Position::WINGER && wing >= 3) return false;
-        if (pos == Player::Position::FORWARD && fwd >= 3) return false;
-
-        result.push_back(p);
-
-        switch (pos)
-        {
-            case Player::Position::GOALKEEPER: gk++; break;
-            case Player::Position::DEFENDER: def++; break;
-            case Player::Position::MIDFIELDER: mid++; break;
-            case Player::Position::WINGER: wing++; break;
-            case Player::Position::FORWARD: fwd++; break;
-            default: break;
-        }
-
-        return true;
-    };
-
-    for (const auto& p : allPlayers)
+    for (const Player& p : allPlayers)
         if (result.size() < LINEUP_SIZE && p.getStats().matchesCount < 3)
-            tryAdd(p);
+            tryAdd(p, result, gk, def, mid, wing, fwd);
 
-    for (const auto& p : allPlayers)
+    for (const Player& p : allPlayers)
         if (result.size() < LINEUP_SIZE)
-            tryAdd(p);
+            tryAdd(p, result, gk, def, mid, wing, fwd);
 
     return result;
 }
@@ -106,7 +118,7 @@ void Lineup::addPlayer(const Player& player)
     if (players.size() >= LINEUP_SIZE)
         throw std::runtime_error("Lineup already full");
 
-    for (const auto& p : players)
+    for (const Player& p : players)
         if (p.getName() == player.getName())
             throw std::runtime_error("Player already in lineup");
 
@@ -120,7 +132,7 @@ bool Lineup::isValid() const
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
-    for (const auto& p : players)
+    for (const Player& p : players)
     {
         switch (p.getPosition())
         {
@@ -142,7 +154,7 @@ bool Lineup::isValid() const
 
 void Lineup::removePlayer(const std::string& playerName)
 {
-    for (auto it = players.begin(); it != players.end(); )
+    for (std::vector<Player>::iterator it = players.begin(); it != players.end(); )
     {
         if (it->getName() == playerName)
             it = players.erase(it);

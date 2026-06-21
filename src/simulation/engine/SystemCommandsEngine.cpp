@@ -112,11 +112,6 @@ void SystemCommandsEngine::help(const std::string& command) {
                       << "Changes a player's salary manually.\n";
             break;
 
-        case Command::AUTO_SELECT_LINEUP:
-            std::cout << "auto_select_lineup <team>\n"
-                      << "Automatically generates a valid lineup.\n";
-            break;
-
         case Command::DELETE_LINEUP:
             std::cout << "delete_lineup <host_team> <guest_team>\n"
                       << "Deletes the lineups assigned to a match.\n";
@@ -240,7 +235,6 @@ void SystemCommandsEngine::menu() {
     std::cout << "  update_salary\n\n";
 
     std::cout << "[Lineup Management]\n";
-    std::cout << "  auto_select_lineup\n";
     std::cout << "  delete_lineup\n\n";
 
     std::cout << "[Statistics]\n";
@@ -282,11 +276,11 @@ void SystemCommandsEngine::exportData(const ChampionshipHistory& history, const 
         return;
     }
 
-    const auto& championships = history.getChampionships();
+    const std::vector<Championship>& championships = history.getChampionships();
 
     out << championships.size() << '\n';
 
-    for (const auto& championship : championships)
+    for (const Championship& championship : championships)
     {
         out << championship << '\n';
     }

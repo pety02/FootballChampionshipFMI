@@ -47,7 +47,7 @@ TEST_CASE("PlayerEngine::addPlayer(Player, Team) adds player after validation") 
     REQUIRE_NOTHROW(engine.addPlayer(p, *team));
 
     bool found = false;
-    for (const auto& pl : team->getPlayers()) {
+    for (const Player& pl : team->getPlayers()) {
         if (pl.getName() == "Ronaldo") found = true;
     }
 
@@ -79,7 +79,7 @@ TEST_CASE("PlayerEngine::listPlayers returns all team players") {
     team->addPlayer(p1, false);
     team->addPlayer(p2, false);
 
-    auto players = engine.listPlayers(*team);
+    std::vector<Player> players = engine.listPlayers(*team);
 
     REQUIRE(players.size() == 2);
 
@@ -106,10 +106,10 @@ TEST_CASE("PlayerEngine::transferPlayers swaps players between teams", "[interac
     bool t1HasP2 = false;
     bool t2HasP1 = false;
 
-    for (const auto& p : t1->getPlayers())
+    for (const Player& p : t1->getPlayers())
         if (p.getName() == "P2") t1HasP2 = true;
 
-    for (const auto& p : t2->getPlayers())
+    for (const Player& p : t2->getPlayers())
         if (p.getName() == "P1") t2HasP1 = true;
 
     REQUIRE(t1HasP2);

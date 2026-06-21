@@ -15,7 +15,7 @@ void MatchValidator::validateRoundNumber(const unsigned roundNumber) {
 void MatchValidator::validateLineups(const std::vector<Match>& matches) {
     bool hasValidLineups = true;
 
-    for (const auto & match : matches) {
+    for (const Match & match : matches) {
         if(MatchValidator::MAX_LINEUP_SIZE < match.getHostLineup().getPlayers().size()
             || MatchValidator::MAX_LINEUP_SIZE < match.getGuestLineup().getPlayers().size()) {
             hasValidLineups = false;

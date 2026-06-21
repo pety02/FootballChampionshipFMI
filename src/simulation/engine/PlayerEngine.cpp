@@ -7,7 +7,7 @@
 #include "../../utils/validator/CommandLineValidator.h"
 
 void PlayerEngine::addPlayer(const std::string& playerName, Lineup& lineup) {
-    for(const auto& p : lineup.getTeam()->getPlayers()) {
+    for(const Player& p : lineup.getTeam()->getPlayers()) {
         if(p.getName() == playerName) {
             lineup.addPlayer(p);
             break;
@@ -47,7 +47,7 @@ void PlayerEngine::transferPlayers(
     Player p1;
     Player p2;
 
-    for (const auto& p : firstTeam.getPlayers()) {
+    for (const Player& p : firstTeam.getPlayers()) {
 
         if (p.getName() == firstPlayer) {
 
@@ -56,7 +56,7 @@ void PlayerEngine::transferPlayers(
         }
     }
 
-    for (const auto& p : secondTeam.getPlayers()) {
+    for (const Player& p : secondTeam.getPlayers()) {
 
         if (p.getName() == secondPlayer) {
 
@@ -74,8 +74,8 @@ void PlayerEngine::transferPlayers(
 
 void PlayerEngine::viewPlayer(const std::string &playerName, const Championship& championship) {
     Player player;
-    for(const auto t : championship.getTeamManager().getTeams()) {
-        for(const auto& p : t->getPlayers()) {
+    for(const Team* t : championship.getTeamManager().getTeams()) {
+        for(const Player& p : t->getPlayers()) {
             if(p.getName() == playerName) {
                 player = p;
                 break;
@@ -104,7 +104,7 @@ std::vector<Player> PlayerEngine::listPlayers(const Team &team) {
 
 void PlayerEngine::updateSalary(Championship& championship, Player& player) {
     Team* playsIn = nullptr;
-    for(const auto& currMatch : championship.getMatches()) {
+    for(const Match& currMatch : championship.getMatches()) {
         Team* host = currMatch.getHost();
         Team* guest = currMatch.getGuest();
 

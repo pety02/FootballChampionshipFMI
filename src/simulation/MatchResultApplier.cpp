@@ -16,7 +16,7 @@ void MatchResultApplier::applyTeam(Team* team,
                       unsigned scored,
                       unsigned conceded)
 {
-    auto& stats = team->getStats();
+    Team::Statistics& stats = team->getStats();
 
     stats.increaseScoredGoals(scored);
     stats.increaseConcededGoals(conceded);
@@ -41,7 +41,7 @@ void MatchResultApplier::applyPlayers(const Match::MatchResult& result) {
         isHome = false;
     }
 
-    for (auto& g : result.goals) {
+    for (Match::MatchResult::Scorer* g : result.goals) {
         g->player.getStats().increaseScoredGoals();
         g->isHome = isHome;
     }

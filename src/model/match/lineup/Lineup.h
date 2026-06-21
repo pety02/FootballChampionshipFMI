@@ -19,6 +19,9 @@ private:
     */
     static std::vector<Player> generateRandomLineup(const Team& team);
 
+    bool canAdd(const Player& p, const std::vector<Player>& result);
+    bool tryAdd(const Player& p, std::vector<Player>& result,
+        int& gk, int& def, int& mid, int& wing, int& fwd);
 public:
     static constexpr unsigned LINEUP_SIZE = 11;
 
@@ -29,7 +32,6 @@ public:
     Lineup(const Lineup& other);
     Lineup& operator=(const Lineup& other);
 
-    // ✅ FIX: move operations (Rule of 5 consistency)
     Lineup(Lineup&& other) noexcept;
     Lineup& operator=(Lineup&& other) noexcept;
 
@@ -51,7 +53,7 @@ public:
         os << (lineup.team ? lineup.team->getName() : "NULL") << '\n';
         os << lineup.players.size() << '\n';
 
-        for (const auto& p : lineup.players)
+        for (const Player& p : lineup.players)
             os << p;
 
         return os;

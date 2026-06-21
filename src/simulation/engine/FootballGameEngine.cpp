@@ -15,37 +15,55 @@
 #include "../../utils/validator/CommandLineValidator.h"
 #include "../../utils/ExceptionMessages.h"
 
-std::vector<std::string> FootballGameEngine::getChampions() const {
-    std::vector<std::pair<std::string, unsigned>> champions;
+// TODO: move to utils
+void selectionSortByGoals(
+    std::vector<Pair<std::string, unsigned>>& teams) const
+{
+    for (size_t i = 0; i < teams.size(); ++i)
+    {
+        size_t maxIndex = i;
 
-    for(auto champ : champions) {
-        for (auto& match : this->currentChampionship.getMatches()) {
-            if(champ.first == match.getHost()->getName())
-                champ.second = match.getHostGoals();
-            if(champ.first == match.getGuest()->getName())
-                champ.second = match.getGuestGoals();
+        for (size_t j = i + 1; j < teams.size(); ++j)
+        {
+            if (teams[j].right > teams[maxIndex].right)
+            {
+                maxIndex = j;
+            }
+        }
+
+        if (maxIndex != i)
+        {
+            Pair<std::string, unsigned> temp = teams[i];
+            teams[i] = teams[maxIndex];
+            teams[maxIndex] = temp;
+        }
+    }
+}
+
+std::vector<std::string> FootballGameEngine::getChampions() const
+{
+    std::vector<Pair<std::string, unsigned>> champions;
+
+    for (Pair<std::string, unsigned>& champ : champions)
+    {
+        for (const Match& match : currentChampionship.getMatches())
+        {
+            if (champ.left == match.getHost()->getName())
+                champ.right += match.getHostGoals();
+
+            if (champ.left == match.getGuest()->getName())
+                champ.right += match.getGuestGoals();
         }
     }
 
-    // Convert Map → vector
-    std::vector<std::pair<std::string, std::vector<unsigned>>> sortedTeams;
+    // Manual selection sort (descending by goals)
+    selectionSortByGoals(champions);
 
-    for (const auto& [k, v] : champions) {
-        sortedTeams.emplace_back(k, v);
-    }
-
-    // sort by goals descending
-    std::ranges::sort(sortedTeams,
-                      [](const auto& a, const auto& b) {
-                          return a.second > b.second;
-                      }
-    );
-
-    // extract names
     std::vector<std::string> result;
 
-    for (const auto& [name, goals] : sortedTeams) {
-        result.push_back(name);
+    for (const Pair<std::string, unsigned>& champ : champions)
+    {
+        result.push_back(champ.left);
     }
 
     return result;
@@ -56,7 +74,7 @@ FootballGameEngine::FootballGameEngine() : championshipHistory(ChampionshipHisto
 }
 
 void FootballGameEngine::simulate() {
-    for(const auto& match : this->currentChampionship.getMatches()) {
+    for(const Match& match : this->currentChampionship.getMatches()) {
         this->play(match);
     }
 
@@ -73,12 +91,12 @@ void FootballGameEngine::updateChampionshipRound() {
 
 std::string FootballGameEngine::findGoalMaster() {
     std::string goalMasterName;
-    std::vector<std::pair<std::string, unsigned>> scorers;
+    std::vector<Pair<std::string, unsigned>> scorers;
 
-    for (const auto& match : this->currentChampionship.getMatches()) {
+    for (const Match& match : this->currentChampionship.getMatches()) {
 
         // every occurrence in getScorers() = one scored goal
-        for (const auto& scorer : match.getScorers()) {
+        for (const Player& scorer : match.getScorers()) {
 
             // unique player identification by name
             scorers.emplace_back(scorer.getName(), scorer.getStats().scoredGoals);
@@ -87,10 +105,10 @@ std::string FootballGameEngine::findGoalMaster() {
 
     unsigned maxGoals = 0;
 
-    for (const auto& scorer : scorers) {
+    for (const Pair<std::string, unsigned>& scorer : scorers) {
 
-        const std::string& scorerName = scorer.first;
-        unsigned goals = scorer.second;
+        const std::string& scorerName = scorer.left;
+        unsigned goals = scorer.right;
 
         if (goals > maxGoals) {
             maxGoals = goals;
@@ -118,14 +136,14 @@ void FootballGameEngine::play(const Match& match) const {
 
 void FootballGameEngine::addScorer(const Player& player, Match &match) const {
     FootballGameSimulatorValidator::validateMatchExists(new Championship(this->currentChampionship), match);
-    for(const auto& hostLineupPlayer : match.getHostLineup().getPlayers()) {
+    for(const Player& hostLineupPlayer : match.getHostLineup().getPlayers()) {
         if(player.getName() == hostLineupPlayer.getName()) {
             match.addGoal(player, true);
             FootballGameEngine::increaseHostGoals(match);
         }
     }
 
-    for(const auto& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+    for(const Player& guestLineupPlayer : match.getGuestLineup().getPlayers()) {
         if(player.getName() == guestLineupPlayer.getName()) {
             match.addGoal(player, false);
             FootballGameEngine::increaseGuestGoals(match);
@@ -163,17 +181,17 @@ void FootballGameEngine::finishMatch(Match &match) {
     }
 
     // update the players statistics
-    for (auto hostLineupPlayer : match.getHostLineup().getPlayers()) {
+    for (Player hostLineupPlayer : match.getHostLineup().getPlayers()) {
         hostLineupPlayer.getStats().matchesCount++;
-        for (const auto& hostPlayer : match.getHost()->getPlayers()) {
+        for (const Player& hostPlayer : match.getHost()->getPlayers()) {
             if(hostLineupPlayer.getName() == hostPlayer.getName()) {
                 hostLineupPlayer.getStats().scoredGoals += 1;
             }
         }
     }
-    for (auto guestLineupPlayer : match.getGuestLineup().getPlayers()) {
+    for (Player guestLineupPlayer : match.getGuestLineup().getPlayers()) {
         guestLineupPlayer.getStats().matchesCount++;
-        for (const auto& guestPlayer : match.getGuest()->getPlayers()) {
+        for (const Player& guestPlayer : match.getGuest()->getPlayers()) {
             if(guestLineupPlayer.getName() == guestPlayer.getName()) {
                 guestLineupPlayer.getStats().scoredGoals += 1;
             }
@@ -201,7 +219,7 @@ std::vector<Championship> FootballGameEngine::listSeasons(const ChampionshipHist
 
 void FootballGameEngine::playAllMatches(
         Championship& championship) {
-    for (const auto& match : championship.getMatches()) {
+    for (const Match& match : championship.getMatches()) {
         FootballGameEngine simulator;
         simulator.play(match);
     }
@@ -229,7 +247,7 @@ void FootballGameEngine::viewMatches(
 
     int index = 0;
 
-    for (const auto& match : championship.getMatches()) {
+    for (const Match& match : championship.getMatches()) {
 
         std::cout
                 << ++index << ". "
@@ -322,7 +340,7 @@ void FootballGameEngine::addTeam(const std::vector<std::string> &args, Champions
     const double budget = std::stod(args[4]);
 
     // check duplicates
-    for (const auto& currentTeam : championship.getTeamManager().getTeams())
+    for (const Team* currentTeam : championship.getTeamManager().getTeams())
     {
         if (currentTeam->getName() == name)
             throw std::invalid_argument(
@@ -342,7 +360,7 @@ void FootballGameEngine::addTeam(const std::vector<std::string> &args, Champions
 }
 
 void FootballGameEngine::removeTeam(const std::string &teamName, Championship &championship) {
-    for (auto currentTeam : championship.getTeamManager().getTeams()) {
+    for (const Team* currentTeam : championship.getTeamManager().getTeams()) {
         if (currentTeam->getName() != teamName)
             throw std::invalid_argument(toString(ExceptionMessages::TEAM_DOES_NOT_EXIST));
     }
@@ -370,7 +388,7 @@ std::vector<Player>FootballGameEngine::listTopScorers(
 
     static std::vector<Player> scorers;
 
-    for (const auto& player : team.getPlayers()) {
+    for (const Player& player : team.getPlayers()) {
 
         scorers.push_back(
                 player);

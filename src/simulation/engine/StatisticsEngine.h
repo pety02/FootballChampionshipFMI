@@ -17,7 +17,7 @@ public:
     static std::vector<Player::Statistics>
     listPlayerStats(const Team& team);
 
-    static const Player& getTopScorer(const Championship& championship);
+    static Player getTopScorer(const Championship& championship);
 
     static void viewPlayerRanking(Championship& championship);
 

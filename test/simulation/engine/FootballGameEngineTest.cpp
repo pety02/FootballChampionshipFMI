@@ -22,7 +22,7 @@ static Player makeMid(const std::string& name) {
 }
 
 static Team* makeDefensiveTeam(const std::string& name) {
-    auto* team = new DefensiveTeam(name, "Coach", "Stadium", 1000000);
+    Team* team = new DefensiveTeam(name, "Coach", "Stadium", 1000000);
     Player forwarder = makeForward(name + "_F1");
     Player midfielder = makeMid(name + "_M1");
     team->addPlayer(forwarder, false);
@@ -96,7 +96,7 @@ TEST_CASE("Lineup constructor generates valid lineup", "[lineup]") {
 
     Lineup lineup(team);
 
-    const auto& players = lineup.getPlayers();
+    const std::vector<Player>& players = lineup.getPlayers();
 
     REQUIRE(players.size() == 11);
 
@@ -370,7 +370,7 @@ TEST_CASE("listTeams returns teams", "[engine][teams]") {
     champ.getTeamManager().addTeam(t1);
     champ.getTeamManager().addTeam(t2);
 
-    auto teams = FootballGameEngine::listTeams(champ);
+    std::vector<Team*> teams = FootballGameEngine::listTeams(champ);
 
     REQUIRE(teams.size() >= 2);
 

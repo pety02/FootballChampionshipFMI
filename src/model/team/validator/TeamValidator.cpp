@@ -6,6 +6,17 @@
 #include <stdexcept>
 #include "../../../utils/ExceptionMessages.h"
 
+bool TeamValidator::isManaged(const Team* t, const std::vector<Team*>& teams)
+{
+    for (const Team* team : teams)
+    {
+        if (team->getName() == t->getName())
+            return true;
+    }
+
+    return false;
+}
+
 void TeamValidator::validateBudget(double budget) {
     if(budget < 0.0)
         throw std::invalid_argument(toString(ExceptionMessages::BUDGET_SHOULD_BE_NON_NEGATIVE));
@@ -43,7 +54,7 @@ void TeamValidator::validateTeamsCount(unsigned minTeamsCount, unsigned currentT
 
 void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, const Team &firstTeam, const Team &secondTeam) {
     bool firstTeamNameFound = false, secondTeamNameFound = false;
-    for(const auto &currTeam : teams) {
+    for(const Team* currTeam : teams) {
         if(firstTeamNameFound && secondTeamNameFound) {
             break;
         }
@@ -70,25 +81,13 @@ void TeamValidator::validateThatTeamsAreFound(const std::vector<Team*>& teams, c
 void TeamValidator::validateThatTeamsAreMangedByAManager(const std::vector<Team *> &teams,
                                                          const Team *homeTeam, const Team *guestTeam) {
 
-    auto isManaged = [&](const Team* t) {
-        bool managed = false;
-
-        for (const auto& team : teams) {
-            if (team->getName() == t->getName()) {
-                managed = true;
-                break;
-            }
-        }
-        return managed;
-    };
-
-    if (!isManaged(homeTeam) || !isManaged(guestTeam)) {
+    if (!TeamValidator::isManaged(homeTeam, teams) || !TeamValidator::isManaged(guestTeam, teams)) {
         throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_MANAGED_BY_THIS_MANAGER));
     }
 }
 
 void TeamValidator::validateUniquePlayerNumber(const Team& team, unsigned number) {
-    for(const auto& player : team.getPlayers()) {
+    for(const Player& player : team.getPlayers()) {
         if(player.getNumber() == number) {
             throw std::invalid_argument(toString(ExceptionMessages::NOT_UNIQUE_PLAYER_NUMBER));
         }
@@ -96,7 +95,7 @@ void TeamValidator::validateUniquePlayerNumber(const Team& team, unsigned number
 }
 
 void TeamValidator::validateUniquePlayerName(const Team& team, const std::string& name) {
-    for(const auto& player : team.getPlayers()) {
+    for(const Player& player : team.getPlayers()) {
         if(player.getName() == name) {
             throw std::invalid_argument(toString(ExceptionMessages::NOT_UNIQUE_PLAYER_NAME));
         }

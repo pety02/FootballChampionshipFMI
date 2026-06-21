@@ -171,7 +171,7 @@ std::vector<Player> Match::getScorers() const
 {
     std::vector<Player> scorers;
 
-    for (auto* g : matchResult.goals)
+    for (MatchResult::Scorer* g : matchResult.goals)
         scorers.push_back(g->player);
 
     return scorers;
@@ -334,16 +334,16 @@ std::ostream& operator<<(std::ostream& os, const Match::MatchResult& mr)
        << mr.guestGoals << '\n'
        << mr.goals.size() << '\n';
 
-    for (const auto* g : mr.goals)
-        os << *g;
+    for (const Match::MatchResult::Scorer* s : mr.goals)
+        os << *s;
 
     return os;
 }
 
 std::istream& operator>>(std::istream& is, Match::MatchResult& mr)
 {
-    for (auto* g : mr.goals)
-        delete g;
+    for (Match::MatchResult::Scorer* s: mr.goals)
+        delete s;
 
     mr.goals.clear();
 
@@ -360,7 +360,7 @@ std::istream& operator>>(std::istream& is, Match::MatchResult& mr)
 
     for (size_t i = 0; i < goalCount; i++)
     {
-        auto* s = new Match::MatchResult::Scorer();
+        Match::MatchResult::Scorer* s = new Match::MatchResult::Scorer();
         is >> *s;
         mr.goals.push_back(s);
     }

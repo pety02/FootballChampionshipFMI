@@ -13,7 +13,7 @@ Team::Statistics StatisticsEngine::listTeamStats(Team& team) {
 
 std::vector<Team::Statistics>StatisticsEngine::listSeasonStats(Championship &championship) {
     std::vector<Team::Statistics> stats;
-    for (auto team :
+    for (Team* team :
          championship.getTeamManager().getTeams()) {
 
         stats.push_back(team->getStats());
@@ -22,25 +22,25 @@ std::vector<Team::Statistics>StatisticsEngine::listSeasonStats(Championship &cha
 }
 
 std::vector<Player::Statistics>StatisticsEngine::listPlayerStats(const Team& team) {
-    auto stats = std::vector<Player::Statistics>();
-    for ( auto player: team.getPlayers()) {
+    std::vector<Player::Statistics> stats = std::vector<Player::Statistics>();
+    for (const Player& player: team.getPlayers()) {
         stats.push_back(player.getStats());
     }
 
     return stats;
 }
 
-const Player& StatisticsEngine::getTopScorer(const Championship& championship) {
+Player StatisticsEngine::getTopScorer(const Championship& championship) {
     Player player;
     unsigned maxScoredGoals = 0;
-    for(const auto& m : championship.getMatches()) {
-        for(const auto& p : m.getHost()->getPlayers()) {
+    for(const Match& m : championship.getMatches()) {
+        for(const Player& p : m.getHost()->getPlayers()) {
             if(p.getStats().scoredGoals > maxScoredGoals) {
                 maxScoredGoals = p.getStats().scoredGoals;
                 player = p;
             }
         }
-        for(const auto& p : m.getGuest()->getPlayers()) {
+        for(const Player& p : m.getGuest()->getPlayers()) {
             if(p.getStats().scoredGoals > maxScoredGoals) {
                 maxScoredGoals = p.getStats().scoredGoals;
                 player = p;
@@ -52,8 +52,8 @@ const Player& StatisticsEngine::getTopScorer(const Championship& championship) {
 }
 
 void StatisticsEngine::viewPlayerRanking(Championship& championship) {
-    for (auto team : championship.getTeamManager().getTeams()) {
-        for (auto player : team->getPlayers()) {
+    for (const Team* team : championship.getTeamManager().getTeams()) {
+        for (const Player& player : team->getPlayers()) {
 
             std::cout
                     << player.getName()
@@ -69,7 +69,7 @@ const Team& StatisticsEngine::getChampion(
 
     std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (auto team : championship.getTeamManager().getTeams())
+    for (Team* team : championship.getTeamManager().getTeams())
     {
         champs.emplace_back(team, team->getStats().scoredGoals);
     }
@@ -87,7 +87,7 @@ const Team& StatisticsEngine::getChampion(
 const Team& StatisticsEngine::getRunnerUp(const Championship &championship) {
     std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (auto team : championship.getTeamManager().getTeams())
+    for (Team* team : championship.getTeamManager().getTeams())
     {
         champs.emplace_back(team, team->getStats().scoredGoals);
     }
@@ -106,7 +106,7 @@ const Team& StatisticsEngine::getThirdPlace(const Championship &championship)
 {
     std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
 
-    for (auto team : championship.getTeamManager().getTeams())
+    for (Team* team : championship.getTeamManager().getTeams())
     {
         champs.emplace_back(team, team->getStats().scoredGoals);
     }
