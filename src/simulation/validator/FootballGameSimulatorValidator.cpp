@@ -6,9 +6,9 @@
 #include <stdexcept>
 #include "../../utils/ExceptionMessages.h"
 
-void FootballGameSimulatorValidator::validateMatchExists(Championship* currentChampionship, const Match& match) {
+void FootballGameSimulatorValidator::validateMatchExists(const Championship& currentChampionship, const Match& match) {
     bool matchExists = false;
-    for(const Match& currentChampionshipMatch : currentChampionship->getMatches()) {
+    for(const Match& currentChampionshipMatch : currentChampionship.getMatches()) {
         if(match.getHost()->getName() == currentChampionshipMatch.getHost()->getName()
             && match.getGuest()->getName() == currentChampionshipMatch.getGuest()->getName()) {
             matchExists = true;

@@ -28,9 +28,10 @@ void SystemCommandsEngine::help(const std::string& command) {
                       << "Displays the champion, runner-up and third-place team.\n";
             break;
 
-        case Command::FINISH_SEASON:
-            std::cout << "finish_season\n"
-                      << "Marks the current season as completed.\n";
+        case Command::SIMULATE_SEASON:
+            std::cout << "simulate_season\n"
+                      << "Simulates a real season of a championship and marks the current season as completed.\n"
+                      << "Example: simulate_season\n";
             break;
 
         case Command::PLAY_MATCH:
@@ -88,7 +89,9 @@ void SystemCommandsEngine::help(const std::string& command) {
 
         case Command::REMOVE_PLAYER:
             std::cout << "remove_player <team> <player_name>\n"
-                      << "Removes a player from a team.\n";
+                      << "Removes a player from a team.\n"
+                      << "Example:\n"
+                      << "remove_player Liverpool Salah\n";
             break;
 
         case Command::TRANSFER_PLAYERS:

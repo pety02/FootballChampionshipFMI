@@ -38,11 +38,6 @@ public:
                  const AccountingManager& accountingManager);
 
     /**
-    * Destructs the championship object.
-    */
-    ~Championship() = default;
-
-    /**
     * Increases the round number of the current championship.
     */
     void increaseRoundNumber();

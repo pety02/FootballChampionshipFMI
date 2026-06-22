@@ -19,25 +19,6 @@ Player makePlayer(const std::string& name, int number = 10,
     return p;
 }
 
-TEST_CASE("PlayerEngine::addPlayer adds player to lineup if exists in team") {
-    PlayerEngine engine;
-
-    Team* team = nullptr;
-    Player p1 = makePlayer("Messi");
-
-    team->addPlayer(p1, false);
-
-    Lineup lineup;
-    lineup.setTeam(team);
-
-    engine.addPlayer("Messi", lineup);
-
-    REQUIRE(lineup.getPlayers().size() == 1);
-    REQUIRE(lineup.getPlayers()[0].getName() == "Messi");
-
-    delete team;
-}
-
 TEST_CASE("PlayerEngine::addPlayer(Player, Team) adds player after validation") {
     PlayerEngine engine;
 

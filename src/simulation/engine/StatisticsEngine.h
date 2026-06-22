@@ -35,17 +35,6 @@ public:
     static std::vector<Player::Statistics> listPlayerStats(const Team &team);
 
     /**
-    * Finds the player with the highest number of scored goals in a championship.
-    *
-    * Iterates through all matches and all players in both home and guest teams
-    * to determine the top scorer.
-    *
-    * @param championship The championship to analyze.
-    * @return The player with the most scored goals.
-    */
-    //static Player getTopScorer(const Championship &championship);
-
-    /**
     * Prints a ranking of all players in a championship based on scored goals.
     *
     * @param championship The championship whose player rankings are displayed.

@@ -99,7 +99,7 @@ public:
     /**
     * Destructor. Cleans up resources used by the lineup.
     */
-    ~Lineup();
+    ~Lineup() noexcept;
 
     /**
     * Assigns a team to this lineup.
@@ -109,25 +109,11 @@ public:
     void setTeam(Team* team);
 
     /**
-    * Adds a player to the lineup if they satisfy the required constraints.
-    *
-    * @param player The player to add.
-    */
-    void addPlayer(const Player& player);
-
-    /**
     * Checks whether the lineup is valid according to formation rules and constraints.
     *
     * @return true if the lineup is valid; false otherwise.
     */
     [[nodiscard]] static bool isValid(const std::vector<Player>& players);
-
-    /**
-    * Removes a player from the lineup by name, if present.
-    *
-    * @param playerName The name of the player to remove.
-    */
-    void removePlayer(const std::string& playerName);
 
     /**
     * Retrieves the team associated with this lineup.

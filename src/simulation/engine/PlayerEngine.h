@@ -11,17 +11,6 @@
 class PlayerEngine {
 public:
     /**
-    * Adds a player from a team’s roster into a given lineup.
-    *
-    * The function searches the team associated with the lineup and, if a player
-    * with the given name exists, inserts that player into the lineup.
-    *
-    * @param playerName The name of the player to add.
-    * @param lineup The lineup to which the player will be added.
-    */
-    static void addPlayer(const std::string &playerName, Lineup &lineup);
-
-    /**
     * Adds a player to a team after validating uniqueness constraints.
     *
     * Ensures that the player name is not already used within the team

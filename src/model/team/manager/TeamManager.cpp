@@ -97,47 +97,10 @@ TeamManager& TeamManager::operator=(TeamManager&& other) noexcept
     return *this;
 }
 
-TeamManager::~TeamManager()
+TeamManager::~TeamManager() noexcept
 {
     for (Team* team : teams)
         delete team;
-}
-
-void TeamManager::addPlayerToTeam(const std::string& teamName, Player* player) const
-{
-    for (Team* currTeam : teams)
-    {
-        if (currTeam->getName() == teamName)
-        {
-            currTeam->addPlayer(*player, false);
-            return;
-        }
-    }
-
-    throw std::invalid_argument(
-        toString(ExceptionMessages::THE_PLAYER_CANNOT_BE_ADDED_TO_THE_TEAM)
-    );
-}
-
-void TeamManager::transfer(Player* firstPlayer, Team& firstTeam,
-                           Player* secondPlayer, Team& secondTeam) const
-{
-    TeamValidator::validateThatTeamsAreFound(teams, firstTeam, secondTeam);
-
-    firstTeam.addPlayer(*secondPlayer, true);
-    secondTeam.addPlayer(*firstPlayer, true);
-}
-
-void TeamManager::registerMatchResult(Team *homeTeam, unsigned homeGoals, Team *guestTeam, unsigned guestGoals) const {
-    TeamValidator::validateThatTeamsAreMangedByAManager(this->teams, homeTeam, guestTeam);
-
-    Match::MatchResult result;
-    result.home = homeTeam;
-    result.guest = guestTeam;
-    result.homeGoals = homeGoals;
-    result.guestGoals = guestGoals;
-
-    MatchResultApplier::apply(result);
 }
 
 void TeamManager::addTeam(Team* team) {

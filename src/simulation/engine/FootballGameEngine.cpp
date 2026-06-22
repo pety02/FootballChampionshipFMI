@@ -50,8 +50,8 @@ FootballGameEngine::FootballGameEngine() : championshipHistory(ChampionshipHisto
 }
 
 void FootballGameEngine::simulate() {
-    for(const Match& match : this->currentChampionship.getMatches()) {
-        this->play(match);
+    for(Match& match : this->currentChampionship.getMatches()) {
+        FootballGameEngine::play(match, currentChampionship);
     }
 
     this->currentChampionship.finish();
@@ -98,10 +98,6 @@ std::string FootballGameEngine::findGoalMaster() {
 }
 
 void FootballGameEngine::finishChampionship() {
-    for(Match& match : this->currentChampionship.getMatches()) {
-        this->finishMatch(match);
-    }
-
     this->champion = this->getChampions()[0];
     this->viceChampion = this->getChampions()[1];
     this->bronzeTeam = this->getChampions()[2];
@@ -110,14 +106,14 @@ void FootballGameEngine::finishChampionship() {
     this->championshipHistory.addChampionship(this->currentChampionship);
 }
 
-void FootballGameEngine::play(const Match& match) const {
-    FootballGameSimulatorValidator::validateMatchExists(new Championship(this->currentChampionship), match);
+void FootballGameEngine::play(Match& match, const Championship& championship) {
+    FootballGameSimulatorValidator::validateMatchExists(championship, match);
 
     std::cout << "Result: " << match.play();
 }
 
 void FootballGameEngine::addScorer(const Player& player, Match &match) const {
-    FootballGameSimulatorValidator::validateMatchExists(new Championship(this->currentChampionship), match);
+    FootballGameSimulatorValidator::validateMatchExists(currentChampionship, match);
     for(const Player& hostLineupPlayer : match.getHostLineup().getPlayers()) {
         if(player.getName() == hostLineupPlayer.getName()) {
             match.addGoal(player, true);
@@ -142,7 +138,7 @@ void FootballGameEngine::increaseGuestGoals(const Match &match) {
 }
 
 void FootballGameEngine::finishMatch(Match &match) {
-    FootballGameSimulatorValidator::validateMatchExists(new Championship(this->currentChampionship), match);
+    FootballGameSimulatorValidator::validateMatchExists(currentChampionship, match);
 
     // update the team statistics
     match.getHost()->getStats().scoredGoals += match.getHostGoals();
@@ -201,9 +197,9 @@ std::vector<Championship> FootballGameEngine::listSeasons(const ChampionshipHist
 
 void FootballGameEngine::playAllMatches(
         Championship& championship) {
-    for (const Match& match : championship.getMatches()) {
+    for (Match& match : championship.getMatches()) {
         FootballGameEngine simulator;
-        simulator.play(match);
+        FootballGameEngine::play(match, championship);
     }
 }
 
@@ -213,7 +209,7 @@ void FootballGameEngine::showPodium(
     std::cout << "Champion: " << StatisticsEngine::getChampion(championship).getName() << '\n';
 }
 
-void FootballGameEngine::finishSeason(
+void FootballGameEngine::simulateSeason(
         ChampionshipHistory& history,
         Championship& championship) {
 
@@ -349,15 +345,6 @@ void FootballGameEngine::removeTeam(const std::string &teamName, Championship &c
 
     championship.getTeamManager().removeTeam(teamName);
 }
-
-// TODO: used only in tests can be removed
-// void FootballGameEngine::autoSelectLineups(Match& match, Team* host, Team* guest) {
-//     Lineup hostLineup = Lineup(host);
-//     Lineup guestLineup = Lineup(guest);
-//
-//     match.setHostLineup(hostLineup);
-//     match.setGuestLineup(guestLineup);
-// }
 
 void FootballGameEngine::deleteLineups(
         Match& match) {

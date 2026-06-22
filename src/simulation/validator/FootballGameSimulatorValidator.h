@@ -26,7 +26,7 @@ public:
      * @throws std::invalid_argument If the championship is null or the match
      *         does not exist in the championship.
      */
-    static void validateMatchExists(Championship* currentChampionship,
+    static void validateMatchExists(const Championship& currentChampionship,
                                     const Match& match);
 
     /**

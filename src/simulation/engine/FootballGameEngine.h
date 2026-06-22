@@ -62,6 +62,7 @@ public:
      * Adds a match to the current championship.
      *
      * @param match Match to be added.
+     * @param championship the current championship.
      *
      * @throws std::invalid_argument If no championship is active.
      */
@@ -81,8 +82,9 @@ public:
      * Simulates a single match.
      *
      * @param match Pointer to the match to simulate.
+     * @param championship the current championship.
      */
-    void play(const Match &match) const;
+    static void play(Match &match, const Championship& championship);
 
     /**
      * Records a goal scored by a player in a match.
@@ -133,7 +135,7 @@ public:
     *
     * @param championship Championship to simulate.
     */
-    static void playAllMatches(Championship &championship);
+    static void playAllMatches(Championship &championship); // used in the simulation of the season
 
     /**
     * Displays the champion team of a championship.
@@ -143,12 +145,12 @@ public:
     static void showPodium(const Championship &championship);
 
     /**
-    * Finalizes a season, simulates all matches, and stores results in history.
+    * Simulates a season, simulates all matches, and stores results in history.
     *
     * @param history Championship history.
     * @param championship Championship to finalize.
     */
-    static void finishSeason(ChampionshipHistory &history,
+    static void simulateSeason(ChampionshipHistory &history,
                              Championship &championship);
 
     /**
@@ -195,8 +197,6 @@ public:
     * Automatically generates and assigns lineups for a match.
     *
     * @param match The match to configure.
-    * @param host Home team.
-    * @param guest Guest team.
     */
     //static void autoSelectLineups(Match &match, Team *host, Team *guest);
 

@@ -29,28 +29,28 @@ struct Pair {
 class Utils {
 public:
     /**
- * Converts a string representation of a team type into a TeamType enum value.
- *
- * This function compares the input string against known team type identifiers
- * ("attacking", "defensive", "balanced") and returns the corresponding enum.
- * If the input does not match any known type, TeamType::UNKNOWN is returned.
- *
- * Note: The function also prints a debug message showing the input being parsed.
- *
- * @param type The string representation of the team type.
- * @return The corresponding TeamType enum value.
- */
+    * Converts a string representation of a team type into a TeamType enum value.
+    *
+    * This function compares the input string against known team type identifiers
+    * ("attacking", "defensive", "balanced") and returns the corresponding enum.
+    * If the input does not match any known type, TeamType::UNKNOWN is returned.
+    *
+    * Note: The function also prints a debug message showing the input being parsed.
+    *
+    * @param type The string representation of the team type.
+    * @return The corresponding TeamType enum value.
+    */
     static TeamType parseTeamType(const std::string &type);
 
     /**
- * Converts a TeamType enum value into its string representation.
- *
- * This is typically used for serialization, logging, or displaying
- * team types in a human-readable format.
- *
- * @param teamType The TeamType enum value.
- * @return A string representing the team type.
- */
+    * Converts a TeamType enum value into its string representation.
+    *
+    * This is typically used for serialization, logging, or displaying
+    * team types in a human-readable format.
+    *
+    * @param teamType The TeamType enum value.
+    * @return A string representing the team type.
+    */
     static std::string toString(TeamType teamType);
 
     /**
@@ -60,7 +60,7 @@ public:
     *
     * @return the converted string to lower-case.
     */
-    static const std::string& toLowerCase(std::string& str);
+    static const std::string &toLowerCase(std::string &str);
 
     /**
     * Converts a string into a Player::Position enum value.

@@ -25,7 +25,7 @@ enum class Command {
     PLAY_ALL_ROUNDS,
     SHOW_STANDINGS,
     SHOW_PODIUM,
-    FINISH_SEASON,
+    SIMULATE_SEASON,
 
     PLAY_MATCH,
     VIEW_MATCHES,
@@ -97,7 +97,7 @@ inline Command parseCommand(const std::string& cmd) {
 
     if (cmd == "play_round") return Command::PLAY_ROUND;
     if (cmd == "show_podium") return Command::SHOW_PODIUM;
-    if (cmd == "finish_season") return Command::FINISH_SEASON;
+    if (cmd == "simulate_season") return Command::SIMULATE_SEASON;
 
     if (cmd == "play_match") return Command::PLAY_MATCH;
     if (cmd == "view_matches") return Command::VIEW_MATCHES;

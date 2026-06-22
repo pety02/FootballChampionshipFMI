@@ -7,7 +7,6 @@
 
 #include "../../../utils/ExceptionMessages.h"
 
-// TODO: reconsider using it on playing a round
 void MatchValidator::validateRoundNumber(const unsigned roundNumber) {
     if(MatchValidator::MAX_ROUND_NUMBER < roundNumber)
         throw std::invalid_argument(toString(ExceptionMessages::MATCH_ROUND_NUMBER_MUST_BE_AT_MOST));

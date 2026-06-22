@@ -22,6 +22,7 @@ enum class ExceptionMessages {
 
     // Match validation messages
     NOT_ENOUGH_MATCHES,
+    MORE_MATCHES_THAN_IT_IS_POSSIBLE,
     MATCH_ROUND_NUMBER_MUST_BE_AT_MOST,
     CHAMPIONSHIP_ROUND_NUMBER_MUST_BE_AT_MOST,
     YEAR_MUST_BE_AT_LEAST_1900,
@@ -68,6 +69,8 @@ enum class ExceptionMessages {
     // General
     INVALID_COMMAND,
     INVALID_ARGUMENT,
+    MISSING_ARGUMENTS,
+    INVALID_ARGUMENTS_COUNT,
 
     // CLI messages
     NOT_ALL_MATCHES_FINISHED_YET,

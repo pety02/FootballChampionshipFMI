@@ -14,7 +14,7 @@ public:
     /**
     * Represents the final result and events of a match.
     */
-    struct MatchResult {
+    struct MatchResult final {
         Team* home = nullptr;
         Team* guest = nullptr;
         unsigned homeGoals = 0;
@@ -23,7 +23,7 @@ public:
         /**
         * Represents a single goal-scoring event in the match.
         */
-        struct Scorer {
+        struct Scorer final {
             Player player;
             bool isHome;
 
@@ -67,7 +67,7 @@ public:
         /**
         * Destructor. Cleans up dynamically allocated scorer events.
         */
-        virtual ~MatchResult();
+        ~MatchResult() noexcept;
 
         /**
         * Copy constructor. Performs a deep copy of the match result, including goals.
@@ -112,7 +112,7 @@ private:
 
     unsigned hostGoals = 0;
     unsigned guestGoals = 0;
-    unsigned roundNumber = 0;
+    unsigned roundNumber = 0; // something like halftime in a match
 
     MatchResult matchResult;
     bool finished = false;
@@ -153,7 +153,7 @@ public:
     /**
     * Destructor. Cleans up resources associated with the match.
     */
-    ~Match();
+    ~Match() noexcept;
 
     /**
     * Advances the match by incrementing the round counter.
@@ -201,13 +201,6 @@ public:
     * @return Number of guest goals.
     */
     [[nodiscard]] unsigned getGuestGoals() const;
-
-    /**
-    * Retrieves the current round number of the match.
-    *
-    * @return Current round number.
-    */
-    [[nodiscard]] unsigned getRoundNumber() const;
 
     /**
     * Retrieves all players who scored in the match.
@@ -288,12 +281,13 @@ public:
     */
     static Player chooseScorer(const std::vector<Player>& players);
 
+    void playHalfTime(MatchResult& result);
     /**
     * Simulates and executes the match, producing the final result.
     *
     * @return The final MatchResult after simulation.
     */
-    [[nodiscard]] MatchResult play() const;
+    [[nodiscard]] MatchResult play();
 
     /**
     * Outputs the match details to a stream.

@@ -21,7 +21,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::HELP: {
-            if (args.empty()) throw std::invalid_argument("Invalid argument");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::INVALID_ARGUMENT));
                 SystemCommandsEngine::help(args[0]);
             break;
         }
@@ -42,8 +42,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        case Command::FINISH_SEASON: {
-            FootballGameEngine::finishSeason(history, championship);
+        case Command::SIMULATE_SEASON: {
+            FootballGameEngine::simulateSeason(history, championship);
             break;
         }
 
@@ -63,7 +63,9 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::PLAY_MATCH: {
-
+            for(Match& match : championship.getMatches()) {
+                FootballGameEngine::play(match, championship);
+            }
             break;
         }
 
@@ -89,13 +91,13 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::ADD_TEAM: {
-            if (args.empty()) throw std::invalid_argument("Missing args");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::MISSING_ARGUMENTS));
             FootballGameEngine::addTeam(args, championship);
             break;
         }
 
         case Command::ADD_MANAGER: {
-            if (args.empty()) throw std::invalid_argument("Missing args");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::MISSING_ARGUMENTS));
             TeamManager teamManager = TeamManager();
             teamManager.setName(args[0]);
             for(const Match& match : championship.getMatches()) {
@@ -107,8 +109,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::ADD_MATCH: {
-            if (args.empty()) throw std::invalid_argument("Missing args");
-            if(args.size() < 2) throw std::invalid_argument("Invalid args size");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::MISSING_ARGUMENTS));
+            if(args.size() < 2) throw std::invalid_argument(toString(ExceptionMessages::INVALID_ARGUMENTS_COUNT));
 
             const std::string& hostName = args[0];
             const std::string& guestName = args[1];
@@ -131,7 +133,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::REMOVE_TEAM: {
-            if (args.empty()) throw std::invalid_argument("Missing args");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::MISSING_ARGUMENTS));
             FootballGameEngine::removeTeam(args[0], championship);
             break;
         }
@@ -144,8 +146,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::ADD_PLAYER: {
-            if (args.empty()) throw std::invalid_argument("Missing args.");
-            if(args.size() != 6) throw std::invalid_argument("Invalid args count.");
+            if (args.empty()) throw std::invalid_argument(toString(ExceptionMessages::MISSING_ARGUMENTS));
+            if(args.size() != 6) throw std::invalid_argument(toString(ExceptionMessages::INVALID_ARGUMENTS_COUNT));
 
             const std::string& teamName = args[0];
             Team* team = nullptr;
@@ -174,7 +176,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
                     t = team;
                 }
             }
-            if (t == nullptr) throw std::invalid_argument("No team with this name.");
+            if (t == nullptr) throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_FOUND));
             PlayerEngine::removePlayer(args[0], *t);
             break;
         }
@@ -190,7 +192,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
                     t2 = team;
                 }
             }
-            if (t1 == nullptr || t2 == nullptr) throw std::invalid_argument("No teams with these names.");
+            if (t1 == nullptr || t2 == nullptr) throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_FOUND));
             PlayerEngine::transferPlayers(*t1, *t2);
             break;
         }
@@ -242,9 +244,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         }
 
         case Command::DELETE_LINEUP: {
-            Match* match = nullptr;
-            for (const Match& m : championship.getMatches()) {
-                FootballGameEngine::deleteLineups(*match);
+            for (Match& m : championship.getMatches()) {
+                FootballGameEngine::deleteLineups(m);
             }
             break;
         }
@@ -270,7 +271,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
 
         case Command::UNKNOWN:
         default: {
-            throw std::invalid_argument("Invalid command");
+            throw std::invalid_argument(toString(ExceptionMessages::INVALID_COMMAND));
         }
     }
 }

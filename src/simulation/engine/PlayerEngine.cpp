@@ -6,15 +6,6 @@
 #include <iostream>
 #include "../../utils/validator/CommandLineValidator.h"
 
-void PlayerEngine::addPlayer(const std::string& playerName, Lineup& lineup) {
-    for(const Player& p : lineup.getTeam()->getPlayers()) {
-        if(p.getName() == playerName) {
-            lineup.addPlayer(p);
-            break;
-        }
-    }
-}
-
 void PlayerEngine::addPlayer(Player& player, Team &team) {
     CommandLineValidator::validateUniquePlayerName(player.getName(), team);
 

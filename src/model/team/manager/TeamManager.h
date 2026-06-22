@@ -76,54 +76,7 @@ public:
     /**
      * Destroys the team manager and releases all owned teams.
      */
-    ~TeamManager();
-
-    // TODO: reconsider using these methods as wrapper in some of the CLIs where we should do something with teams or remove them
-    /**
-     * Adds a player to the specified team.
-     *
-     * @param teamName The name of the team receiving the player.
-     * @param player Pointer to the player to add.
-     *
-     * @throws std::invalid_argument If the team cannot be found
-     * or the player cannot be added.
-     */
-    void addPlayerToTeam(const std::string& teamName,
-                         Player* player) const;
-
-    /**
-     * Transfers players between two teams.
-     *
-     * The specified players are exchanged between the provided teams.
-     *
-     * @param firstPlayer Pointer to the first player.
-     * @param firstTeam The first player's current team.
-     * @param secondPlayer Pointer to the second player.
-     * @param secondTeam The second player's current team.
-     *
-     * @throws std::invalid_argument If the transfer cannot be completed.
-     */
-    void transfer(Player* firstPlayer,
-                  Team& firstTeam,
-                  Player* secondPlayer,
-                  Team& secondTeam) const;
-
-    /**
-     * Registers the result of a completed match.
-     *
-     * Updates the statistics of the participating teams according
-     * to the provided score.
-     *
-     * @param homeTeam Pointer to the home team.
-     * @param homeGoals Number of goals scored by the home team.
-     * @param guestTeam Pointer to the guest team.
-     * @param guestGoals Number of goals scored by the guest team.
-     */
-    void registerMatchResult(Team* homeTeam,
-                             unsigned homeGoals,
-                             Team* guestTeam,
-                             unsigned guestGoals) const;
-    // TODO: =============================================================
+    ~TeamManager() noexcept;
 
     /**
      * Adds a team to the manager.

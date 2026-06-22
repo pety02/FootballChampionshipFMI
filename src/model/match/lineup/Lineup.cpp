@@ -107,25 +107,13 @@ Lineup& Lineup::operator=(Lineup&& other) noexcept
     return *this;
 }
 
-Lineup::~Lineup() {
+Lineup::~Lineup() noexcept {
     delete team;
 }
 
 void Lineup::setTeam(Team* team)
 {
     this->team = team->clone();
-}
-
-void Lineup::addPlayer(const Player& player)
-{
-    if (players.size() >= LINEUP_SIZE)
-        throw std::runtime_error("Lineup already full");
-
-    for (const Player& p : players)
-        if (p.getName() == player.getName())
-            throw std::runtime_error("Player already in lineup");
-
-    players.push_back(player);
 }
 
 bool Lineup::isValid(const std::vector<Player>& players)
@@ -153,18 +141,6 @@ bool Lineup::isValid(const std::vector<Player>& players)
            mid >= 2 &&
            wing >= 2 &&
            fwd >= 2;
-}
-
-// TODO: add variant for removing a player from the lineup - maybe on transfer if he/she is part of a lineup
-void Lineup::removePlayer(const std::string& playerName)
-{
-    for (std::vector<Player>::iterator it = players.begin(); it != players.end(); )
-    {
-        if (it->getName() == playerName)
-            it = players.erase(it);
-        else
-            ++it;
-    }
 }
 
 const Team* Lineup::getTeam() const

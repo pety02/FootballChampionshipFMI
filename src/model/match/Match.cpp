@@ -2,12 +2,13 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <validator/MatchValidator.h>
 
 Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
     : player(player), isHome(isHome)
 {}
 
-Match::MatchResult::~MatchResult()
+Match::MatchResult::~MatchResult() noexcept
 {
     delete home;
     delete guest;
@@ -197,7 +198,7 @@ Match& Match::operator=(Match&& other) noexcept
     return *this;
 }
 
-Match::~Match()
+Match::~Match() noexcept
 {
     delete host;
     delete guest;
@@ -216,8 +217,6 @@ const Lineup& Match::getGuestLineup() const { return guestLineup; }
 
 unsigned Match::getHostGoals() const { return hostGoals; }
 unsigned Match::getGuestGoals() const { return guestGoals; }
-// TODO: reconsider using it to get the match round number and validate it on playing a round
-unsigned Match::getRoundNumber() const { return roundNumber; }
 
 std::vector<Player> Match::getScorers() const
 {
@@ -313,19 +312,13 @@ Player Match::chooseScorer(const std::vector<Player>& players)
     return pool[std::rand() % pool.size()];
 }
 
-Match::MatchResult Match::play() const
-{
-    if (finished)
-        return matchResult;
-
+void Match::playHalfTime(MatchResult& result) {
     static bool seeded = false;
     if (!seeded)
     {
         std::srand((unsigned)std::time(nullptr));
         seeded = true;
     }
-
-    MatchResult result;
     result.home = host;
     result.guest = guest;
 
@@ -339,7 +332,7 @@ Match::MatchResult Match::play() const
     unsigned hostDefense = calculateDefenseStrength(hostLineup);
     unsigned guestDefense = calculateDefenseStrength(guestLineup);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
         unsigned chance = std::clamp(hostAttack + 30 - guestDefense + 5, 5u, 80u);
 
@@ -351,7 +344,7 @@ Match::MatchResult Match::play() const
         }
     }
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
         unsigned chance = std::clamp(30 + guestAttack - hostDefense, 5u, 80u);
 
@@ -366,6 +359,24 @@ Match::MatchResult Match::play() const
     result.homeGoals = std::min(hostGoalsTmp, 8u);
     result.guestGoals = std::min(guestGoalsTmp, 8u);
     result.goals = goals;
+
+    ++roundNumber;
+}
+
+Match::MatchResult Match::play()
+{
+    if (finished)
+        return matchResult;
+
+    MatchResult result;
+
+    // plays first halftime
+    MatchValidator::validateRoundNumber(roundNumber);
+    playHalfTime(result);
+
+    // plays second halftime
+    MatchValidator::validateRoundNumber(roundNumber);
+    playHalfTime(result);
 
     return result;
 }

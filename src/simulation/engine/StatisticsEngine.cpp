@@ -30,30 +30,6 @@ std::vector<Player::Statistics>StatisticsEngine::listPlayerStats(const Team& tea
     return stats;
 }
 
-// TODO: to be removed - similar method in the PlayerEngine/TeamEngine
-/*
-Player StatisticsEngine::getTopScorer(const Championship& championship) {
-    Player player;
-    unsigned maxScoredGoals = 0;
-    for(const Match& m : championship.getMatches()) {
-        for(const Player& p : m.getHost()->getPlayers()) {
-            if(p.getStats().scoredGoals > maxScoredGoals) {
-                maxScoredGoals = p.getStats().scoredGoals;
-                player = p;
-            }
-        }
-        for(const Player& p : m.getGuest()->getPlayers()) {
-            if(p.getStats().scoredGoals > maxScoredGoals) {
-                maxScoredGoals = p.getStats().scoredGoals;
-                player = p;
-            }
-        }
-    }
-
-    return player;
-}
-*/
-
 void StatisticsEngine::viewPlayerRanking(Championship& championship) {
     for (const Team* team : championship.getTeamManager().getTeams()) {
         for (const Player& player : team->getPlayers()) {

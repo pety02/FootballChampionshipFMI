@@ -23,11 +23,6 @@ public:
    ChampionshipHistory();
 
    /**
-   * The default destructor of the ChampionshipHistory class.
-   */
-   ~ChampionshipHistory() = default;
-
-   /**
     * Adds a championship in the history log of past championships with the year when it has been held.
     * Before-hands the methods validate the passed year argument if it is at least 1900 and at most the current year.
     * @param championship - the championship that should be added in the history log

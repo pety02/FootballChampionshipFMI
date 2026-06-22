@@ -20,7 +20,7 @@ const AccountingManager& accountingManager)
     if (matches.size() < teamsCount * (teamsCount - 1))
         throw std::invalid_argument(toString(ExceptionMessages::NOT_ENOUGH_MATCHES));
     if(teamsCount * (teamsCount - 1) < matches.size()) {
-        throw std::invalid_argument("There are more matches than it is possible.");
+        throw std::invalid_argument(toString(ExceptionMessages::MORE_MATCHES_THAN_IT_IS_POSSIBLE));
     }
 
     MatchValidator::validateLineups(this->matches);

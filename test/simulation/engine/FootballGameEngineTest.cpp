@@ -342,26 +342,6 @@ TEST_CASE("finishChampionship executes without crash", "[engine][championship]")
 }
 
 // -------------------------
-// autoSelectLineups (NEW SIGNATURE)
-// -------------------------
-// TODO: can be removed because it uses a method marked for removal
-// TEST_CASE("autoSelectLineups assigns valid lineups", "[engine][lineup]") {
-//     FootballGameEngine engine;
-//
-//     Team* host = new AttackingTeam("A", "C1", "S1", 1000);
-//     Team* guest = new BalancedTeam("B", "C2", "S2", 1000);
-//
-//     Lineup hl = Lineup(host);
-//     Lineup gl = Lineup(guest);
-//     Match match(hl, gl);
-//
-//     REQUIRE_NOTHROW(engine.autoSelectLineups(match, host, guest));
-//
-//     delete host;
-//     delete guest;
-// }
-
-// -------------------------
 // listTeams
 // -------------------------
 TEST_CASE("listTeams returns teams", "[engine][teams]") {
