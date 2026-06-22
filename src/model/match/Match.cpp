@@ -9,13 +9,16 @@ Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
 
 Match::MatchResult::~MatchResult()
 {
+    delete home;
+    delete guest;
+
     for (Scorer* s : goals)
         delete s;
 }
 
 Match::MatchResult::MatchResult(const MatchResult& other)
-    : home(other.home),
-      guest(other.guest),
+    : home(other.home ? other.home->clone() : nullptr),
+      guest(other.guest ? other.guest->clone() : nullptr),
       homeGoals(other.homeGoals),
       guestGoals(other.guestGoals)
 {
@@ -23,23 +26,51 @@ Match::MatchResult::MatchResult(const MatchResult& other)
         goals.push_back(new Scorer(*s));
 }
 
+Match::MatchResult::MatchResult(MatchResult&& other) noexcept
+    : home(other.home),
+      guest(other.guest),
+      homeGoals(other.homeGoals),
+      guestGoals(other.guestGoals),
+      goals(std::move(other.goals))
+{
+    other.home = nullptr;
+    other.guest = nullptr;
+}
+
+Match::MatchResult& Match::MatchResult::operator=(MatchResult&& other) noexcept
+{
+    if (this != &other)
+    {
+        delete home;
+        delete guest;
+
+        for (Scorer* s : goals)
+            delete s;
+
+        home = other.home;
+        guest = other.guest;
+        homeGoals = other.homeGoals;
+        guestGoals = other.guestGoals;
+        goals = std::move(other.goals);
+
+        other.home = nullptr;
+        other.guest = nullptr;
+    }
+
+    return *this;
+}
+
 Match::MatchResult& Match::MatchResult::operator=(const MatchResult& other)
 {
     if (this == &other)
         return *this;
 
-    for (Scorer* s : goals)
-        delete s;
-
-    goals.clear();
-
-    home = other.home;
-    guest = other.guest;
-    homeGoals = other.homeGoals;
-    guestGoals = other.guestGoals;
-
-    for (Scorer* s : other.goals)
-        goals.push_back(new Scorer(*s));
+    MatchResult temp(other);
+    std::swap(home, temp.home);
+    std::swap(guest, temp.guest);
+    std::swap(homeGoals, temp.homeGoals);
+    std::swap(guestGoals, temp.guestGoals);
+    std::swap(goals, temp.goals);
 
     return *this;
 }
@@ -84,39 +115,84 @@ Match::Match(const Lineup &hostLineup, const Lineup &guestLineup)
     }
 }
 
-Match::Match(const Match &other)
+Match::Match(const Match& other)
     : hostLineup(other.hostLineup),
       guestLineup(other.guestLineup),
       hostGoals(other.hostGoals),
       guestGoals(other.guestGoals),
       roundNumber(other.roundNumber),
       matchResult(other.matchResult),
-      finished(other.finished)
+      finished(other.finished),
+      host(other.host ? other.host->clone() : nullptr),
+      guest(other.guest ? other.guest->clone() : nullptr)
 {
-    host = other.host ? other.host->clone() : nullptr;
-    guest = other.guest ? other.guest->clone() : nullptr;
 }
 
-Match& Match::operator=(const Match &other)
+Match& Match::operator=(const Match& other)
 {
     if (this == &other)
         return *this;
 
-    delete host;
-    delete guest;
+    Match temp(other);
 
-    host = other.host ? other.host->clone() : nullptr;
-    guest = other.guest ? other.guest->clone() : nullptr;
+    std::swap(host, temp.host);
+    std::swap(guest, temp.guest);
+    std::swap(hostLineup, temp.hostLineup);
+    std::swap(guestLineup, temp.guestLineup);
+    std::swap(hostGoals, temp.hostGoals);
+    std::swap(guestGoals, temp.guestGoals);
+    std::swap(roundNumber, temp.roundNumber);
+    std::swap(matchResult, temp.matchResult);
+    std::swap(finished, temp.finished);
 
-    hostLineup = other.hostLineup;
-    guestLineup = other.guestLineup;
+    return *this;
+}
 
-    hostGoals = other.hostGoals;
-    guestGoals = other.guestGoals;
-    roundNumber = other.roundNumber;
-    finished = other.finished;
+Match::Match(Match&& other) noexcept
+    : host(other.host),
+      guest(other.guest),
+      hostLineup(std::move(other.hostLineup)),
+      guestLineup(std::move(other.guestLineup)),
+      hostGoals(other.hostGoals),
+      guestGoals(other.guestGoals),
+      roundNumber(other.roundNumber),
+      matchResult(std::move(other.matchResult)),
+      finished(other.finished)
+{
+    other.host = nullptr;
+    other.guest = nullptr;
+    other.hostGoals = 0;
+    other.guestGoals = 0;
+    other.roundNumber = 0;
+    other.finished = false;
+}
 
-    matchResult = other.matchResult;
+Match& Match::operator=(Match&& other) noexcept
+{
+    if (this != &other)
+    {
+        delete host;
+        delete guest;
+
+        hostLineup = std::move(other.hostLineup);
+        guestLineup = std::move(other.guestLineup);
+        matchResult = std::move(other.matchResult);
+
+        host = other.host;
+        guest = other.guest;
+
+        hostGoals = other.hostGoals;
+        guestGoals = other.guestGoals;
+        roundNumber = other.roundNumber;
+        finished = other.finished;
+
+        other.host = nullptr;
+        other.guest = nullptr;
+        other.hostGoals = 0;
+        other.guestGoals = 0;
+        other.roundNumber = 0;
+        other.finished = false;
+    }
 
     return *this;
 }

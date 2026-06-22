@@ -13,11 +13,42 @@ DefensiveTeam::DefensiveTeam(const std::string &name, const std::string &coachNa
     double budget) : Team(TeamType::DEFENSIVE, name, coachName, stadiumName, budget) {
 }
 
-DefensiveTeam::DefensiveTeam(const DefensiveTeam &other) : Team(other) {
+DefensiveTeam::DefensiveTeam(const DefensiveTeam &other)
+    : Team(other)
+{
 }
 
-DefensiveTeam & DefensiveTeam::operator=(const DefensiveTeam &other) {
-    Team::operator=(other);
+DefensiveTeam& DefensiveTeam::operator=(const DefensiveTeam &other) {
+    if(this !=&other) {
+        DefensiveTeam temp(other);
+        std::swap(type, temp.type);
+        std::swap(name, temp.name);
+        std::swap(stadiumName, temp.stadiumName);
+        std::swap(players, temp.players);
+        std::swap(budget, temp.budget);
+        std::swap(stats, temp.stats);
+        std::swap(teamManager, temp.teamManager);
+        std::swap(forwardersCount, temp.forwardersCount);
+        std::swap(midfieldersCount, temp.midfieldersCount);
+        std::swap(goalkeepersCount, temp.goalkeepersCount);
+        std::swap(defendersCount, temp.defendersCount);
+        std::swap(wingersCount, temp.wingersCount);
+    }
+
+    return *this;
+}
+
+DefensiveTeam::DefensiveTeam(DefensiveTeam&& other) noexcept
+    : Team(std::move(other))
+{
+}
+
+DefensiveTeam& DefensiveTeam::operator=(DefensiveTeam&& other) noexcept
+{
+    if (this != &other)
+    {
+        Team::operator=(std::move(other));
+    }
     return *this;
 }
 

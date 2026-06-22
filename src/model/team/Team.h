@@ -102,22 +102,10 @@ protected:
     TeamType type = TeamType::UNKNOWN;
     std::string name = std::string();
     std::string stadiumName = std::string();
-
-    /**
-     * Collection of players belonging to the team.
-     *
-     * Team owns these Player pointers and is responsible for deleting them.
-     */
     std::vector<Player> players = std::vector<Player>();
 
     double budget = 0.0;
     Statistics stats = Statistics();
-
-    /**
-     * Pointer to the manager responsible for this team.
-     *
-     * Non-owning reference.
-     */
     TeamManager *teamManager = nullptr;
 
     unsigned forwardersCount = 0;
@@ -125,18 +113,6 @@ protected:
     unsigned goalkeepersCount = 0;
     unsigned defendersCount = 0;
     unsigned wingersCount = 0;
-
-    /**
-     * Copies all data from another team (deep copy).
-     *
-     * @param other The team to copy from.
-     */
-    void copy(const Team &other);
-
-    /**
-     * Releases all dynamically allocated resources.
-     */
-    void destroy();
 
 public:
     /**
@@ -171,7 +147,7 @@ public:
     /**
      * Copy assignment operator.
      */
-    Team &operator=(const Team &other);
+    Team &operator=(const Team &other) = delete;
 
     Team &operator=(Team &&other) noexcept;
 

@@ -61,6 +61,9 @@ public:
         */
         MatchResult() = default;
 
+        MatchResult(MatchResult&& other) noexcept;
+        MatchResult& operator=(MatchResult&& other) noexcept;
+
         /**
         * Destructor. Cleans up dynamically allocated scorer events.
         */
@@ -142,6 +145,10 @@ public:
     * @return Reference to this match.
     */
     Match& operator=(const Match& other);
+
+    Match(Match&& other) noexcept;
+
+    Match& operator=(Match&& other) noexcept;
 
     /**
     * Destructor. Cleans up resources associated with the match.

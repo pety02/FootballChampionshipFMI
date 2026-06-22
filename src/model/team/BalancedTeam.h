@@ -76,6 +76,9 @@ public:
      */
     BalancedTeam &operator=(const BalancedTeam &other);
 
+    BalancedTeam(BalancedTeam &&other) noexcept;
+    BalancedTeam &operator=(BalancedTeam &&other) noexcept;
+
     /**
      * Destructor.
      */

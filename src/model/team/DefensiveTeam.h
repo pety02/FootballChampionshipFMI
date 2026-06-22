@@ -78,6 +78,9 @@ public:
      */
     DefensiveTeam &operator=(const DefensiveTeam &other);
 
+    DefensiveTeam(DefensiveTeam &&other) noexcept;
+    DefensiveTeam &operator=(DefensiveTeam &&other) noexcept;
+
     /**
      * Destructor.
      */

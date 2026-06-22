@@ -76,7 +76,11 @@ public:
     /**
      * Copy assignment operator.
      */
-    AttackingTeam &operator=(const AttackingTeam &other) = default;
+    AttackingTeam &operator=(const AttackingTeam &other);
+
+    AttackingTeam(AttackingTeam &&other) noexcept;
+
+    AttackingTeam &operator=(AttackingTeam &&other) noexcept;
 
     /**
      * Virtual destructor.

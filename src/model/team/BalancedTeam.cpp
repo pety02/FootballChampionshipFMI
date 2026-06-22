@@ -13,11 +13,42 @@ BalancedTeam::BalancedTeam(const std::string &name, const std::string &coachName
     double budget) : Team(TeamType::BALANCED, name, coachName, stadiumName, budget) {
 }
 
-BalancedTeam::BalancedTeam(const BalancedTeam &other) : Team(other) {
+BalancedTeam::BalancedTeam(const BalancedTeam &other)
+    : Team(other)
+{
 }
 
 BalancedTeam & BalancedTeam::operator=(const BalancedTeam &other) {
-    Team::operator=(other);
+    if(this !=&other) {
+        BalancedTeam temp(other);
+        std::swap(type, temp.type);
+        std::swap(name, temp.name);
+        std::swap(stadiumName, temp.stadiumName);
+        std::swap(players, temp.players);
+        std::swap(budget, temp.budget);
+        std::swap(stats, temp.stats);
+        std::swap(teamManager, temp.teamManager);
+        std::swap(forwardersCount, temp.forwardersCount);
+        std::swap(midfieldersCount, temp.midfieldersCount);
+        std::swap(goalkeepersCount, temp.goalkeepersCount);
+        std::swap(defendersCount, temp.defendersCount);
+        std::swap(wingersCount, temp.wingersCount);
+    }
+
+    return *this;
+}
+
+BalancedTeam::BalancedTeam(BalancedTeam&& other) noexcept
+    : Team(std::move(other))
+{
+}
+
+BalancedTeam& BalancedTeam::operator=(BalancedTeam&& other) noexcept
+{
+    if (this != &other)
+    {
+        Team::operator=(std::move(other));
+    }
     return *this;
 }
 

@@ -104,26 +104,6 @@ public:
            double transferSum);
 
     /**
-     * Constructs a player as a copy of another player.
-     *
-     * @param other The player to copy.
-     */
-    Player(const Player& other);
-
-    /**
-     * Copy assignment operator.
-     *
-     * @param other The player to copy from.
-     * @return Reference to this player.
-     */
-    Player& operator=(const Player& other);
-
-    /**
-     * Destroys the player object.
-     */
-    ~Player() noexcept = default;
-
-    /**
      * Changes the player's position.
      *
      * @param position The new playing position.

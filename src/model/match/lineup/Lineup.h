@@ -99,7 +99,7 @@ public:
     /**
     * Destructor. Cleans up resources used by the lineup.
     */
-    ~Lineup() = default;
+    ~Lineup();
 
     /**
     * Assigns a team to this lineup.

@@ -15,7 +15,43 @@ AttackingTeam::AttackingTeam(const std::string &name, const std::string &coachNa
     double budget) : Team(TeamType::ATTACKING, name, coachName, stadiumName, budget) {
 }
 
-AttackingTeam::AttackingTeam(const AttackingTeam &other) : Team(other) {
+AttackingTeam::AttackingTeam(const AttackingTeam &other)
+    : Team(other)
+{
+}
+
+AttackingTeam & AttackingTeam::operator=(const AttackingTeam &other) {
+    if(this !=&other) {
+        AttackingTeam temp(other);
+        std::swap(type, temp.type);
+        std::swap(name, temp.name);
+        std::swap(stadiumName, temp.stadiumName);
+        std::swap(players, temp.players);
+        std::swap(budget, temp.budget);
+        std::swap(stats, temp.stats);
+        std::swap(teamManager, temp.teamManager);
+        std::swap(forwardersCount, temp.forwardersCount);
+        std::swap(midfieldersCount, temp.midfieldersCount);
+        std::swap(goalkeepersCount, temp.goalkeepersCount);
+        std::swap(defendersCount, temp.defendersCount);
+        std::swap(wingersCount, temp.wingersCount);
+    }
+
+    return *this;
+}
+
+AttackingTeam::AttackingTeam(AttackingTeam&& other) noexcept
+    : Team(std::move(other))
+{
+}
+
+AttackingTeam& AttackingTeam::operator=(AttackingTeam&& other) noexcept
+{
+    if (this != &other)
+    {
+        Team::operator=(std::move(other));
+    }
+    return *this;
 }
 
 Team * AttackingTeam::clone() const {

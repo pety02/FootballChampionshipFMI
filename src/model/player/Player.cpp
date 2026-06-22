@@ -49,23 +49,6 @@ Player::Player(const std::string &name, const unsigned number,
     this->setPosition(position);
 }
 
-Player::Player(const Player& other)
-    : Player(other.name, other.number, other.position, other.salary, other.transferSum) {
-
-}
-
-Player& Player::operator=(const Player& other) {
-    if(this != &other) {
-        this->name = other.name;
-        this->number = other.number;
-        this->setPosition(other.position);
-        this->salary = other.salary;
-        this->transferSum = other.transferSum;
-    }
-
-    return *this;
-}
-
 void Player::setPosition(const Position position) {
     this->position = position;
 

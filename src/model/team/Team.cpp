@@ -62,32 +62,6 @@ void Team::setTeamManager(const TeamManager& teamManager) {
     this->teamManager = new TeamManager(teamManager);
 }
 
-void Team::copy(const Team& other) {
-    this->name = other.name;
-    this->stadiumName = other.stadiumName;
-    this->players.clear();
-    for (const Player& player : other.players) {
-        this->players.push_back(player);
-    }
-    this->budget = other.budget;
-    this->stats.winsCount = other.stats.winsCount;
-    this->stats.drawsCount = other.stats.drawsCount;
-    this->stats.lossesCount = other.stats.lossesCount;
-    this->stats.scoredGoals = other.stats.scoredGoals;
-    this->stats.concededGoals = other.stats.concededGoals;
-
-    this->teamManager = other.teamManager;
-    this->forwardersCount = other.forwardersCount;
-    this->wingersCount = other.wingersCount;
-    this->defendersCount = other.defendersCount;
-    this->midfieldersCount = other.midfieldersCount;
-    this->goalkeepersCount = other.goalkeepersCount;
-}
-
-void Team::destroy() {
-    this->teamManager = nullptr;
-}
-
 Team::Team()
     : type(TeamType::UNKNOWN), name(std::string()), stadiumName(std::string()), players(std::vector<Player>()),
         budget(0.0), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
@@ -105,8 +79,20 @@ Team::Team(TeamType type, const std::string& name, const std::string& coachName,
     TeamValidator::validateBudget(budget);
 }
 
-Team::Team(const Team& other) {
-    this->copy(other);
+Team::Team(const Team& other)
+    : type(other.type),
+      name(other.name),
+      stadiumName(other.stadiumName),
+      players(other.players),
+      budget(other.budget),
+      stats(other.stats),
+      teamManager(other.teamManager ? new TeamManager(*other.teamManager) : nullptr),
+      forwardersCount(other.forwardersCount),
+      midfieldersCount(other.midfieldersCount),
+      goalkeepersCount(other.goalkeepersCount),
+      defendersCount(other.defendersCount),
+      wingersCount(other.wingersCount)
+{
 }
 
 Team::Team(Team&& other) noexcept {
@@ -127,18 +113,9 @@ Team::Team(Team&& other) noexcept {
     other.teamManager = nullptr;
 }
 
-Team& Team::operator=(const Team &other) {
-    if(this != &other) {
-        this->destroy();
-        this->copy(other);
-    }
-
-    return *this;
-}
-
 Team& Team::operator=(Team&& other) noexcept {
     if (this != &other) {
-        destroy();
+        delete teamManager; teamManager = nullptr;
 
         type = other.type;
         name = std::move(other.name);
@@ -159,8 +136,9 @@ Team& Team::operator=(Team&& other) noexcept {
     return *this;
 }
 
-Team::~Team() noexcept {
-    this->destroy();
+Team::~Team() noexcept
+{
+    delete teamManager;
 }
 
 const std::string & Team::getName() const {

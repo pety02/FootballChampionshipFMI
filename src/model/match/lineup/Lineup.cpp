@@ -72,15 +72,18 @@ Lineup::Lineup(Team* team)
       players(team ? generateRandomLineup(*team) : std::vector<Player>()) {}
 
 Lineup::Lineup(const Lineup& other)
-    : team(other.team),
-      players(other.players) {}
+    : team(other.team ? other.team->clone() : nullptr),
+      players(other.players)
+{
+}
 
 Lineup& Lineup::operator=(const Lineup& other)
 {
     if (this != &other)
     {
-        team = other.team;
-        players = other.players;
+        Lineup temp(other);
+        std::swap(this->team, temp.team);
+        std::swap(this->players, temp.players);
     }
     return *this;
 }
@@ -96,6 +99,7 @@ Lineup& Lineup::operator=(Lineup&& other) noexcept
 {
     if (this != &other)
     {
+        delete team;
         team = other.team;
         players = std::move(other.players);
         other.team = nullptr;
@@ -103,9 +107,13 @@ Lineup& Lineup::operator=(Lineup&& other) noexcept
     return *this;
 }
 
+Lineup::~Lineup() {
+    delete team;
+}
+
 void Lineup::setTeam(Team* team)
 {
-    this->team = team;
+    this->team = team->clone();
 }
 
 void Lineup::addPlayer(const Player& player)
