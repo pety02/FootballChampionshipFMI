@@ -73,26 +73,6 @@ public:
     [[nodiscard]] unsigned getCurrentRoundNumber() const;
 
     /**
-    * @return the accounting manager of the current championship.
-    */
-    [[nodiscard]] AccountingManager &getAccountingManager();
-
-    /**
-    * @return the accounting manager of the current championship.
-    */
-    [[nodiscard]] const AccountingManager &getAccountingManager() const;
-
-    /**
-    * @return that the championship is finished or not.
-    */
-    [[nodiscard]] bool isFinished() const;
-
-    /**
-    * @return the year of the current championship.
-    */
-    [[nodiscard]] unsigned getYear() const;
-
-    /**
     * Adds a definite match to the matches of the championship.
     *
     * @param match the match that should be added in the current championship.

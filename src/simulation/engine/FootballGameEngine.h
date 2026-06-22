@@ -70,7 +70,7 @@ public:
     /**
      * Advances the championship to the next round.
      */
-    void updateChampionshipRound();
+    //void updateChampionshipRound();
 
     /**
      * Finalizes the current championship and computes final rankings.
@@ -198,7 +198,7 @@ public:
     * @param host Home team.
     * @param guest Guest team.
     */
-    static void autoSelectLineups(Match &match, Team *host, Team *guest);
+    //static void autoSelectLineups(Match &match, Team *host, Team *guest);
 
     /**
     * Clears the lineups of a match.

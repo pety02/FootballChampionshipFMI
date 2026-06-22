@@ -32,7 +32,7 @@ private:
     * @param teamPlayersList The current list of players in the lineup.
     * @return true if the player can be added; false otherwise.
     */
-    bool canAdd(const Player& player, const std::vector<Player>& teamPlayersList);
+    static bool canAdd(const Player& player, const std::vector<Player>& teamPlayersList);
 
     /**
     * Attempts to add a player to the lineup while enforcing formation constraints.
@@ -48,7 +48,7 @@ private:
     *
     * @return true if the player was successfully added; false otherwise.
     */
-    bool tryAdd(const Player& player, std::vector<Player>& teamPlayersList,
+    static bool tryAdd(const Player& player, std::vector<Player>& teamPlayersList,
         int& gk, int& def, int& mid, int& wing, int& fwd);
 
 public:
@@ -120,7 +120,7 @@ public:
     *
     * @return true if the lineup is valid; false otherwise.
     */
-    [[nodiscard]] bool isValid() const;
+    [[nodiscard]] static bool isValid(const std::vector<Player>& players);
 
     /**
     * Removes a player from the lineup by name, if present.

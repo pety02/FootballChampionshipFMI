@@ -18,13 +18,3 @@ void ChampionshipHistory::addChampionship(const Championship &championship) {
 const std::vector<Championship>& ChampionshipHistory::getChampionships() const {
     return this->championships;
 }
-
-const Championship& ChampionshipHistory::operator[](unsigned year) {
-    for (unsigned i = 0; i < this->championships.size(); i++) {
-        if(championships[i].getYear() == year) {
-            return championships[i];
-        }
-    }
-
-    throw std::invalid_argument("Championship with this year does not exist.");
-}

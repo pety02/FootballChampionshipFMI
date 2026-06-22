@@ -22,12 +22,6 @@ public:
     * @param roundNumber - the passed round number that should be validated before to be set.
     */
     static void validateCurrentRoundNumber(unsigned roundNumber);
-
-    /**
-    * Validates the passed year to be at least 1900 and at most the current year.
-    * @param year - the passed year that should be validated before to be set.
-    */
-    static void validateYear(unsigned year);
 };
 
 #endif //CHAMPIONSHIPVALIDATOR_H

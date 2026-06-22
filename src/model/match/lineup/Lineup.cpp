@@ -53,29 +53,28 @@ std::vector<Player> Lineup::generateRandomLineup(const Team& team)
 
     int gk = 0, def = 0, mid = 0, wing = 0, fwd = 0;
 
+    bool sucessfullyAdded = false;
     for (const Player& p : allPlayers)
         if (result.size() < LINEUP_SIZE && p.getStats().matchesCount < 3)
-            tryAdd(p, result, gk, def, mid, wing, fwd);
+            sucessfullyAdded = Lineup::tryAdd(p, result, gk, def, mid, wing, fwd) && isValid(result);
 
     for (const Player& p : allPlayers)
         if (result.size() < LINEUP_SIZE)
-            tryAdd(p, result, gk, def, mid, wing, fwd);
+            sucessfullyAdded = Lineup::tryAdd(p, result, gk, def, mid, wing, fwd) && isValid(result);
+
+    if(!sucessfullyAdded) return std::vector<Player>();
 
     return result;
 }
-
-// ===================== CONSTRUCTORS =====================
 
 Lineup::Lineup(Team* team)
     : team(team),
       players(team ? generateRandomLineup(*team) : std::vector<Player>()) {}
 
-// COPY
 Lineup::Lineup(const Lineup& other)
     : team(other.team),
       players(other.players) {}
 
-// COPY ASSIGNMENT
 Lineup& Lineup::operator=(const Lineup& other)
 {
     if (this != &other)
@@ -86,7 +85,6 @@ Lineup& Lineup::operator=(const Lineup& other)
     return *this;
 }
 
-// MOVE CONSTRUCTOR
 Lineup::Lineup(Lineup&& other) noexcept
     : team(other.team),
       players(std::move(other.players))
@@ -94,7 +92,6 @@ Lineup::Lineup(Lineup&& other) noexcept
     other.team = nullptr;
 }
 
-// MOVE ASSIGNMENT
 Lineup& Lineup::operator=(Lineup&& other) noexcept
 {
     if (this != &other)
@@ -105,8 +102,6 @@ Lineup& Lineup::operator=(Lineup&& other) noexcept
     }
     return *this;
 }
-
-// ===================== METHODS =====================
 
 void Lineup::setTeam(Team* team)
 {
@@ -125,7 +120,7 @@ void Lineup::addPlayer(const Player& player)
     players.push_back(player);
 }
 
-bool Lineup::isValid() const
+bool Lineup::isValid(const std::vector<Player>& players)
 {
     if (players.size() != LINEUP_SIZE)
         return false;
@@ -152,6 +147,7 @@ bool Lineup::isValid() const
            fwd >= 2;
 }
 
+// TODO: add variant for removing a player from the lineup - maybe on transfer if he/she is part of a lineup
 void Lineup::removePlayer(const std::string& playerName)
 {
     for (std::vector<Player>::iterator it = players.begin(); it != players.end(); )
@@ -198,7 +194,7 @@ std::istream& operator>>(std::istream& is, Lineup& lineup) {
         players.push_back(p);
     }
 
-    lineup.team = nullptr; // resolved externally
+    lineup.team = nullptr;
     lineup.players = std::move(players);
 
     return is;

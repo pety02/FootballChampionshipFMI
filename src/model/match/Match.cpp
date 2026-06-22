@@ -7,10 +7,6 @@ Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
     : player(player), isHome(isHome)
 {}
 
-// =========================
-// MatchResult RULE OF FIVE
-// =========================
-
 Match::MatchResult::~MatchResult()
 {
     for (Scorer* s : goals)
@@ -54,6 +50,7 @@ std::ostream& operator<<(std::ostream& os, const Match::MatchResult::Scorer& sco
        << scorer.isHome << '\n';
     return os;
 }
+
 std::istream& operator>>(std::istream& is, Match::MatchResult::Scorer& scorer)
 {
     Player p;
@@ -87,10 +84,6 @@ Match::Match(const Lineup &hostLineup, const Lineup &guestLineup)
     }
 }
 
-// -------------------------
-// COPY CONSTRUCTOR
-// -------------------------
-
 Match::Match(const Match &other)
     : hostLineup(other.hostLineup),
       guestLineup(other.guestLineup),
@@ -103,10 +96,6 @@ Match::Match(const Match &other)
     host = other.host ? other.host->clone() : nullptr;
     guest = other.guest ? other.guest->clone() : nullptr;
 }
-
-// -------------------------
-// COPY ASSIGNMENT
-// -------------------------
 
 Match& Match::operator=(const Match &other)
 {
@@ -132,19 +121,11 @@ Match& Match::operator=(const Match &other)
     return *this;
 }
 
-// -------------------------
-// DESTRUCTOR
-// -------------------------
-
 Match::~Match()
 {
     delete host;
     delete guest;
 }
-
-// =========================
-// CORE LOGIC
-// =========================
 
 void Match::increaseRoundNumber()
 {
@@ -159,6 +140,7 @@ const Lineup& Match::getGuestLineup() const { return guestLineup; }
 
 unsigned Match::getHostGoals() const { return hostGoals; }
 unsigned Match::getGuestGoals() const { return guestGoals; }
+// TODO: reconsider using it to get the match round number and validate it on playing a round
 unsigned Match::getRoundNumber() const { return roundNumber; }
 
 std::vector<Player> Match::getScorers() const
@@ -194,10 +176,6 @@ void Match::clearLineups()
     hostLineup = Lineup(nullptr);
     guestLineup = Lineup(nullptr);
 }
-
-// =========================
-// STRATEGY FUNCTIONS
-// =========================
 
 unsigned Match::calculateAttackStrength(const Lineup& lineup)
 {
@@ -258,10 +236,6 @@ Player Match::chooseScorer(const std::vector<Player>& players)
 
     return pool[std::rand() % pool.size()];
 }
-
-// =========================
-// MATCH SIMULATION
-// =========================
 
 Match::MatchResult Match::play() const
 {

@@ -3,7 +3,7 @@
 //
 
 #include "StatisticsEngine.h"
-
+#include <iostream>
 #include <algorithm>
 #include "../../utils/ExceptionMessages.h"
 
@@ -30,6 +30,8 @@ std::vector<Player::Statistics>StatisticsEngine::listPlayerStats(const Team& tea
     return stats;
 }
 
+// TODO: to be removed - similar method in the PlayerEngine/TeamEngine
+/*
 Player StatisticsEngine::getTopScorer(const Championship& championship) {
     Player player;
     unsigned maxScoredGoals = 0;
@@ -50,6 +52,7 @@ Player StatisticsEngine::getTopScorer(const Championship& championship) {
 
     return player;
 }
+*/
 
 void StatisticsEngine::viewPlayerRanking(Championship& championship) {
     for (const Team* team : championship.getTeamManager().getTeams()) {

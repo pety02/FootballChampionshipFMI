@@ -39,13 +39,6 @@ public:
     * @return a map of the held championships.
     */
    [[nodiscard]] const std::vector<Championship>& getChampionships() const;
-
-   /**
-    * Returns a definite championship by its year.
-    * @param year - the held year of the championship
-    * @return a reference to the definite championship
-    */
-   const Championship& operator[](unsigned year);
 };
 
 #endif //CHAMPIONSHIPCOLLECTION_H

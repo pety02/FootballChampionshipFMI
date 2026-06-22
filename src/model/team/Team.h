@@ -192,27 +192,6 @@ public:
     [[nodiscard]] virtual Team *clone() const = 0;
 
     /**
-     * Sets the team name.
-     *
-     * @param name New team name.
-     */
-    void setTeamName(const std::string &name);
-
-    /**
-     * Sets the stadium name.
-     *
-     * @param stadiumName New stadium name.
-     */
-    void setStadiumName(const std::string &stadiumName);
-
-    /**
-     * Sets the team budget.
-     *
-     * @param budget New budget value.
-     */
-    void setBudget(double budget);
-
-    /**
      * Gets the team name.
      *
      * @return Constant reference to the team name.
@@ -220,32 +199,11 @@ public:
     [[nodiscard]] const std::string &getName() const;
 
     /**
-     * Gets the coach name.
-     *
-     * @return Constant reference to the coach name.
-     */
-    [[nodiscard]] const std::string &getCoachName() const;
-
-    /**
-     * Gets the stadium name.
-     *
-     * @return Constant reference to the stadium name.
-     */
-    [[nodiscard]] const std::string &getStadiumName() const;
-
-    /**
      * Gets all players in the team.
      *
      * @return Constant reference to the player list.
      */
     [[nodiscard]] const std::vector<Player> &getPlayers() const;
-
-    /**
-     * Gets the current budget of the team.
-     *
-     * @return Team budget.
-     */
-    [[nodiscard]] double getBudget() const;
 
     /**
      * Gets mutable access to team statistics.

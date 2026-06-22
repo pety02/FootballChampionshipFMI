@@ -4,7 +4,7 @@
 
 #include "FootballGameEngine.h"
 
-#include <algorithm>
+#include <iostream>
 #include <memory>
 #include "engine/PlayerEngine.h"
 
@@ -61,9 +61,11 @@ void FootballGameEngine::addMatch(const Match &match, Championship& championship
     championship.addMatch(match);
 }
 
+/*
 void FootballGameEngine::updateChampionshipRound() {
     this->currentChampionship.increaseRoundNumber();
 }
+*/
 
 std::string FootballGameEngine::findGoalMaster() {
     std::string goalMasterName;
@@ -96,6 +98,10 @@ std::string FootballGameEngine::findGoalMaster() {
 }
 
 void FootballGameEngine::finishChampionship() {
+    for(Match& match : this->currentChampionship.getMatches()) {
+        this->finishMatch(match);
+    }
+
     this->champion = this->getChampions()[0];
     this->viceChampion = this->getChampions()[1];
     this->bronzeTeam = this->getChampions()[2];
@@ -344,13 +350,14 @@ void FootballGameEngine::removeTeam(const std::string &teamName, Championship &c
     championship.getTeamManager().removeTeam(teamName);
 }
 
-void FootballGameEngine::autoSelectLineups(Match& match, Team* host, Team* guest) {
-    Lineup hostLineup = Lineup(host);
-    Lineup guestLineup = Lineup(guest);
-
-    match.setHostLineup(hostLineup);
-    match.setGuestLineup(guestLineup);
-}
+// TODO: used only in tests can be removed
+// void FootballGameEngine::autoSelectLineups(Match& match, Team* host, Team* guest) {
+//     Lineup hostLineup = Lineup(host);
+//     Lineup guestLineup = Lineup(guest);
+//
+//     match.setHostLineup(hostLineup);
+//     match.setGuestLineup(guestLineup);
+// }
 
 void FootballGameEngine::deleteLineups(
         Match& match) {

@@ -163,38 +163,12 @@ Team::~Team() noexcept {
     this->destroy();
 }
 
-void Team::setTeamName(const std::string &name) {
-    this->name = name;
-}
-
-void Team::setStadiumName(const std::string &stadiumName) {
-    this->stadiumName = stadiumName;
-}
-
-void Team::setBudget(double budget) {
-    this->budget = budget;
-}
-
 const std::string & Team::getName() const {
     return this->name;
 }
 
-const std::string & Team::getCoachName() const {
-    if (this->teamManager == nullptr) return "";
-
-    return this->teamManager->getName();
-}
-
-const std::string & Team::getStadiumName() const {
-    return this->stadiumName;
-}
-
 const std::vector<Player>& Team::getPlayers() const {
     return this->players;
-}
-
-double Team::getBudget() const {
-    return this->budget;
 }
 
 Team::Statistics& Team::getStats() {
@@ -228,7 +202,7 @@ std::istream& operator>>(std::istream& is, Team& team)
     std::string stadium;
 
     double budget;
-    Statistics stats;
+    Team::Statistics stats;
 
     unsigned f, m, gk, d, w;
     size_t playerCount;

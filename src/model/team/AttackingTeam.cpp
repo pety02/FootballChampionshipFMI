@@ -4,11 +4,8 @@
 
 #include "AttackingTeam.h"
 
-#include <stdexcept>
-
 #include "../../utils/ExceptionMessages.h"
 #include "../player/validator/PlayerValidator.h"
-#include "manager/TeamManager.h"
 #include "validator/TeamValidator.h"
 
 AttackingTeam::AttackingTeam() : Team() {
@@ -26,37 +23,35 @@ Team * AttackingTeam::clone() const {
 }
 
 void AttackingTeam::addPlayer(Player& player, bool isTransfer) {
-    // 1. Проверка за максимален размер на отбора
+    // 1. Max team's size check
     TeamValidator::validateTeamSize(this->players.size(), Team::MAX_TEAM_SIZE);
 
-    // 2. Валидация на бюджета (пресмятане на остатъка)
+    // 2. Validates the budget and calculate the remaining budget
     double remainingBudget = this->budget - player.getTransferSum();
     TeamValidator::validateRemainingBudget(remainingBudget);
 
     TeamValidator::validateUniquePlayerNumber(*this, player.getNumber());
     TeamValidator::validateUniquePlayerName(*this, player.getName());
 
-    // 3. Валидация на игралната позиция
+    // 3. Validate playing positions
     Player::Position playerPosition = player.getPosition();
     PlayerValidator::validatePosition(playerPosition);
 
-    // 4. Специфична валидация за нападатели (Минимум 6 отбелязани гола)
-    // Забележка: по условие важи за ВСЕКИ нов нападател в AttackingTeam
+    // 4. Specific validation for forwarders (Min 6 scored goals) in an attacking team
     TeamValidator::validatePlayerScoredGoals(playerPosition, Player::Position::FORWARD, player.getStats().scoredGoals,
         AttackingTeam::FORWARD_MIN_SCORED_GOALS, player.getName(), this->name);
 
-    // 5. Изчисляване на оставащите места и нужния минимум по позиции
-    // Взимаме броя места, които остават СЛЕД като добавим този играч
+    // 5. Calculate remaining positions and their required minimum after inserting the current player
     size_t remainingPlaces = Team::MAX_TEAM_SIZE - (this->players.size() + 1);
 
-    // Изчисляваме колко ОЩЕ играчи ни трябват за всяка позиция до минимума
+    // 6. Calculates how many players are required till the bear minimum for each position
     size_t missingGK = (this->goalkeepersCount < AttackingTeam::REQUIRED_GOALKEEPERS) ? (AttackingTeam::REQUIRED_GOALKEEPERS - this->goalkeepersCount) : 0;
     size_t missingFW = (this->forwardersCount < AttackingTeam::MIN_FORWARDERS_REQUIRED) ? (AttackingTeam::MIN_FORWARDERS_REQUIRED - this->forwardersCount) : 0;
     size_t missingDF = (this->defendersCount < AttackingTeam::MIN_DEFENDERS_REQUIRED) ? (AttackingTeam::MIN_DEFENDERS_REQUIRED - this->defendersCount) : 0;
     size_t missingMF = (this->midfieldersCount < AttackingTeam::MIN_MIDFIELDERS_REQUIRED) ? (AttackingTeam::MIN_MIDFIELDERS_REQUIRED - this->midfieldersCount) : 0;
     size_t missingWG = (this->wingersCount < AttackingTeam::MIN_WINGERS_REQUIRED) ? (AttackingTeam::MIN_WINGERS_REQUIRED - this->wingersCount) : 0;
 
-    // 6. Проверка дали добавянето на текущия играч блокира задължителния минимум на другите позиции
+    // 7. Check if the inserting of the current player blocks the bear minimum for other positions
     std::vector<unsigned> args;
     std::string errorMessage;
 
@@ -77,7 +72,7 @@ void AttackingTeam::addPlayer(Player& player, bool isTransfer) {
 
     TeamValidator::validatePlayersCountByPosition(args, remainingPlaces, errorMessage);
 
-    // 7. Ако всички валидации преминат успешно, записваме промените
+    // 8. Buy player if all validations passed successfully
     this->buyPlayer(player, playerPosition, remainingBudget, isTransfer);
 }
 
@@ -108,7 +103,7 @@ std::istream& operator>>(std::istream& is, AttackingTeam& team)
     std::string stadium;
 
     double budget;
-    Statistics stats;
+    Team::Statistics stats;
 
     unsigned f,m,gk,d,w;
     size_t playerCount;

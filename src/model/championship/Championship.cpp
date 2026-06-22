@@ -65,30 +65,6 @@ unsigned Championship::getCurrentRoundNumber() const
     return this->currentRoundNumber;
 }
 
-AccountingManager& Championship::getAccountingManager()
-{
-    return this->accountingManager;
-}
-
-const AccountingManager& Championship::getAccountingManager() const
-{
-    return this->accountingManager;
-}
-
-bool Championship::isFinished() const
-{
-    return this->finished;
-}
-
-unsigned Championship::getYear() const
-{
-    return this->year;
-}
-
-// --------------------
-// MATCH MANAGEMENT
-// --------------------
-
 void Championship::addMatch(const Match &match)
 {
     unsigned teamsCount = this->teamManager.getTeams().size();
@@ -110,10 +86,6 @@ void Championship::setTeamManager(const TeamManager &teamManager) {
     this->teamManager = teamManager;
 }
 
-// --------------------
-// STREAM OUTPUT
-// --------------------
-
 std::ostream& operator<<(std::ostream& os, const Championship& championship)
 {
     os << championship.year << '\n'
@@ -127,10 +99,6 @@ std::ostream& operator<<(std::ostream& os, const Championship& championship)
 
     return os;
 }
-
-// --------------------
-// STREAM INPUT (FIXED SAFETY)
-// --------------------
 
 std::istream& operator>>(std::istream& is, Championship& championship)
 {

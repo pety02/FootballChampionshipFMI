@@ -3,7 +3,7 @@
 //
 
 #include "SystemCommandsEngine.h"
-
+#include <iostream>
 #include "../../utils/Command.h"
 
 void SystemCommandsEngine::terminateProgram() {

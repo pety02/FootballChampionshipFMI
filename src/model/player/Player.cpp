@@ -66,10 +66,6 @@ Player& Player::operator=(const Player& other) {
     return *this;
 }
 
-void Player::setNumber(const unsigned number) {
-    this->number = number;
-}
-
 void Player::setPosition(const Position position) {
     this->position = position;
 
@@ -82,10 +78,6 @@ void Player::setPosition(const Position position) {
 
 void Player::setSalary(const double salary) {
     this->salary = salary;
-}
-
-void Player::setTransferSum(const double transferSum) {
-    this->transferSum = transferSum;
 }
 
 const std::string & Player::getName() const {

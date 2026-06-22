@@ -43,7 +43,7 @@ public:
     * @param championship The championship to analyze.
     * @return The player with the most scored goals.
     */
-    static Player getTopScorer(const Championship &championship);
+    //static Player getTopScorer(const Championship &championship);
 
     /**
     * Prints a ranking of all players in a championship based on scored goals.

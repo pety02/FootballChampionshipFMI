@@ -3,7 +3,7 @@
 //
 
 #include "PlayerEngine.h"
-
+#include <iostream>
 #include "../../utils/validator/CommandLineValidator.h"
 
 void PlayerEngine::addPlayer(const std::string& playerName, Lineup& lineup) {

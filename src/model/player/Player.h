@@ -124,13 +124,6 @@ public:
     ~Player() noexcept = default;
 
     /**
-     * Changes the player's squad number.
-     *
-     * @param number The new squad number.
-     */
-    void setNumber(unsigned number);
-
-    /**
      * Changes the player's position.
      *
      * @param position The new playing position.
@@ -143,13 +136,6 @@ public:
      * @param salary The new salary value.
      */
     void setSalary(double salary);
-
-    /**
-     * Changes the player's transfer value.
-     *
-     * @param transferSum The new transfer value.
-     */
-    void setTransferSum(double transferSum);
 
     /**
      * Gets the player's name.

@@ -4,7 +4,6 @@
 
 #include "FootballGameSimulatorValidator.h"
 #include <stdexcept>
-
 #include "../../utils/ExceptionMessages.h"
 
 void FootballGameSimulatorValidator::validateMatchExists(Championship* currentChampionship, const Match& match) {

@@ -31,9 +31,6 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        // =====================
-        // SEASONS
-        // =====================
         case Command::LIST_SEASONS: {
             std::cout << "Seasons:\n";
             FootballGameEngine::listSeasons(history);
@@ -65,9 +62,6 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        // =====================
-        // MATCHES
-        // =====================
         case Command::PLAY_MATCH: {
 
             break;
@@ -89,9 +83,6 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        // =====================
-        // TEAMS
-        // =====================
         case Command::LIST_TEAMS: {
             FootballGameEngine::listTeams(championship);
             break;
@@ -152,9 +143,6 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
             break;
         }
 
-        // =====================
-        // PLAYERS
-        // =====================
         case Command::ADD_PLAYER: {
             if (args.empty()) throw std::invalid_argument("Missing args.");
             if(args.size() != 6) throw std::invalid_argument("Invalid args count.");
@@ -171,7 +159,8 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
                 throw std::invalid_argument(toString(ExceptionMessages::TEAM_NOT_FOUND));
             }
             // const std::string& name, unsigned number, Position position, double salary, double transferSum
-            Player player = Player(args[1], std::atoi(args[2].c_str()), Utils::toPosition(args[3]),
+            std::string posVal = args[3];
+            Player player = Player(args[1], std::atoi(args[2].c_str()), Utils::toPosition(posVal),
                 std::atof(args[4].c_str()), std::atof(args[5].c_str()));
             PlayerEngine::addPlayer(player, *team);
             break;
@@ -268,7 +257,7 @@ void CommandLineInterpreter::execute(const Command command, const std::vector<st
         case Command::IMPORT_DATA: {
             SystemCommandsEngine::importData(history, !args.empty() ? args[0] : "in.dat");
             std::cout << "IMPORTED DATA:" << std::endl;
-            for(const Championship& record : history) {
+            for(const Championship& record : history.getChampionships()) {
                 std::cout << record;
             }
             break;

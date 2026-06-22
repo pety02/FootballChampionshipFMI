@@ -78,6 +78,7 @@ public:
      */
     ~TeamManager();
 
+    // TODO: reconsider using these methods as wrapper in some of the CLIs where we should do something with teams or remove them
     /**
      * Adds a player to the specified team.
      *
@@ -122,6 +123,7 @@ public:
                              unsigned homeGoals,
                              Team* guestTeam,
                              unsigned guestGoals) const;
+    // TODO: =============================================================
 
     /**
      * Adds a team to the manager.

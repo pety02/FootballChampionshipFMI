@@ -87,7 +87,7 @@ public:
     /**
     * Performs an in-place selection sort of teams by goal count in descending order.
     *
-    * This is a manual sorting implementation used instead of std::sort.
+    * This is a manual sorting implementation.
     *
     * @param teams Vector of (team name, goals scored) pairs to sort.
     */

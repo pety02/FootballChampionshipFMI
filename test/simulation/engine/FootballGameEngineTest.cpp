@@ -189,7 +189,8 @@ TEST_CASE("addScorer updates goals correctly", "[engine][scorer]") {
     Match match(hl, gl);
 
     // add match BEFORE addScorer()
-    engine.addMatch(match);
+    Championship championship = Championship();
+    engine.addMatch(match, championship);
 
     const Player scorer1 = team->getPlayers().back();
     const Player scorer2 = team2->getPlayers().back();
@@ -287,7 +288,8 @@ TEST_CASE("findGoalMaster returns a valid player name", "[engine][goals]") {
     Match match(hl, gl);
 
     // add match BEFORE addScorer()
-    engine.addMatch(match);
+    Championship championship = Championship();
+    engine.addMatch(match, championship);
 
     const Player scorer1 = team->getPlayers().back();
     const Player scorer2 = team2->getPlayers().back();
@@ -325,9 +327,10 @@ TEST_CASE("finishChampionship executes without crash", "[engine][championship]")
     Lineup gl3 = Lineup(t1);
     Match match3(hl3, gl3);
 
-    engine.addMatch(match1);
-    engine.addMatch(match2);
-    engine.addMatch(match3);
+    Championship championship = Championship();
+    engine.addMatch(match1, championship);
+    engine.addMatch(match2, championship);
+    engine.addMatch(match3, championship);
 
     engine.simulate();
 
@@ -341,21 +344,22 @@ TEST_CASE("finishChampionship executes without crash", "[engine][championship]")
 // -------------------------
 // autoSelectLineups (NEW SIGNATURE)
 // -------------------------
-TEST_CASE("autoSelectLineups assigns valid lineups", "[engine][lineup]") {
-    FootballGameEngine engine;
-
-    Team* host = new AttackingTeam("A", "C1", "S1", 1000);
-    Team* guest = new BalancedTeam("B", "C2", "S2", 1000);
-
-    Lineup hl = Lineup(host);
-    Lineup gl = Lineup(guest);
-    Match match(hl, gl);
-
-    REQUIRE_NOTHROW(engine.autoSelectLineups(match, host, guest));
-
-    delete host;
-    delete guest;
-}
+// TODO: can be removed because it uses a method marked for removal
+// TEST_CASE("autoSelectLineups assigns valid lineups", "[engine][lineup]") {
+//     FootballGameEngine engine;
+//
+//     Team* host = new AttackingTeam("A", "C1", "S1", 1000);
+//     Team* guest = new BalancedTeam("B", "C2", "S2", 1000);
+//
+//     Lineup hl = Lineup(host);
+//     Lineup gl = Lineup(guest);
+//     Match match(hl, gl);
+//
+//     REQUIRE_NOTHROW(engine.autoSelectLineups(match, host, guest));
+//
+//     delete host;
+//     delete guest;
+// }
 
 // -------------------------
 // listTeams
