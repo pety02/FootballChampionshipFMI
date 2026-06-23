@@ -1,4 +1,5 @@
 #include "Lineup.h"
+#include "../../utils/ExceptionMessages.h"
 #include <stdexcept>
 
 bool Lineup::canAdd(const Player& player, const std::vector<Player>& teamPlayersList)
@@ -70,6 +71,9 @@ std::vector<Player> Lineup::generateRandomLineup(const Team& team)
 Lineup::Lineup(Team* team)
     : team(team),
       players(team ? generateRandomLineup(*team) : std::vector<Player>()) {}
+
+Lineup::Lineup(Team *team, const std::vector<Player> &players) : team(team), players(players) {
+}
 
 Lineup::Lineup(const Lineup& other)
     : team(other.team ? other.team->clone() : nullptr),
@@ -154,7 +158,7 @@ const std::vector<Player>& Lineup::getPlayers() const
 }
 
 std::ostream& operator<<(std::ostream& os, const Lineup& lineup) {
-    os << (lineup.team ? lineup.team->getName() : "NULL") << '\n';
+    os << lineup.team << '\n';
     os << lineup.players.size() << '\n';
 
     for (const Player& p : lineup.players)
@@ -164,10 +168,11 @@ std::ostream& operator<<(std::ostream& os, const Lineup& lineup) {
 }
 
 std::istream& operator>>(std::istream& is, Lineup& lineup) {
-    std::string teamName;
+    Team* team = TeamFactory::createEmptyTeam(TeamType::UNKNOWN);
     size_t count;
 
-    std::getline(is >> std::ws, teamName);
+    is >> *team;
+    is >> std::ws;
     is >> count;
 
     std::vector<Player> players;
@@ -178,8 +183,13 @@ std::istream& operator>>(std::istream& is, Lineup& lineup) {
         players.push_back(p);
     }
 
-    lineup.team = nullptr;
-    lineup.players = std::move(players);
+    try {
+        Lineup temp = Lineup(team, players);
+        lineup = temp;
+    } catch(...) {
+        delete team;
+        throw;
+    }
 
     return is;
 }

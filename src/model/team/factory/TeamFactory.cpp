@@ -8,11 +8,31 @@
 #include "../../team/BalancedTeam.h"
 #include "../../team/DefensiveTeam.h"
 
-Team* TeamFactory::createTeam(TeamType type, const std::string& name, const std::string& coachName, const std::string& stadiumName, const double budget) {
+Team* TeamFactory::fullyInitializeTeam(TeamType type,
+         const std::string &name,
+         const std::string &stadiumName,
+         const std::vector<Player> &players,
+         double budget,
+         const Team::Statistics &stats,
+         unsigned forwardersCount,
+         unsigned midfieldersCount,
+         unsigned goalkeepersCount,
+         unsigned defendersCount,
+         unsigned wingersCount) {
     switch(type) {
-        case TeamType::ATTACKING: return new AttackingTeam(name, coachName, stadiumName, budget);
-        case TeamType::DEFENSIVE: return new DefensiveTeam(name, coachName, stadiumName, budget);
-        case TeamType::BALANCED:  return new BalancedTeam(name, coachName, stadiumName, budget);
+        case TeamType::ATTACKING: return new AttackingTeam(name, stadiumName, budget);
+        case TeamType::DEFENSIVE: return new DefensiveTeam(name, stadiumName, budget);
+        case TeamType::BALANCED:  return new BalancedTeam(name, stadiumName, budget);
+        default:
+            return nullptr;
+    }
+}
+
+Team* TeamFactory::createTeam(TeamType type, const std::string& name, const std::string& stadiumName, const double budget) {
+    switch(type) {
+        case TeamType::ATTACKING: return new AttackingTeam(name, stadiumName, budget);
+        case TeamType::DEFENSIVE: return new DefensiveTeam(name, stadiumName, budget);
+        case TeamType::BALANCED:  return new BalancedTeam(name, stadiumName, budget);
         default:
             return nullptr;
     }

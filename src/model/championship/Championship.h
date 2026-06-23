@@ -37,6 +37,12 @@ public:
                  int year,
                  const AccountingManager& accountingManager);
 
+    Championship(const TeamManager &teamManager,
+                 const std::vector<Match> &matches,
+                 int year,
+                 const AccountingManager& accountingManager,
+                 unsigned currentRoundNumber, bool finished);
+
     /**
     * Increases the round number of the current championship.
     */

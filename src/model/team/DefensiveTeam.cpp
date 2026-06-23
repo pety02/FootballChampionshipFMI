@@ -5,12 +5,26 @@
 #include "DefensiveTeam.h"
 #include "../player/validator/PlayerValidator.h"
 #include "validator/TeamValidator.h"
+#include "../../utils/Utils.h"
+
+DefensiveTeam::DefensiveTeam(TeamType type,
+                  const std::string &name,
+                  const std::string &stadiumName,
+                  const std::vector<Player> &players,
+                  double budget,
+                  const Statistics &stats,
+                  unsigned forwardersCount,
+                  unsigned midfieldersCount,
+                  unsigned goalkeepersCount,
+                  unsigned defendersCount,
+                  unsigned wingersCount) : Team(type, name, stadiumName, players, budget, stats, forwardersCount,
+                      midfieldersCount, goalkeepersCount, defendersCount, wingersCount) {}
 
 DefensiveTeam::DefensiveTeam() : Team() {
 }
 
-DefensiveTeam::DefensiveTeam(const std::string &name, const std::string &coachName, const std::string &stadiumName,
-    double budget) : Team(TeamType::DEFENSIVE, name, coachName, stadiumName, budget) {
+DefensiveTeam::DefensiveTeam(const std::string &name, const std::string &stadiumName,
+    double budget) : Team(TeamType::DEFENSIVE, name, stadiumName, budget) {
 }
 
 DefensiveTeam::DefensiveTeam(const DefensiveTeam &other)
@@ -104,75 +118,4 @@ void DefensiveTeam::addPlayer(Player& player, bool isTransfer) {
 
     // 7. Buy player if all validations passed successfully
     this->buyPlayer(player, playerPosition, remainingBudget, isTransfer);
-}
-
-std::ostream& operator<<(std::ostream& os, const DefensiveTeam& team)
-{
-    os << Utils::toString(team.type) << '\n'
-       << team.name << '\n'
-       << team.stadiumName << '\n'
-       << team.budget << '\n'
-       << team.stats << '\n'
-       << team.forwardersCount << '\n'
-       << team.midfieldersCount << '\n'
-       << team.goalkeepersCount << '\n'
-       << team.defendersCount << '\n'
-       << team.wingersCount << '\n'
-       << team.players.size() << '\n';
-
-    for(const auto& p : team.players)
-        os << p;
-
-    return os;
-}
-
-std::istream& operator>>(std::istream& is, DefensiveTeam& team)
-{
-    std::string typeStr;
-    std::string name;
-    std::string stadium;
-
-    double budget;
-    Team::Statistics stats;
-
-    unsigned f,m,gk,d,w;
-    size_t playerCount;
-
-    std::getline(is >> std::ws, typeStr);
-    std::getline(is, name);
-    std::getline(is, stadium);
-
-    is >> budget
-       >> stats
-       >> f
-       >> m
-       >> gk
-       >> d
-       >> w
-       >> playerCount;
-
-    std::vector<Player> players;
-
-    for(size_t i=0;i<playerCount;i++)
-    {
-        Player p;
-        is >> p;
-        players.push_back(p);
-    }
-
-    team.type = Utils::parseTeamType(typeStr);
-    team.name = name;
-    team.stadiumName = stadium;
-    team.budget = budget;
-    team.stats = stats;
-
-    team.forwardersCount = f;
-    team.midfieldersCount = m;
-    team.goalkeepersCount = gk;
-    team.defendersCount = d;
-    team.wingersCount = w;
-
-    team.players = std::move(players);
-
-    return is;
 }

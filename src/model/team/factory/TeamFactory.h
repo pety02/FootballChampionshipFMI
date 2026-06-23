@@ -6,9 +6,14 @@
 #define TEAMFACTORY_H
 
 #include "../TeamType.h"
+#include "../manager/TeamManager.h"
+#include "../player/Player.h"
 #include <string>
+#include <Team.h>
+#include <vector>
 
 class Team;
+struct Team::Statistics;
 
 /**
  * A factory class responsible for creating team instances.
@@ -19,6 +24,18 @@ class Team;
  */
 class TeamFactory {
 public:
+    static Team* fullyInitializeTeam(TeamType type,
+         const std::string &name,
+         const std::string &stadiumName,
+         const std::vector<Player> &players,
+         double budget,
+         const Team::Statistics &stats,
+         unsigned forwardersCount,
+         unsigned midfieldersCount,
+         unsigned goalkeepersCount,
+         unsigned defendersCount,
+         unsigned wingersCount);
+
     /**
      * Creates a team of the specified type.
      *
@@ -28,7 +45,6 @@ public:
      *
      * @param type The type of team to create.
      * @param name The name of the team.
-     * @param coachName The name of the team's coach.
      * @param stadiumName The name of the team's home stadium.
      * @param budget The initial budget assigned to the team.
      *
@@ -39,7 +55,6 @@ public:
      */
     static Team* createTeam(TeamType type,
                             const std::string& name,
-                            const std::string& coachName,
                             const std::string& stadiumName,
                             double budget);
 

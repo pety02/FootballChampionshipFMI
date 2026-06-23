@@ -49,6 +49,21 @@ Player::Player(const std::string &name, const unsigned number,
     this->setPosition(position);
 }
 
+Player::Player(const std::string &name,
+           unsigned number,
+           Position position,
+           double salary,
+           double transferSum,
+           Statistics stats) : name(name), number(number), salary(salary), transferSum(transferSum), stats(stats) {
+    StringValidator::validate(name, toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::PLAYER_NAME_CANNOT_BE_BLANK));
+    PlayerValidator::validateNumber(number);
+    PlayerValidator::validatePosition(position);
+    PlayerValidator::validateSalary(salary);
+    PlayerValidator::validateTransferSum(transferSum);
+
+    this->setPosition(position);
+}
+
 void Player::setPosition(const Position position) {
     this->position = position;
 
@@ -112,7 +127,18 @@ std::istream& operator>>(std::istream& is, Player& player)
     double transferSum;
     Player::Statistics stats;
 
-    std::getline(is >> std::ws, name);
+    is >> std::ws;
+    char ch = is.peek();
+    if(ch == EOF) {
+        throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_PLAYER));
+    }
+    while(ch != '\n' || ch != EOF) {
+        ch = is.peek();
+        if(ch == EOF) {
+            throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_PLAYER));
+        }
+    }
+    std::getline(is, name);
 
     is >> number
        >> pos
@@ -120,12 +146,13 @@ std::istream& operator>>(std::istream& is, Player& player)
        >> transferSum
        >> stats;
 
-    player.name = name;
-    player.number = number;
-    player.setPosition(static_cast<Player::Position>(pos));
-    player.salary = salary;
-    player.transferSum = transferSum;
-    player.stats = stats;
+    Player::Position tempPos = static_cast<Player::Position>(pos);
+    try {
+        Player tempPlayer = Player(name, number, tempPos, salary, transferSum, stats);
+        player = tempPlayer;
+    } catch (...) {
+        throw;
+    }
 
     return is;
 }

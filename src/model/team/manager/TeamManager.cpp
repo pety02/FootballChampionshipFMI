@@ -5,7 +5,7 @@
 #include "../team/manager/TeamManager.h"
 #include <stdexcept>
 #include "../../match/Match.h"
-#include "../../../simulation/MatchResultApplier.h"
+#include "../../utils/Utils.h"
 #include "../../../utils/ExceptionMessages.h"
 #include "../../../utils/validator/StringValidator.h"
 #include "../../team/validator/TeamValidator.h"
@@ -155,11 +155,21 @@ std::istream& operator>>(std::istream& is, TeamManager& tm)
     std::string managerName;
     size_t teamCount;
 
-    std::getline(is >> std::ws, managerName);
+    is >> std::ws;
+    char ch = is.peek();
+    if(ch == EOF) {
+        throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_TEAM_MANAGER));
+    }
+    while(ch != '\n' || ch != EOF) {
+        ch = is.peek();
+        if(ch == EOF) {
+            throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_TEAM_MANAGER));
+        }
+    }
+    std::getline(is, managerName);
     is >> teamCount;
 
-    TeamManager temp;
-    temp.setName(managerName);
+    std::vector<Team*> tempTeams;
 
     for(size_t i=0;i<teamCount;i++)
     {
@@ -174,10 +184,15 @@ std::istream& operator>>(std::istream& is, TeamManager& tm)
 
         is >> *team;
 
-        temp.addTeam(team);
+        tempTeams.push_back(team);
     }
 
-    tm = temp;
+    try {
+        TeamManager temp = TeamManager(managerName, tempTeams);
+        tm = temp;
+    } catch (...) {
+        throw;
+    }
 
     return is;
 }

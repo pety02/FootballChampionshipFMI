@@ -21,13 +21,13 @@ public:
      * Enumerates the supported football positions.
      */
     enum class Position {
-        UNKNOWN,     ///< Undefined player position.
-        GOALKEEPER,  ///< Goalkeeper position.
-        DEFENDER,    ///< Defender position.
-        MIDFIELDER,  ///< Midfielder position.
-        WINGER,      ///< Winger position.
-        FORWARD,     ///< Forward position.
-        COUNT        ///< Total number of supported positions.
+        UNKNOWN, ///< Undefined player position.
+        GOALKEEPER, ///< Goalkeeper position.
+        DEFENDER, ///< Defender position.
+        MIDFIELDER, ///< Midfielder position.
+        WINGER, ///< Winger position.
+        FORWARD, ///< Forward position.
+        COUNT ///< Total number of supported positions.
     };
 
     /**
@@ -35,7 +35,7 @@ public:
      */
     struct Statistics {
         unsigned matchesCount; ///< Total number of matches played.
-        unsigned scoredGoals;  ///< Total number of goals scored.
+        unsigned scoredGoals; ///< Total number of goals scored.
 
         /**
          * Constructs a statistics object with all values initialized to zero.
@@ -62,7 +62,7 @@ public:
          * @param stats The statistics object to output.
          * @return Reference to the output stream.
          */
-        friend std::ostream& operator<<(std::ostream& os, const Statistics& stats);
+        friend std::ostream &operator<<(std::ostream &os, const Statistics &stats);
 
         /**
          * Reads player statistics from a stream.
@@ -71,7 +71,7 @@ public:
          * @param stats The statistics object to populate.
          * @return Reference to the input stream.
          */
-        friend std::istream& operator>>(std::istream& is, Statistics& stats);
+        friend std::istream &operator>>(std::istream &is, Statistics &stats);
     };
 
 private:
@@ -97,11 +97,18 @@ public:
      * @param salary The player's salary.
      * @param transferSum The player's transfer value.
      */
-    Player(const std::string& name,
+    Player(const std::string &name,
            unsigned number,
            Position position,
            double salary,
            double transferSum);
+
+    Player(const std::string &name,
+           unsigned number,
+           Position position,
+           double salary,
+           double transferSum,
+           Statistics stats);
 
     /**
      * Changes the player's position.
@@ -122,7 +129,7 @@ public:
      *
      * @return Constant reference to the player's name.
      */
-    [[nodiscard]] const std::string& getName() const;
+    [[nodiscard]] const std::string &getName() const;
 
     /**
      * Gets the player's squad number.
@@ -157,14 +164,14 @@ public:
      *
      * @return Constant reference to the player's statistics.
      */
-    [[nodiscard]] const Statistics& getStats() const;
+    [[nodiscard]] const Statistics &getStats() const;
 
     /**
      * Provides mutable access to the player's statistics.
      *
      * @return Reference to the player's statistics.
      */
-    [[nodiscard]] Statistics& getStats();
+    [[nodiscard]] Statistics &getStats();
 
     /**
      * Outputs the player information to a stream in a formatted representation.
@@ -173,7 +180,7 @@ public:
      * @param player The player to output.
      * @return Reference to the output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const Player& player);
+    friend std::ostream &operator<<(std::ostream &os, const Player &player);
 
     /**
      * Reads player information from a stream.
@@ -182,7 +189,7 @@ public:
      * @param player The player to populate.
      * @return Reference to the input stream.
      */
-    friend std::istream& operator>>(std::istream& is, Player& player);
+    friend std::istream &operator>>(std::istream &is, Player &player);
 };
 
 #endif //PLAYER_H

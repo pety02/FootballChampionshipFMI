@@ -17,6 +17,18 @@
  * while minimizing attacking emphasis.
  */
 class DefensiveTeam final : public Team {
+protected:
+    DefensiveTeam(TeamType type,
+                  const std::string &name,
+                  const std::string &stadiumName,
+                  const std::vector<Player> &players,
+                  double budget,
+                  const Statistics &stats,
+                  unsigned forwardersCount,
+                  unsigned midfieldersCount,
+                  unsigned goalkeepersCount,
+                  unsigned defendersCount,
+                  unsigned wingersCount);
 public:
     /**
      * Required number of goalkeepers in the team.
@@ -54,12 +66,10 @@ public:
      * Constructs a defensive team with full configuration.
      *
      * @param name The name of the team.
-     * @param coachName The name of the team's coach.
      * @param stadiumName The name of the home stadium.
      * @param budget The initial budget of the team.
      */
     DefensiveTeam(const std::string &name,
-                  const std::string &coachName,
                   const std::string &stadiumName,
                   double budget);
 
@@ -79,6 +89,7 @@ public:
     DefensiveTeam &operator=(const DefensiveTeam &other);
 
     DefensiveTeam(DefensiveTeam &&other) noexcept;
+
     DefensiveTeam &operator=(DefensiveTeam &&other) noexcept;
 
     /**
@@ -105,33 +116,6 @@ public:
      * @param isTransfer Indicates whether the player is added via transfer.
      */
     void addPlayer(Player &player, bool isTransfer) override;
-
-    /**
-     * Outputs the state of a DefensiveTeam object to an output stream.
-     *
-     * This function serializes the DefensiveTeam instance into a structured format
-     * suitable for display, logging, or persistence. The output includes all relevant
-     * defensive team attributes needed to fully reconstruct the object using the corresponding
-     * input operator.
-     *
-     * @param os The output stream to write the team data to.
-     * @param team The DefensiveTeam instance to serialize.
-     * @return Reference to the output stream to allow chained output operations.
-     */
-    friend std::ostream &operator<<(std::ostream &os, const DefensiveTeam &team);
-
-    /**
-     * Reads a DefensiveTeam object from an input stream.
-     *
-     * This function deserializes a DefensiveTeam instance from a previously
-     * serialized representation produced by operator<<. It reconstructs the full
-     * internal state of the team, assuming the input format is valid and consistent.
-     *
-     * @param is The input stream to read the team data from.
-     * @param team The DefensiveTeam instance to populate.
-     * @return Reference to the input stream to allow chained input operations.
-     */
-    friend std::istream &operator>>(std::istream &is, DefensiveTeam &team);
 };
 
 #endif //DEFENSIVETEAM_H

@@ -3,6 +3,7 @@
 #include <ctime>
 #include <algorithm>
 #include <validator/MatchValidator.h>
+#include "../../utils/ExceptionMessages.h"
 
 Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
     : player(player), isHome(isHome)
@@ -25,6 +26,10 @@ Match::MatchResult::MatchResult(const MatchResult& other)
 {
     for (Scorer* s : other.goals)
         goals.push_back(new Scorer(*s));
+}
+
+Match::MatchResult::MatchResult(Team *home, Team *guest, unsigned homeGoals, unsigned guestGoals)
+    : home(home),guest(guest),homeGoals(homeGoals), guestGoals(guestGoals) {
 }
 
 Match::MatchResult::MatchResult(MatchResult&& other) noexcept
@@ -114,6 +119,13 @@ Match::Match(const Lineup &hostLineup, const Lineup &guestLineup)
         delete guest;
         throw;
     }
+}
+
+Match::Match(Team* host, Team* guest, const Lineup& hostLineup, const Lineup& guestLineup, unsigned hostGoals,
+        unsigned guestGoals, unsigned roundNumber, const MatchResult& result, bool isFinished)
+: host(host), guest(guest), hostLineup(hostLineup), guestLineup(guestLineup),
+hostGoals(hostGoals), guestGoals(guestGoals), roundNumber(roundNumber), finished(isFinished) {
+
 }
 
 Match::Match(const Match& other)
@@ -383,8 +395,8 @@ Match::MatchResult Match::play()
 
 std::ostream& operator<<(std::ostream& os, const Match::MatchResult& mr)
 {
-    os << (mr.home ? mr.home->getName() : "null") << '\n'
-       << (mr.guest ? mr.guest->getName() : "null") << '\n'
+    os << mr.home << '\n'
+       << mr.guest << '\n'
        << mr.homeGoals << '\n'
        << mr.guestGoals << '\n'
        << mr.goals.size() << '\n';
@@ -397,27 +409,31 @@ std::ostream& operator<<(std::ostream& os, const Match::MatchResult& mr)
 
 std::istream& operator>>(std::istream& is, Match::MatchResult& mr)
 {
-    for (Match::MatchResult::Scorer* s: mr.goals)
-        delete s;
+    size_t goalsCount, homeGoals, guestGoals;
 
-    mr.goals.clear();
+    is >> std::ws;
+    Team* ht = TeamFactory::createEmptyTeam(TeamType::UNKNOWN);
+    is >> *ht;
+    Team* gt = TeamFactory::createEmptyTeam(TeamType::UNKNOWN);
+    is >> *gt;
+    is >> homeGoals >> guestGoals >> goalsCount;
 
-    std::string homeName, guestName;
-    size_t goalCount;
-
-    std::getline(is >> std::ws, homeName);
-    std::getline(is, guestName);
-
-    is >> mr.homeGoals >> mr.guestGoals >> goalCount;
-
-    mr.home = nullptr;
-    mr.guest = nullptr;
-
-    for (size_t i = 0; i < goalCount; i++)
+    std::vector<Match::MatchResult::Scorer*> goals;
+    for (size_t i = 0; i < goalsCount; i++)
     {
-        Match::MatchResult::Scorer* s = new Match::MatchResult::Scorer();
-        is >> *s;
-        mr.goals.push_back(s);
+        try {
+            Match::MatchResult::Scorer* s = new Match::MatchResult::Scorer();
+            is >> *s;
+            goals.push_back(s);
+        } catch (...) {
+            throw;
+        }
+    }
+
+    try {
+        mr = Match::MatchResult(ht, gt, homeGoals, guestGoals);
+    } catch (...) {
+        throw;
     }
 
     return is;
@@ -425,8 +441,8 @@ std::istream& operator>>(std::istream& is, Match::MatchResult& mr)
 
 std::ostream& operator<<(std::ostream& os, const Match& m)
 {
-    os << (m.host ? m.host->getName() : "null") << '\n'
-       << (m.guest ? m.guest->getName() : "null") << '\n'
+    os << m.host  << '\n'
+       << m.guest  << '\n'
        << m.hostLineup << '\n'
        << m.guestLineup << '\n'
        << m.hostGoals << '\n'
@@ -440,21 +456,28 @@ std::ostream& operator<<(std::ostream& os, const Match& m)
 
 std::istream& operator>>(std::istream& is, Match& m)
 {
-    std::string hostName, guestName;
+    Lineup hostLineup, guestLineup;
+    unsigned hostGoals, guestGoals, roundNumber;
+    Match::MatchResult matchResult;
+    bool isFinished;
 
-    std::getline(is >> std::ws, hostName);
-    std::getline(is, guestName);
+    Team* ht = TeamFactory::createEmptyTeam(TeamType::UNKNOWN);
+    is >> *ht;
+    Team* gt = TeamFactory::createEmptyTeam(TeamType::UNKNOWN);
+    is >> *gt;
+    is >> hostLineup
+       >> guestLineup
+       >> hostGoals
+       >> guestGoals
+       >> roundNumber
+       >> matchResult
+       >> isFinished;
 
-    is >> m.hostLineup
-       >> m.guestLineup
-       >> m.hostGoals
-       >> m.guestGoals
-       >> m.roundNumber
-       >> m.matchResult
-       >> m.finished;
-
-    m.host = nullptr;
-    m.guest = nullptr;
+    try {
+        m = Match(ht, gt, hostLineup, guestLineup, hostGoals, guestGoals, roundNumber, matchResult, isFinished);
+    } catch (...) {
+        throw;
+    }
 
     return is;
 }

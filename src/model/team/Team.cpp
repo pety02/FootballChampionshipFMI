@@ -4,8 +4,7 @@
 
 #include "Team.h"
 
-#include <utility>
-
+#include "../../utils/Utils.h"
 #include "validator/TeamValidator.h"
 #include "../../utils/validator/StringValidator.h"
 #include "manager/TeamManager.h"
@@ -62,19 +61,44 @@ void Team::setTeamManager(const TeamManager& teamManager) {
     this->teamManager = new TeamManager(teamManager);
 }
 
+Team::Team(TeamType type,
+         const std::string &name,
+         const std::string &stadiumName,
+         const std::vector<Player> &players,
+         double budget,
+         const Team::Statistics &stats,
+         unsigned forwardersCount,
+         unsigned midfieldersCount,
+         unsigned goalkeepersCount,
+         unsigned defendersCount,
+         unsigned wingersCount)
+: type(type), name(name), stadiumName(stadiumName), players(players), budget(budget),
+stats(stats), teamManager(nullptr), forwardersCount(forwardersCount), midfieldersCount(midfieldersCount),
+goalkeepersCount(goalkeepersCount), defendersCount(defendersCount), wingersCount(wingersCount) {
+    StringValidator::validate(name, toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK));
+    StringValidator::validate(stadiumName, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
+    unsigned maxTeamSize = players.size() * (players.size() - 1);
+    TeamValidator::validateTeamSize(players.size(), maxTeamSize);
+    TeamValidator::validateBudget(budget);
+    TeamValidator::validateForwarders(forwardersCount);
+    TeamValidator::validateMidfielders(midfieldersCount);
+    TeamValidator::validateGoalkeepers(goalkeepersCount);
+    TeamValidator::validateDefenders(defendersCount);
+    TeamValidator::validateWingers(wingersCount);
+}
+
 Team::Team()
     : type(TeamType::UNKNOWN), name(std::string()), stadiumName(std::string()), players(std::vector<Player>()),
         budget(0.0), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 }
 
-Team::Team(TeamType type, const std::string& name, const std::string& coachName, std::string  stadiumName, const double budget)
+Team::Team(TeamType type, const std::string& name, const std::string &stadiumName, const double budget)
     : type(type), name(name), stadiumName(stadiumName), players(std::vector<Player>()),
         budget(budget), stats(Team::Statistics()), teamManager(nullptr), forwardersCount(0),
         midfieldersCount(0), goalkeepersCount(0), defendersCount(0), wingersCount(0) {
 
     StringValidator::validate(name, toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK));
-    StringValidator::validate(coachName, toString(ExceptionMessages::COACH_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::COACH_NAME_CANNOT_BE_BLANK));
     StringValidator::validate(stadiumName, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
     TeamValidator::validateBudget(budget);
 }
@@ -185,7 +209,18 @@ std::istream& operator>>(std::istream& is, Team& team)
     unsigned f, m, gk, d, w;
     size_t playerCount;
 
-    std::getline(is >> std::ws, typeStr);
+    is >> std::ws;
+    char ch = is.peek();
+    if(ch == EOF) {
+        throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_TEAM));
+    }
+    while(ch != '\n' || ch != EOF) {
+        ch = is.peek();
+        if(ch == EOF) {
+            throw std::invalid_argument(toString(ExceptionMessages::CANNOT_READ_TEAM));
+        }
+    }
+    std::getline(is, typeStr);
     std::getline(is, name);
     std::getline(is, stadium);
 
@@ -207,19 +242,15 @@ std::istream& operator>>(std::istream& is, Team& team)
         players.push_back(p);
     }
 
-    team.type = Utils::parseTeamType(typeStr);
-    team.name = name;
-    team.stadiumName = stadium;
-    team.budget = budget;
-    team.stats = stats;
-
-    team.forwardersCount = f;
-    team.midfieldersCount = m;
-    team.goalkeepersCount = gk;
-    team.defendersCount = d;
-    team.wingersCount = w;
-
-    team.players = std::move(players);
+    TeamType tempType = Utils::parseTeamType(typeStr);
+    Team* tempTeam = nullptr;
+    try {
+        tempTeam = TeamFactory::fullyInitializeTeam(tempType, name, stadium, players, budget, stats, f, m, gk, d, w);
+        team = tempTeam != nullptr ? tempTeam : team;
+    } catch (...) {
+        delete tempTeam;
+        throw;
+    }
 
     return is;
 }

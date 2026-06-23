@@ -158,6 +158,12 @@ public:
      * @throws std::invalid_argument If the name is already used.
      */
     static void validateUniquePlayerName(const Team &team, const std::string &name);
+
+    static void validateForwarders (unsigned forwardersCount);
+    static void validateMidfielders (unsigned midfieldersCount);
+    static void validateGoalkeepers (unsigned goalkeepersCount);
+    static void validateDefenders (unsigned defendersCount);
+    static void validateWingers (unsigned wingersCount);
 };
 
 #endif //TEAMVALIDATOR_H

@@ -26,19 +26,30 @@ const AccountingManager& accountingManager)
     MatchValidator::validateLineups(this->matches);
 }
 
-// --------------------
-// ROUND CONTROL
-// --------------------
+Championship::Championship(const TeamManager &teamManager,
+                 const std::vector<Match> &matches,
+                 int year,
+                 const AccountingManager& accountingManager,
+                 unsigned currentRoundNumber, bool finished)
+: teamManager(teamManager), accountingManager(accountingManager), matches(matches),
+      currentRoundNumber(currentRoundNumber), year(year), finished(finished) {
+    unsigned teamsCount = teamManager.getTeams().size();
+
+    if (matches.size() < teamsCount * (teamsCount - 1))
+        throw std::invalid_argument(toString(ExceptionMessages::NOT_ENOUGH_MATCHES));
+    if(teamsCount * (teamsCount - 1) < matches.size()) {
+        throw std::invalid_argument(toString(ExceptionMessages::MORE_MATCHES_THAN_IT_IS_POSSIBLE));
+    }
+
+    ChampionshipValidator::validateCurrentRoundNumber(currentRoundNumber);
+    MatchValidator::validateLineups(this->matches);
+}
 
 void Championship::increaseRoundNumber()
 {
     ChampionshipValidator::validateCurrentRoundNumber(this->currentRoundNumber + 1);
     ++this->currentRoundNumber;
 }
-
-// --------------------
-// GETTERS
-// --------------------
 
 TeamManager& Championship::getTeamManager()
 {
@@ -120,14 +131,8 @@ std::istream& operator>>(std::istream& is, Championship& championship)
         matches.push_back(match);
     }
 
-    championship.year = year;
-    championship.currentRoundNumber = currentRoundNumber;
-    championship.finished = isFinished;
-
-    // safe assignment (avoids partial overwrite issues)
-    championship.teamManager = tm;
-
-    championship.matches = std::move(matches);
+    Championship temp = Championship(tm, matches, year, championship.accountingManager);
+    championship = temp;
 
     return is;
 }

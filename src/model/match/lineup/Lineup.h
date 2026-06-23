@@ -66,6 +66,8 @@ public:
     */
     explicit Lineup(Team* team);
 
+    Lineup(Team* team, const std::vector<Player>& players);
+
     /**
     * Copy constructor. Performs a deep or member-wise copy of the lineup.
     *

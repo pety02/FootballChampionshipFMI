@@ -101,3 +101,33 @@ void TeamValidator::validateUniquePlayerName(const Team& team, const std::string
         }
     }
 }
+
+void TeamValidator::validateForwarders (unsigned forwardersCount) {
+    if(Team::MAX_FORWARDERS < forwardersCount) {
+        throw std::invalid_argument(toString(ExceptionMessages::TOO_MANY_FORWARDERS));
+    }
+}
+
+void TeamValidator::validateMidfielders (unsigned midfieldersCount) {
+    if(Team::MAX_MIDFIELDERS < midfieldersCount) {
+        throw std::invalid_argument(toString(ExceptionMessages::TOO_MANY_MIDFIELDERS));
+    }
+}
+
+void TeamValidator::validateGoalkeepers (unsigned goalkeepersCount) {
+    if(Team::MAX_GOALKEEPERS < goalkeepersCount) {
+        throw std::invalid_argument(toString(ExceptionMessages::TOO_MANY_GOALKEEPERS));
+    }
+}
+
+void TeamValidator::validateDefenders (unsigned defendersCount) {
+    if(Team::MAX_DEFENDERS < defendersCount) {
+        throw std::invalid_argument(toString(ExceptionMessages::TOO_MANY_DEFENDERS));
+    }
+}
+
+void TeamValidator::validateWingers (unsigned wingersCount) {
+    if(Team::MAX_WINGERS < wingersCount) {
+        throw std::invalid_argument(toString(ExceptionMessages::TOO_MANY_WINGERS));
+    }
+}

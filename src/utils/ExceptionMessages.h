@@ -79,7 +79,12 @@ enum class ExceptionMessages {
     TEAM_DOES_NOT_EXIST,
     NO_LINEUP_WITH_THIS_TEAM_NAME,
     SCORED_GOALS_CANNOT_BE_MORE_THAN_TOTAL_SCORED_GOALS,
-    THERE_IS_PLAYER_WITH_SAME_NAME
+    THERE_IS_PLAYER_WITH_SAME_NAME,
+
+    // I/O Exceptions
+    CANNOT_READ_TEAM,
+    CANNOT_READ_PLAYER,
+    CANNOT_READ_TEAM_MANAGER
 };
 
 /**
@@ -208,6 +213,12 @@ inline std::string toString(ExceptionMessages message) {
             return "Scored goals cannot be more than total.";
         case ExceptionMessages::THERE_IS_PLAYER_WITH_SAME_NAME:
             return "There is a player with the name that is already exists.";
+        case ExceptionMessages::CANNOT_READ_TEAM:
+            return "Cannot read team.";
+        case ExceptionMessages::CANNOT_READ_PLAYER:
+            return "Cannot read player.";
+        case ExceptionMessages::CANNOT_READ_TEAM_MANAGER:
+            return "Cannot read team manager.";
 
         default:
             return "Unknown exception.";

@@ -10,7 +10,6 @@
 #include "manager/TeamManager.h"
 
 #include "TeamType.h"
-#include "../../utils/Utils.h"
 
 class TeamManager;
 
@@ -29,7 +28,13 @@ class TeamManager;
  */
 class Team {
 public:
-    /**
+    const static unsigned MAX_FORWARDERS = 8;
+    const static unsigned MAX_MIDFIELDERS = 2;
+    const static unsigned MAX_GOALKEEPERS = 2;
+    const static unsigned MAX_DEFENDERS = 2;
+    const static unsigned MAX_WINGERS = 2;
+
+     /**
      * Represents statistical performance of a team.
      */
     struct Statistics {
@@ -114,6 +119,18 @@ protected:
     unsigned defendersCount = 0;
     unsigned wingersCount = 0;
 
+    Team(TeamType type,
+         const std::string &name,
+         const std::string &stadiumName,
+         const std::vector<Player> &players,
+         double budget,
+         const Statistics &stats,
+         unsigned forwardersCount,
+         unsigned midfieldersCount,
+         unsigned goalkeepersCount,
+         unsigned defendersCount,
+         unsigned wingersCount);
+
 public:
     /**
      * Default constructor.
@@ -125,14 +142,12 @@ public:
      *
      * @param type
      * @param name The team name.
-     * @param coachName The coach name.
      * @param stadiumName The stadium name.
      * @param budget The initial budget.
      */
     Team(TeamType type,
          const std::string &name,
-         const std::string &coachName,
-         std::string stadiumName,
+         const std::string &stadiumName,
          double budget);
 
     /**

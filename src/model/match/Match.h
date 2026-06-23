@@ -60,6 +60,7 @@ public:
         * Default constructor. Initializes an empty match result.
         */
         MatchResult() = default;
+        MatchResult(Team* home, Team* guest, unsigned homeGoals, unsigned guestGoals);
 
         MatchResult(MatchResult&& other) noexcept;
         MatchResult& operator=(MatchResult&& other) noexcept;
@@ -130,6 +131,9 @@ public:
     * @param guestLineup The lineup of the guest team.
     */
     Match(const Lineup& hostLineup, const Lineup& guestLineup);
+
+    Match(Team* host, Team* guest, const Lineup& hostLineup, const Lineup& guestLineup, unsigned hostGoals,
+        unsigned guestGoals, unsigned roundNumber, const MatchResult& result, bool isFinished);
 
     /**
     * Copy constructor. Creates a deep copy of the match state.

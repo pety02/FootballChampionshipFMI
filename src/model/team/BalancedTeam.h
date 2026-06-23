@@ -15,6 +15,19 @@
  * including defense, midfield, attack, and wings.
  */
 class BalancedTeam final : public Team {
+protected:
+    BalancedTeam(TeamType type,
+                 const std::string &name,
+                 const std::string &stadiumName,
+                 const std::vector<Player> &players,
+                 double budget,
+                 const Statistics &stats,
+                 unsigned forwardersCount,
+                 unsigned midfieldersCount,
+                 unsigned goalkeepersCount,
+                 unsigned defendersCount,
+                 unsigned wingersCount);
+
 public:
     /**
      * Required number of goalkeepers in the team.
@@ -52,12 +65,10 @@ public:
      * Constructs a balanced team with full configuration.
      *
      * @param name The name of the team.
-     * @param coachName The name of the team's coach.
      * @param stadiumName The name of the home stadium.
      * @param budget The initial budget of the team.
      */
     BalancedTeam(const std::string &name,
-                 const std::string &coachName,
                  const std::string &stadiumName,
                  double budget);
 
@@ -77,6 +88,7 @@ public:
     BalancedTeam &operator=(const BalancedTeam &other);
 
     BalancedTeam(BalancedTeam &&other) noexcept;
+
     BalancedTeam &operator=(BalancedTeam &&other) noexcept;
 
     /**
@@ -103,34 +115,6 @@ public:
      * @param isTransfer Indicates whether the player is added via transfer.
      */
     void addPlayer(Player &player, bool isTransfer) override;
-
-    /**
-    * Outputs the state of a BalancedTeam object to an output stream.
-    *
-    * This function serializes the BalancedTeam instance into a structured format
-    * suitable for display or persistence. The output includes all relevant team
-    * attributes required to reconstruct the object later using the corresponding
-    * input operator.
-    *
-    * @param os The output stream to write the team data to.
-    * @param team The BalancedTeam instance to serialize.
-    * @return Reference to the output stream to support chained output operations.
-    */
-    friend std::ostream &operator<<(std::ostream &os, const BalancedTeam &team);
-
-    /**
-     * Reads a BalancedTeam object from an input stream.
-     *
-     * This function deserializes a BalancedTeam instance from a previously
-     * serialized format produced by operator<<. It reconstructs the internal
-     * state of the team and assumes the input data is well-formed and follows
-     * the expected structure.
-     *
-     * @param is The input stream to read the team data from.
-     * @param team The BalancedTeam instance to populate.
-     * @return Reference to the input stream to support chained input operations.
-     */
-    friend std::istream &operator>>(std::istream &is, BalancedTeam &team);
 };
 
 #endif //BALANCEDTEAM_H
