@@ -3,7 +3,6 @@
 //
 
 #include "TeamFactory.h"
-#include <stdexcept>
 #include "../../team/AttackingTeam.h"
 #include "../../team/BalancedTeam.h"
 #include "../../team/DefensiveTeam.h"
@@ -13,16 +12,18 @@ Team* TeamFactory::fullyInitializeTeam(TeamType type,
          const std::string &stadiumName,
          const std::vector<Player> &players,
          double budget,
-         const Team::Statistics &stats,
          unsigned forwardersCount,
          unsigned midfieldersCount,
          unsigned goalkeepersCount,
          unsigned defendersCount,
          unsigned wingersCount) {
     switch(type) {
-        case TeamType::ATTACKING: return new AttackingTeam(name, stadiumName, budget);
-        case TeamType::DEFENSIVE: return new DefensiveTeam(name, stadiumName, budget);
-        case TeamType::BALANCED:  return new BalancedTeam(name, stadiumName, budget);
+        case TeamType::ATTACKING: return new AttackingTeam(type, name, stadiumName, players, budget,
+            forwardersCount, midfieldersCount, goalkeepersCount, defendersCount, wingersCount);
+        case TeamType::DEFENSIVE: return new DefensiveTeam(type, name, stadiumName, players, budget,
+            forwardersCount, midfieldersCount, goalkeepersCount, defendersCount, wingersCount);
+        case TeamType::BALANCED:  return new BalancedTeam(type, name, stadiumName, players, budget,
+            forwardersCount, midfieldersCount, goalkeepersCount, defendersCount, wingersCount);
         default:
             return nullptr;
     }

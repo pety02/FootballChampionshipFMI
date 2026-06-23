@@ -313,9 +313,8 @@ void FootballGameEngine::addTeam(const std::vector<std::string> &args, Champions
 
     TeamType type = Utils::parseTeamType(args[0]);
     const std::string& name = args[1];
-    const std::string& coach = args[2];
-    const std::string& stadium = args[3];
-    const double budget = std::stod(args[4]);
+    const std::string& stadium = args[2];
+    const double budget = std::stod(args[3]);
 
     // check duplicates
     for (const Team* currentTeam : championship.getTeamManager().getTeams())
@@ -329,7 +328,6 @@ void FootballGameEngine::addTeam(const std::vector<std::string> &args, Champions
     Team* team = TeamFactory::createTeam(
         type,
         name,
-        coach,
         stadium,
         budget
     );

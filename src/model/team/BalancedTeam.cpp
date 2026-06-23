@@ -12,13 +12,12 @@ BalancedTeam::BalancedTeam(TeamType type,
                  const std::string &stadiumName,
                  const std::vector<Player> &players,
                  double budget,
-                 const Statistics &stats,
                  unsigned forwardersCount,
                  unsigned midfieldersCount,
                  unsigned goalkeepersCount,
                  unsigned defendersCount,
                  unsigned wingersCount)
-:Team(type, name, stadiumName, players, budget, stats, forwardersCount, midfieldersCount,
+:Team(type, name, stadiumName, players, budget, forwardersCount, midfieldersCount,
     goalkeepersCount, defendersCount, wingersCount) {}
 
 BalancedTeam::BalancedTeam() : Team() {

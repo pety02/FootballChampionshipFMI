@@ -34,9 +34,9 @@ public:
     const static unsigned MAX_DEFENDERS = 2;
     const static unsigned MAX_WINGERS = 2;
 
-     /**
-     * Represents statistical performance of a team.
-     */
+    /**
+    * Represents statistical performance of a team.
+    */
     struct Statistics {
         unsigned winsCount = 0;
         unsigned drawsCount = 0;
@@ -119,19 +119,18 @@ protected:
     unsigned defendersCount = 0;
     unsigned wingersCount = 0;
 
+public:
     Team(TeamType type,
          const std::string &name,
          const std::string &stadiumName,
          const std::vector<Player> &players,
          double budget,
-         const Statistics &stats,
          unsigned forwardersCount,
          unsigned midfieldersCount,
          unsigned goalkeepersCount,
          unsigned defendersCount,
          unsigned wingersCount);
 
-public:
     /**
      * Default constructor.
      */

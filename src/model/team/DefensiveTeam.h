@@ -17,19 +17,17 @@
  * while minimizing attacking emphasis.
  */
 class DefensiveTeam final : public Team {
-protected:
-    DefensiveTeam(TeamType type,
+public:
+ DefensiveTeam(TeamType type,
                   const std::string &name,
                   const std::string &stadiumName,
                   const std::vector<Player> &players,
                   double budget,
-                  const Statistics &stats,
                   unsigned forwardersCount,
                   unsigned midfieldersCount,
                   unsigned goalkeepersCount,
                   unsigned defendersCount,
                   unsigned wingersCount);
-public:
     /**
      * Required number of goalkeepers in the team.
      */

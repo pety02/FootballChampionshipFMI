@@ -15,20 +15,18 @@
  * including defense, midfield, attack, and wings.
  */
 class BalancedTeam final : public Team {
-protected:
+public:
     BalancedTeam(TeamType type,
                  const std::string &name,
                  const std::string &stadiumName,
                  const std::vector<Player> &players,
                  double budget,
-                 const Statistics &stats,
                  unsigned forwardersCount,
                  unsigned midfieldersCount,
                  unsigned goalkeepersCount,
                  unsigned defendersCount,
                  unsigned wingersCount);
 
-public:
     /**
      * Required number of goalkeepers in the team.
      */

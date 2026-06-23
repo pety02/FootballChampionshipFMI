@@ -15,20 +15,18 @@
  * enforce stricter requirements on forward players and goal scoring.
  */
 class AttackingTeam final : public Team {
-protected:
+public:
     AttackingTeam(TeamType type,
                   const std::string &name,
                   const std::string &stadiumName,
                   const std::vector<Player> &players,
                   double budget,
-                  const Statistics &stats,
                   unsigned forwardersCount,
                   unsigned midfieldersCount,
                   unsigned goalkeepersCount,
                   unsigned defendersCount,
                   unsigned wingersCount);
 
-public:
     /**
      * Minimum number of goals required from forwards in evaluation logic.
      */

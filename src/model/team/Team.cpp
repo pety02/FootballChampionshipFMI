@@ -66,14 +66,13 @@ Team::Team(TeamType type,
          const std::string &stadiumName,
          const std::vector<Player> &players,
          double budget,
-         const Team::Statistics &stats,
          unsigned forwardersCount,
          unsigned midfieldersCount,
          unsigned goalkeepersCount,
          unsigned defendersCount,
          unsigned wingersCount)
 : type(type), name(name), stadiumName(stadiumName), players(players), budget(budget),
-stats(stats), teamManager(nullptr), forwardersCount(forwardersCount), midfieldersCount(midfieldersCount),
+stats(Statistics()), teamManager(nullptr), forwardersCount(forwardersCount), midfieldersCount(midfieldersCount),
 goalkeepersCount(goalkeepersCount), defendersCount(defendersCount), wingersCount(wingersCount) {
     StringValidator::validate(name, toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::TEAM_NAME_CANNOT_BE_BLANK));
     StringValidator::validate(stadiumName, toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_EMPTY), toString(ExceptionMessages::STADIUM_NAME_CANNOT_BE_BLANK));
@@ -245,8 +244,8 @@ std::istream& operator>>(std::istream& is, Team& team)
     TeamType tempType = Utils::parseTeamType(typeStr);
     Team* tempTeam = nullptr;
     try {
-        tempTeam = TeamFactory::fullyInitializeTeam(tempType, name, stadium, players, budget, stats, f, m, gk, d, w);
-        team = tempTeam != nullptr ? tempTeam : team;
+        tempTeam = TeamFactory::fullyInitializeTeam(tempType, name, stadium, players, budget, f, m, gk, d, w);
+        team = std::move(*tempTeam);
     } catch (...) {
         delete tempTeam;
         throw;

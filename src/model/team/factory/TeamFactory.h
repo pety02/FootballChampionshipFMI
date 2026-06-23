@@ -6,14 +6,11 @@
 #define TEAMFACTORY_H
 
 #include "../TeamType.h"
-#include "../manager/TeamManager.h"
-#include "../player/Player.h"
+#include "../../player/Player.h"
 #include <string>
-#include <Team.h>
 #include <vector>
 
 class Team;
-struct Team::Statistics;
 
 /**
  * A factory class responsible for creating team instances.
@@ -29,7 +26,6 @@ public:
          const std::string &stadiumName,
          const std::vector<Player> &players,
          double budget,
-         const Team::Statistics &stats,
          unsigned forwardersCount,
          unsigned midfieldersCount,
          unsigned goalkeepersCount,
