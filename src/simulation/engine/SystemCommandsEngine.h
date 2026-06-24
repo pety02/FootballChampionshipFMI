@@ -1,7 +1,3 @@
-//
-// Created by User on 6/19/2026.
-//
-
 #ifndef SYSTEMCOMMANDSENGINE_H
 #define SYSTEMCOMMANDSENGINE_H
 

@@ -1,7 +1,3 @@
-//
-// Created by User on 5/17/2026.
-//
-
 #include "AccountingManager.h"
 
 void AccountingManager::regulateSalary(Player& player, Team& team) {

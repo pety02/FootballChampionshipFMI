@@ -1,7 +1,3 @@
-//
-// Created by User on 6/15/2026.
-//
-
 #ifndef COMMANDLINEVALIDATOR_H
 #define COMMANDLINEVALIDATOR_H
 

@@ -1,7 +1,3 @@
-//
-// Created by User on 5/31/2026.
-//
-
 #include "../simulation/MatchResultApplier.h"
 
 void MatchResultApplier::apply(const Match::MatchResult& result)

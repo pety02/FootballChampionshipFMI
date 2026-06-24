@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #include "../championship/history/ChampionshipHistory.h"
 
 ChampionshipHistory::ChampionshipHistory() : championships(std::vector<Championship>()) {

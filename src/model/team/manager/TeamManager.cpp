@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #include "../team/manager/TeamManager.h"
 #include <stdexcept>
 #include "../../match/Match.h"

@@ -1,14 +1,9 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #ifndef TEAMMANAGER_H
 #define TEAMMANAGER_H
 
 #include <vector>
 #include <string>
 #include "../factory/TeamFactory.h"
-#include "../../player/Player.h"
 
 class Team;
 

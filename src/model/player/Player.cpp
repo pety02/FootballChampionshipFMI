@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #include "../player/Player.h"
 #include <iostream>
 #include "validator/PlayerValidator.h"

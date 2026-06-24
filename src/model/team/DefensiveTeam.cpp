@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #include "DefensiveTeam.h"
 #include "../player/validator/PlayerValidator.h"
 #include "validator/TeamValidator.h"

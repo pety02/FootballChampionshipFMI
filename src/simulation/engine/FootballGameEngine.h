@@ -1,7 +1,3 @@
-//
-// Created by User on 5/17/2026.
-//
-
 #ifndef FOOTBALLGAMEENGINE_H
 #define FOOTBALLGAMEENGINE_H
 

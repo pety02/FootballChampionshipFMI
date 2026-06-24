@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #ifndef TEAMFACTORY_H
 #define TEAMFACTORY_H
 

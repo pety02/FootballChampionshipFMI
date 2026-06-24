@@ -1,7 +1,3 @@
-//
-// Created by User on 5/17/2026.
-//
-
 #include "FootballGameEngine.h"
 
 #include <iostream>

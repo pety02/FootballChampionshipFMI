@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #include "AttackingTeam.h"
 #include "../../utils/Utils.h"
 #include "../../utils/ExceptionMessages.h"

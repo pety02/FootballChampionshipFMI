@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #ifndef MATCHVALIDATOR_H
 #define MATCHVALIDATOR_H
 

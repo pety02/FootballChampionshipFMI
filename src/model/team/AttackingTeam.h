@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #ifndef ATTACKINGTEAM_H
 #define ATTACKINGTEAM_H
 

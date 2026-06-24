@@ -1,7 +1,3 @@
-//
-// Created by User on 6/4/2026.
-//
-
 #ifndef COMMANDLINEINTERPRETER_H
 #define COMMANDLINEINTERPRETER_H
 

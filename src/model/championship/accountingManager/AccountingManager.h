@@ -1,7 +1,3 @@
-//
-// Created by User on 5/17/2026.
-//
-
 #ifndef ACCOUNTINGMANAGER_H
 #define ACCOUNTINGMANAGER_H
 

@@ -10,9 +10,7 @@
 #include "../model/championship/Championship.h"
 #include "catch2/matchers/catch_matchers.hpp"
 
-// -------------------------
 // Helpers
-// -------------------------
 static Player makeForward(const std::string& name) {
     return Player(name, 9, Player::Position::FORWARD, 100000, 100);
 }
@@ -30,18 +28,14 @@ static Team* makeDefensiveTeam(const std::string& name) {
     return team;
 }
 
-// -------------------------
 // Engine initialization
-// -------------------------
 TEST_CASE("Engine initializes correctly", "[engine]") {
     FootballGameEngine engine;
 
     REQUIRE(engine.getCurrentChampionship().getMatches().empty());
 }
 
-// -------------------------
 // addMatch + simulate
-// -------------------------
 TEST_CASE("Lineup constructor throws when valid lineup cannot be generated", "[lineup]") {
     Team* team = new DefensiveTeam("A", "C1", "S1", 1000);
 
@@ -103,9 +97,7 @@ TEST_CASE("Lineup constructor generates valid lineup", "[lineup]") {
     delete team;
 }
 
-// -------------------------
 // addScorer logic
-// -------------------------
 TEST_CASE("addScorer updates goals correctly", "[engine][scorer]") {
     FootballGameEngine engine;
 
@@ -202,9 +194,7 @@ TEST_CASE("addScorer updates goals correctly", "[engine][scorer]") {
     delete team2;
 }
 
-// -------------------------
 // findGoalMaster
-// -------------------------
 TEST_CASE("findGoalMaster returns a valid player name", "[engine][goals]") {
     FootballGameEngine engine;
 
@@ -305,9 +295,7 @@ TEST_CASE("findGoalMaster returns a valid player name", "[engine][goals]") {
     delete team2;
 }
 
-// -------------------------
 // finishChampionship
-// -------------------------
 TEST_CASE("finishChampionship executes without crash", "[engine][championship]") {
     FootballGameEngine engine;
 
@@ -341,9 +329,7 @@ TEST_CASE("finishChampionship executes without crash", "[engine][championship]")
     delete t3;
 }
 
-// -------------------------
 // listTeams
-// -------------------------
 TEST_CASE("listTeams returns teams", "[engine][teams]") {
     FootballGameEngine engine;
     Championship champ;

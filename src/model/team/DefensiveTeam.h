@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #ifndef DEFENSIVETEAM_H
 #define DEFENSIVETEAM_H
 

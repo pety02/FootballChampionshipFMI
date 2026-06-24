@@ -1,7 +1,3 @@
-//
-// Created by User on 5/14/2026.
-//
-
 #ifndef CHAMPIONSHIPCOLLECTION_H
 #define CHAMPIONSHIPCOLLECTION_H
 

@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #include "TeamFactory.h"
 #include "../../team/AttackingTeam.h"
 #include "../../team/BalancedTeam.h"

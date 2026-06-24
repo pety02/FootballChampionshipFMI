@@ -1,7 +1,3 @@
-//
-// Created by User on 6/19/2026.
-//
-
 #ifndef STATISTICSENGINE_H
 #define STATISTICSENGINE_H
 

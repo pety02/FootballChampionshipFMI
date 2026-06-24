@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #ifndef TEAMVALIDATOR_H
 #define TEAMVALIDATOR_H
 

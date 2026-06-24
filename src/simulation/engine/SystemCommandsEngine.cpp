@@ -1,7 +1,3 @@
-//
-// Created by User on 6/19/2026.
-//
-
 #include "SystemCommandsEngine.h"
 #include <iostream>
 #include "../../utils/Command.h"

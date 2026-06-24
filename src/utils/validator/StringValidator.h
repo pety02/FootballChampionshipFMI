@@ -1,7 +1,3 @@
-//
-// Created by User on 5/16/2026.
-//
-
 #ifndef STRINGVALIDATOR_H
 #define STRINGVALIDATOR_H
 
