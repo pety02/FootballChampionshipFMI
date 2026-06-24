@@ -4,8 +4,22 @@
 
 #include "StatisticsEngine.h"
 #include <iostream>
-#include <algorithm>
 #include "../../utils/ExceptionMessages.h"
+#include "../../utils/Utils.h"
+
+std::vector<std::pair<Team*, unsigned>> StatisticsEngine::buildTeamRanking(const Championship& championship)
+{
+    std::vector<std::pair<Team*, unsigned>> ranking;
+
+    for (Team* team : championship.getTeamManager().getTeams())
+    {
+        ranking.emplace_back(team, team->getStats().scoredGoals);
+    }
+
+    Utils::selectionSortTeamsByGoals(ranking);
+
+    return ranking;
+}
 
 Team::Statistics StatisticsEngine::listTeamStats(Team& team) {
     return team.getStats();
@@ -43,59 +57,41 @@ void StatisticsEngine::viewPlayerRanking(Championship& championship) {
     }
 }
 
-const Team& StatisticsEngine::getChampion(
-        const Championship& championship) {
-
-    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
-
-    for (Team* team : championship.getTeamManager().getTeams())
-    {
-        champs.emplace_back(team, team->getStats().scoredGoals);
-    }
-
-    // sort by goals (descending)
-    std::ranges::sort(champs, std::less_equal<>());
-
-    if (champs.size() < 3) {
-        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
-    }
-
-    return *champs[0].first; // 1st place
-}
-
-const Team& StatisticsEngine::getRunnerUp(const Championship &championship) {
-    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
-
-    for (Team* team : championship.getTeamManager().getTeams())
-    {
-        champs.emplace_back(team, team->getStats().scoredGoals);
-    }
-
-    // sort by goals (descending)
-    std::ranges::sort(champs, std::less_equal<>());
-
-    if (champs.size() < 3) {
-        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
-    }
-
-    return *champs[1].first; // 2nd place
-}
-
-const Team& StatisticsEngine::getThirdPlace(const Championship &championship)
+const Team& StatisticsEngine::getChampion(const Championship& championship)
 {
-    std::vector<std::pair<Team*, unsigned>> champs = std::vector<std::pair<Team*, unsigned>>();
+    auto ranking = buildTeamRanking(championship);
 
-    for (Team* team : championship.getTeamManager().getTeams())
+    if (ranking.size() < 3)
     {
-        champs.emplace_back(team, team->getStats().scoredGoals);
+        throw std::invalid_argument(
+            toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
     }
 
-    // sort by goals (descending)
-    std::ranges::sort(champs, std::less_equal<>());
+    return *ranking[0].first;
+}
 
-    if (champs.size() < 3) {
-        throw std::invalid_argument(toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS)); // here has memory leak but how to solve it
+const Team& StatisticsEngine::getRunnerUp(const Championship& championship)
+{
+    auto ranking = buildTeamRanking(championship);
+
+    if (ranking.size() < 3)
+    {
+        throw std::invalid_argument(
+            toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
     }
 
-    return *champs[2].first; // 3rd place
+    return *ranking[1].first;
+}
+
+const Team& StatisticsEngine::getThirdPlace(const Championship& championship)
+{
+    auto ranking = buildTeamRanking(championship);
+
+    if (ranking.size() < 3)
+    {
+        throw std::invalid_argument(
+            toString(ExceptionMessages::INVALID_NUMBER_OF_TEAMS));
+    }
+
+    return *ranking[2].first;
 }

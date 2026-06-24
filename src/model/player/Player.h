@@ -75,6 +75,7 @@ public:
     };
 
 private:
+
     std::string name = std::string();
     unsigned number = 0;
     Position position = Position::UNKNOWN;

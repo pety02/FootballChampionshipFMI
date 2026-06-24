@@ -42,6 +42,21 @@ public:
     static void viewPlayerRanking(Championship &championship);
 
     /**
+    * Builds a ranking of teams based on scored goals in the championship.
+    *
+    * This function extracts all teams from the championship, pairs each team
+    * with its total number of scored goals, and then sorts the resulting list
+    * in descending order using a custom selection sort implementation.
+    *
+    * Sorting is delegated to Utils::selectionSortTeamsByGoals.
+    *
+    * @param championship The championship whose teams are being ranked.
+    * @return A vector of (Team pointer, scored goals) pairs sorted
+    *         in descending order by goals scored.
+    */
+    static std::vector<std::pair<Team *, unsigned> > buildTeamRanking(const Championship &championship);
+
+    /**
     * Determines the champion team of a championship based on scored goals.
     *
     * Teams are ranked in descending order by total scored goals.

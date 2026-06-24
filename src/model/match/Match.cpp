@@ -1,9 +1,8 @@
 #include "Match.h"
-#include <cstdlib>
 #include <ctime>
-#include <algorithm>
 #include <validator/MatchValidator.h>
 #include "../../utils/ExceptionMessages.h"
+#include "../../utils/Utils.h"
 
 Match::MatchResult::Scorer::Scorer(const Player &player, bool isHome)
     : player(player), isHome(isHome)
@@ -100,10 +99,10 @@ std::istream& operator>>(std::istream& is, Match::MatchResult::Scorer& scorer)
 }
 
 Match::Match(const Lineup &hostLineup, const Lineup &guestLineup)
-    : hostLineup(hostLineup),
-      guestLineup(guestLineup),
-      host(nullptr),
+    : host(nullptr),
       guest(nullptr),
+      hostLineup(hostLineup),
+      guestLineup(guestLineup),
       hostGoals(0),
       guestGoals(0),
       roundNumber(0),
@@ -129,15 +128,15 @@ hostGoals(hostGoals), guestGoals(guestGoals), roundNumber(roundNumber), finished
 }
 
 Match::Match(const Match& other)
-    : hostLineup(other.hostLineup),
+    : host(other.host ? other.host->clone() : nullptr),
+      guest(other.guest ? other.guest->clone() : nullptr),
+      hostLineup(other.hostLineup),
       guestLineup(other.guestLineup),
       hostGoals(other.hostGoals),
       guestGoals(other.guestGoals),
       roundNumber(other.roundNumber),
       matchResult(other.matchResult),
-      finished(other.finished),
-      host(other.host ? other.host->clone() : nullptr),
-      guest(other.guest ? other.guest->clone() : nullptr)
+      finished(other.finished)
 {
 }
 
@@ -246,7 +245,7 @@ void Match::setGuest(Team* g) { guest = g; }
 void Match::setHostLineup(const Lineup& l) { hostLineup = l; }
 void Match::setGuestLineup(const Lineup& l) { guestLineup = l; }
 
-void Match::addGoal(Player scorer, bool isHostPlayer)
+void Match::addGoal(const Player &scorer, bool isHostPlayer)
 {
     matchResult.goals.push_back(
         new MatchResult::Scorer(scorer, isHostPlayer)
@@ -328,7 +327,7 @@ void Match::playHalfTime(MatchResult& result) {
     static bool seeded = false;
     if (!seeded)
     {
-        std::srand((unsigned)std::time(nullptr));
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
         seeded = true;
     }
     result.home = host;
@@ -346,7 +345,7 @@ void Match::playHalfTime(MatchResult& result) {
 
     for (int i = 0; i < 5; i++)
     {
-        unsigned chance = std::clamp(hostAttack + 30 - guestDefense + 5, 5u, 80u);
+        unsigned chance = Utils::clampUnsigned(hostAttack + 30 - guestDefense + 5, 5u, 80u);
 
         if ((std::rand() % 100) < chance)
         {
@@ -358,7 +357,7 @@ void Match::playHalfTime(MatchResult& result) {
 
     for (int i = 0; i < 5; i++)
     {
-        unsigned chance = std::clamp(30 + guestAttack - hostDefense, 5u, 80u);
+        unsigned chance = Utils::clampUnsigned(30 + guestAttack - hostDefense, 5u, 80u);
 
         if ((std::rand() % 100) < chance)
         {

@@ -247,7 +247,7 @@ public:
     * @param scorer The player who scored.
     * @param isHostPlayer True if the scorer belongs to the home team.
     */
-    void addGoal(Player scorer, bool isHostPlayer);
+    void addGoal(const Player &scorer, bool isHostPlayer);
 
     /**
     * Checks whether the match has finished.

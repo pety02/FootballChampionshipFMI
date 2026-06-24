@@ -3,9 +3,7 @@
 //
 
 #include "../player/Player.h"
-
 #include <iostream>
-
 #include "validator/PlayerValidator.h"
 #include "../../utils/ExceptionMessages.h"
 #include "../../utils/validator/StringValidator.h"

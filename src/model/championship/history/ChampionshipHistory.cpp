@@ -4,10 +4,6 @@
 
 #include "../championship/history/ChampionshipHistory.h"
 
-#include <stdexcept>
-
-#include "../validator/ChampionshipValidator.h"
-
 ChampionshipHistory::ChampionshipHistory() : championships(std::vector<Championship>()) {
 }
 

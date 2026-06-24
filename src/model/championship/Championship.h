@@ -37,6 +37,16 @@ public:
                  int year,
                  const AccountingManager& accountingManager);
 
+    /**
+    * Constructor that initializes the team manager of the championship and sets the matches in it.
+    *
+    * @param teamManager the team manager responsible for all the teams in the championship.
+    * @param matches the matches that are played in this football championship.
+    * @param year the year of the current championship.
+    * @param accountingManager the accounting manager of the current championship.
+    * @param currentRoundNumber the current round number of the championship.
+    * @param finished the status if the championship is finished or not.
+    */
     Championship(const TeamManager &teamManager,
                  const std::vector<Match> &matches,
                  int year,

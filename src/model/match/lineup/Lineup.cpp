@@ -1,6 +1,4 @@
 #include "Lineup.h"
-#include "../../utils/ExceptionMessages.h"
-#include <stdexcept>
 
 bool Lineup::canAdd(const Player& player, const std::vector<Player>& teamPlayersList)
 {

@@ -16,6 +16,23 @@
  */
 class BalancedTeam final : public Team {
 public:
+    /**
+    * Constructs a BalancedTeam with full configuration.
+    *
+    * Initializes the object by forwarding all parameters to the base Team class.
+    * The team is designed to maintain a balanced distribution across all positions.
+    *
+    * @param type Team type.
+    * @param name Name of the team.
+    * @param stadiumName Name of the home stadium.
+    * @param players List of players in the team.
+    * @param budget Team budget.
+    * @param forwardersCount Number of forwards.
+    * @param midfieldersCount Number of midfielders.
+    * @param goalkeepersCount Number of goalkeepers.
+    * @param defendersCount Number of defenders.
+    * @param wingersCount Number of wingers.
+    */
     BalancedTeam(TeamType type,
                  const std::string &name,
                  const std::string &stadiumName,

@@ -4,7 +4,6 @@
 
 #include "ChampionshipValidator.h"
 
-#include "history/ChampionshipHistory.h"
 #include <stdexcept>
 
 #include "../../../utils/ExceptionMessages.h"

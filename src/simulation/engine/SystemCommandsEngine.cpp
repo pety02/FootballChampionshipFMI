@@ -59,7 +59,7 @@ void SystemCommandsEngine::help(const std::string& command) {
             std::cout << "add_team <type> <name> <coach> <stadium> <budget>\n"
                       << "Types: attacking, defensive, balanced\n"
                       << "Example:\n"
-                      << "add_team attacking Liverpool Klopp Anfield 10000000\n";
+                      << "add_team attacking Liverpool Klopp 10000000\n";
             break;
 
         case Command::ADD_MANAGER:

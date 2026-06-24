@@ -159,11 +159,70 @@ public:
      */
     static void validateUniquePlayerName(const Team &team, const std::string &name);
 
-    static void validateForwarders (unsigned forwardersCount);
-    static void validateMidfielders (unsigned midfieldersCount);
-    static void validateGoalkeepers (unsigned goalkeepersCount);
-    static void validateDefenders (unsigned defendersCount);
-    static void validateWingers (unsigned wingersCount);
+    /**
+   * Validates that the number of forward players does not exceed the allowed maximum.
+   *
+   * This function ensures that the team composition respects the constraint
+   * defined by Team::MAX_FORWARDERS. If the number of forwards exceeds the limit,
+   * an exception is thrown.
+   *
+   * @param forwardersCount The number of forward players to validate.
+   *
+   * @throws std::invalid_argument If the number of forwarders exceeds the allowed maximum.
+   */
+    static void validateForwarders(unsigned forwardersCount);
+
+    /**
+    * Validates that the number of midfield players does not exceed the allowed maximum.
+    *
+    * This function ensures that the team composition respects the constraint
+    * defined by Team::MAX_MIDFIELDERS. If the number of midfielders exceeds the limit,
+    * an exception is thrown.
+    *
+    * @param midfieldersCount The number of midfield players to validate.
+    *
+    * @throws std::invalid_argument If the number of midfielders exceeds the allowed maximum.
+    */
+    static void validateMidfielders(unsigned midfieldersCount);
+
+    /**
+    * Validates that the number of goalkeepers does not exceed the allowed maximum.
+    *
+    * This function ensures that the team composition respects the constraint
+    * defined by Team::MAX_GOALKEEPERS. If the number of goalkeepers exceeds the limit,
+    * an exception is thrown.
+    *
+    * @param goalkeepersCount The number of goalkeeper players to validate.
+    *
+    * @throws std::invalid_argument If the number of goalkeepers exceeds the allowed maximum.
+    */
+    static void validateGoalkeepers(unsigned goalkeepersCount);
+
+    /**
+    * Validates that the number of defenders does not exceed the allowed maximum.
+    *
+    * This function ensures that the team composition respects the constraint
+    * defined by Team::MAX_DEFENDERS. If the number of defenders exceeds the limit,
+    * an exception is thrown.
+    *
+    * @param defendersCount The number of defender players to validate.
+    *
+    * @throws std::invalid_argument If the number of defenders exceeds the allowed maximum.
+    */
+    static void validateDefenders(unsigned defendersCount);
+
+    /**
+    * Validates that the number of wingers does not exceed the allowed maximum.
+    *
+    * This function ensures that the team composition respects the constraint
+    * defined by Team::MAX_WINGERS. If the number of wingers exceeds the limit,
+    * an exception is thrown.
+    *
+    * @param wingersCount The number of winger players to validate.
+    *
+    * @throws std::invalid_argument If the number of wingers exceeds the allowed maximum.
+    */
+    static void validateWingers(unsigned wingersCount);
 };
 
 #endif //TEAMVALIDATOR_H

@@ -16,6 +16,26 @@
  */
 class AttackingTeam final : public Team {
 public:
+    /**
+    * Constructs an AttackingTeam with full configuration.
+    *
+    * This constructor forwards all parameters to the base Team class constructor
+    * and initializes an attacking-style team with the given squad composition.
+    *
+    * The validation of all parameters (name, stadium, budget, and player constraints)
+    * is performed in the base Team constructor.
+    *
+    * @param type The team type (expected to be ATTACKING).
+    * @param name The name of the team.
+    * @param stadiumName The name of the home stadium.
+    * @param players Initial list of players in the team.
+    * @param budget Initial budget of the team.
+    * @param forwardersCount Number of forward players.
+    * @param midfieldersCount Number of midfield players.
+    * @param goalkeepersCount Number of goalkeepers.
+    * @param defendersCount Number of defenders.
+    * @param wingersCount Number of wingers.
+    */
     AttackingTeam(TeamType type,
                   const std::string &name,
                   const std::string &stadiumName,

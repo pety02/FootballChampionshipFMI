@@ -5,7 +5,6 @@
 #include "FootballGameEngine.h"
 
 #include <iostream>
-#include <memory>
 #include "engine/PlayerEngine.h"
 
 #include "../MatchResultApplier.h"

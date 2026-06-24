@@ -120,6 +120,29 @@ protected:
     unsigned wingersCount = 0;
 
 public:
+    /**
+    * Constructs a Team with full configuration.
+    *
+    * Initializes all core team properties including identity, stadium,
+    * financial state, player roster, and positional constraints.
+    *
+    * After initialization, the constructor performs full validation of:
+    * - Team identity (name and stadium)
+    * - Budget constraints
+    * - Team size constraints
+    * - Positional composition constraints (forwarders, midfielders, etc.)
+    *
+    * @param type The type of the team (ATTACKING, DEFENSIVE, BALANCED, etc.).
+    * @param name The name of the team.
+    * @param stadiumName The name of the home stadium.
+    * @param players Initial list of players belonging to the team.
+    * @param budget Initial financial budget of the team.
+    * @param forwardersCount Number of forward players.
+    * @param midfieldersCount Number of midfield players.
+    * @param goalkeepersCount Number of goalkeepers.
+    * @param defendersCount Number of defenders.
+    * @param wingersCount Number of wingers.
+    */
     Team(TeamType type,
          const std::string &name,
          const std::string &stadiumName,

@@ -1,18 +1,19 @@
-#include <ExceptionMessages.h>
+#include "utils/ExceptionMessages.h"
 #include <iostream>
 #include "utils/CommandLineInterpreter.h"
-#include <sstream>
 
 int main()
 {
     ChampionshipHistory history;
     AccountingManager accountingManager;
-    Championship championship = Championship(TeamManager(), std::vector<Match>(), CURRENT_YEAR, accountingManager);
+    Championship championship =
+        Championship(TeamManager(), std::vector<Match>(), CURRENT_YEAR, accountingManager);
 
     CommandLineInterpreter cli(history, championship);
     history.addChampionship(championship);
 
     cli.execute(Command::MENU, {});
+
     std::string line;
 
     while (true)
@@ -25,54 +26,86 @@ int main()
         if (line.empty())
             continue;
 
-        std::stringstream ss(line);
+        // ---- manual parsing ----
+        size_t pos = 0;
 
-        std::string commandValue;
-        ss >> commandValue;
+        // extract command (first token)
+        while (pos < line.size() && line[pos] == ' ')
+            ++pos;
+
+        size_t start = pos;
+
+        while (pos < line.size() && line[pos] != ' ')
+            ++pos;
+
+        std::string commandValue = line.substr(start, pos - start);
 
         Command cmd = parseCommand(commandValue);
 
+        // extract arguments
         std::vector<std::string> args;
-        std::string arg;
 
-        while (ss >> arg)
+        while (pos < line.size())
         {
-            args.push_back(arg);
+            // skip spaces
+            while (pos < line.size() && line[pos] == ' ')
+                ++pos;
+
+            if (pos >= line.size())
+                break;
+
+            start = pos;
+
+            while (pos < line.size() && line[pos] != ' ')
+                ++pos;
+
+            args.push_back(line.substr(start, pos - start));
         }
 
-        if (commandValue == "exit") {
-            if(!args.empty()) {
-                std::cout << "EXIT command does not need any args. Do you want to exit the program anyway? Y/N\n> ";
+        // ---- exit handling ----
+        if (commandValue == "exit")
+        {
+            if (!args.empty())
+            {
+                std::cout
+                    << "EXIT command does not need any args. Do you want to exit the program anyway? Y/N\n> ";
+
                 std::string answer;
-                while(answer != "Y" && answer != "y" && answer != "N" && answer != "n") {
+
+                while (answer != "Y" && answer != "y" &&
+                       answer != "N" && answer != "n")
+                {
                     std::getline(std::cin, answer);
                 }
-                if(answer == "Y" || answer == "y") {
+
+                if (answer == "Y" || answer == "y")
+                {
                     cli.execute(Command::EXIT, args);
                     return 0;
                 }
-            } else {
+            }
+            else
+            {
                 cli.execute(Command::EXIT, args);
                 return 0;
             }
         }
 
+        // ---- command execution ----
         try
         {
-            if(cmd != Command::EXIT) {
+            if (cmd != Command::EXIT)
+            {
                 cli.execute(cmd, args);
             }
         }
         catch (const std::exception& e)
         {
-            std::cerr << "Command Error: "
-                      << e.what()
-                      << std::endl;
+            std::cerr << "Command Error: " << e.what() << std::endl;
         }
         catch (...)
         {
-            std::cerr << "Unknown command error occurred!"
-                      << std::endl;
+            std::cerr << "Unknown command error occurred!" << std::endl;
         }
     }
 

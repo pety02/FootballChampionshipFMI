@@ -75,3 +75,33 @@ void Utils::selectionSortByGoals(
         }
     }
 }
+
+void Utils::selectionSortTeamsByGoals(
+    std::vector<std::pair<Team*, unsigned>>& ranking)
+{
+    for (size_t i = 0; i < ranking.size(); ++i)
+    {
+        size_t maxIndex = i;
+
+        for (size_t j = i + 1; j < ranking.size(); ++j)
+        {
+            if (ranking[j].second > ranking[maxIndex].second)
+            {
+                maxIndex = j;
+            }
+        }
+
+        if (maxIndex != i)
+        {
+            std::pair<Team*, unsigned> temp = ranking[i];
+            ranking[i] = ranking[maxIndex];
+            ranking[maxIndex] = temp;
+        }
+    }
+}
+
+unsigned Utils::clampUnsigned(unsigned value, unsigned minVal, unsigned maxVal) {
+    if (value < minVal) return minVal;
+    if (value > maxVal) return maxVal;
+    return value;
+}

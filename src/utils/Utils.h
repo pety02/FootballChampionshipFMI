@@ -7,6 +7,7 @@
 
 #include "../model/team/TeamType.h"
 #include "../model/player/Player.h"
+#include "../model/team/Team.h"
 #include <string>
 #include <vector>
 
@@ -92,6 +93,34 @@ public:
     * @param teams Vector of (team name, goals scored) pairs to sort.
     */
     static void selectionSortByGoals(std::vector<Pair<std::string, unsigned> > &teams);
+
+    /**
+    * Sorts a vector of team-goal pairs in descending order using selection sort.
+    *
+    * The function compares the second element of each pair (goals scored)
+    * and arranges the vector so that teams with higher goal counts appear first.
+    *
+    * This is an in-place O(n^2) selection sort implementation.
+    *
+    * @param ranking Vector of (Team pointer, scored goals) pairs to be sorted.
+    *                The vector is modified directly.
+    */
+    static void selectionSortTeamsByGoals(
+        std::vector<std::pair<Team *, unsigned> > &ranking);
+
+    /**
+    * Clamps an unsigned integer value within a specified range.
+    *
+    * If the value is smaller than minVal, minVal is returned.
+    * If the value is larger than maxVal, maxVal is returned.
+    * Otherwise, the original value is returned unchanged.
+    *
+    * @param value The value to clamp.
+    * @param minVal The minimum allowed value.
+    * @param maxVal The maximum allowed value.
+    * @return The clamped value within [minVal, maxVal].
+    */
+    static unsigned clampUnsigned(unsigned value, unsigned minVal, unsigned maxVal);
 };
 
 #endif //UTILS_H

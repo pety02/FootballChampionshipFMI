@@ -18,7 +18,24 @@
  */
 class DefensiveTeam final : public Team {
 public:
- DefensiveTeam(TeamType type,
+    /**
+    * Constructs a DefensiveTeam with full configuration.
+    *
+    * Initializes the object by forwarding all parameters to the base Team class.
+    * The team is designed with a defensive play style, prioritizing defensive stability.
+    *
+    * @param type Team type.
+    * @param name Name of the team.
+    * @param stadiumName Name of the home stadium.
+    * @param players List of players in the team.
+    * @param budget Team budget.
+    * @param forwardersCount Number of forwards.
+    * @param midfieldersCount Number of midfielders.
+    * @param goalkeepersCount Number of goalkeepers.
+    * @param defendersCount Number of defenders.
+    * @param wingersCount Number of wingers.
+    */
+    DefensiveTeam(TeamType type,
                   const std::string &name,
                   const std::string &stadiumName,
                   const std::vector<Player> &players,
@@ -28,6 +45,7 @@ public:
                   unsigned goalkeepersCount,
                   unsigned defendersCount,
                   unsigned wingersCount);
+
     /**
      * Required number of goalkeepers in the team.
      */
