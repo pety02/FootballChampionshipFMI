@@ -3,9 +3,7 @@ project(FootballChampionshipFMI)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# =========================
 # Catch2
-# =========================
 include(FetchContent)
 
 FetchContent_Declare(
@@ -18,9 +16,7 @@ FetchContent_MakeAvailable(Catch2)
 
 enable_testing()
 
-# =========================
 # UTILS VALIDATORS
-# =========================
 add_library(utils_validator
         src/utils/validator/CommandLineValidator.cpp
         src/utils/validator/StringValidator.cpp
@@ -30,9 +26,7 @@ target_include_directories(utils_validator PUBLIC
         src/utils/validator
 )
 
-# =========================
 # MODEL CHAMPIONSHIP
-# =========================
 add_library(model_championship
         src/model/championship/accountingManager/AccountingManager.cpp
         src/model/championship/history/ChampionshipHistory.cpp
@@ -44,9 +38,7 @@ target_include_directories(model_championship PUBLIC
         src/model/championship
 )
 
-# =========================
 # MODEL MATCH
-# =========================
 add_library(model_match
         src/model/match/lineup/Lineup.cpp
         src/model/match/validator/MatchValidator.cpp
@@ -57,9 +49,7 @@ target_include_directories(model_match PUBLIC
         src/model/match
 )
 
-# =========================
 # MODEL PLAYER
-# =========================
 add_library(model_player
         src/model/player/validator/PlayerValidator.cpp
         src/model/player/Player.cpp
@@ -71,9 +61,7 @@ target_include_directories(model_player PUBLIC
 
 target_link_libraries(model_player PUBLIC utils_validator)
 
-# =========================
 # MODEL TEAM
-# =========================
 add_library(model_team
         src/model/team/factory/TeamFactory.cpp
         src/model/team/manager/TeamManager.cpp
@@ -90,9 +78,7 @@ target_include_directories(model_team PUBLIC
 
 target_link_libraries(model_team PUBLIC utils_validator)
 
-# =========================
 # SIMULATION CORE
-# =========================
 add_library(simulation
         src/simulation/MatchResultApplier.cpp
 )
@@ -107,9 +93,7 @@ target_link_libraries(simulation PUBLIC
         model_team
 )
 
-# =========================
 # SIMULATION VALIDATOR
-# =========================
 add_library(simulation_validator
         src/simulation/validator/FootballGameSimulatorValidator.cpp
 )
@@ -124,9 +108,7 @@ target_link_libraries(simulation_validator PUBLIC
         model_team
 )
 
-# =========================
 # SIMULATION ENGINE
-# =========================
 add_library(simulation_engine
         src/simulation/engine/FootballGameEngine.cpp
         src/simulation/engine/PlayerEngine.cpp
@@ -148,9 +130,7 @@ target_link_libraries(simulation_engine PUBLIC
         simulation
 )
 
-# =========================
 # UTILS
-# =========================
 add_library(utils
         src/utils/CommandLineInterpreter.cpp
         src/utils/Utils.cpp
@@ -168,18 +148,14 @@ target_link_libraries(utils PUBLIC
         model_team
 )
 
-# =========================
 # EXECUTABLE
-# =========================
 add_executable(FootballChampionshipFMI src/main.cpp)
 
 target_link_libraries(FootballChampionshipFMI PRIVATE
         utils
 )
 
-# =========================
 # TESTS
-# =========================
 add_executable(engine_tests
         src/utils/Utils.cpp
         src/utils/Utils.cpp)
